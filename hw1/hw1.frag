@@ -1,6 +1,5 @@
 //  Basic fragment shader
 
-//uniform float time;
 varying vec4 color;
 
 void main()
