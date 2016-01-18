@@ -16,23 +16,25 @@ class Hw1opengl : public QGLWidget
 {
 Q_OBJECT
 private:
-   bool    init;      //  Initialized
-   bool    light;     //  Lighting
-   int     mode;      //  Display mode
-   int     th,ph;     //  Display angles
-   bool    mouse;     //  Mouse pressed
-   QPoint  pos;       //  Mouse position
-   int     fov;       //  Field of view
-   double  dim;       //  Display size
-   double  asp;       //  Sceen aspect ratio
-   Object* obj;       //  Object
-   QTimer           timer;   //  Timer for animations
-   QElapsedTimer    time;    //  Track elapsed time
-   QGLShaderProgram shader;  //  Shader
-   QVector<Object*> objects; //  Objects
+    bool    init;      //  Initialized
+    bool    light;     //  Lighting
+    int     mode;      //  Display mode
+    int     th,ph;     //  Display angles
+    bool    mouse;     //  Mouse pressed
+    QPoint  pos;       //  Mouse position
+    int     fov;       //  Field of view
+    double  dim;       //  Display size
+    double  asp;       //  Sceen aspect ratio
+    Object* obj;       //  Object
+    QTimer           timer;   //  Timer for animations
+    QElapsedTimer    time;    //  Track elapsed time
+    //QGLShaderProgram shader;  //  Shader
+    QVector<Object*> objects; //  Objects
+    QVector<QGLShaderProgram*> shaders; //  Shaders
+
 public:
-   Hw1opengl(QWidget* parent=0);                  //  Constructor
-   QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
+    Hw1opengl(QWidget* parent=0);                  //  Constructor
+    QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
 public slots:
     void setShader(int on);                //  Slot to set shader
     void setPerspective(int on);           //  Slot to set projection type
@@ -49,8 +51,8 @@ protected:
     void mouseMoveEvent(QMouseEvent*);     //  Mouse moved
     void wheelEvent(QWheelEvent*);         //  Mouse wheel
 private:
-   void Fatal(QString message);            //  Error handler
-   void Projection();                      //  Update projection
+    void Fatal(QString message);            //  Error handler
+    void Projection();                      //  Update projection
 };
 
 #endif

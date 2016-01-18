@@ -3,5 +3,7 @@
         <file>hw1.vert</file>
         <file>hw1.frag</file>
         <file>tyra.obj</file>
+        <file>ex01.frag</file>
+        <file>ex01.vert</file>
     </qresource>
 </RCC>

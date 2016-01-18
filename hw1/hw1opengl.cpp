@@ -17,14 +17,14 @@
 Hw1opengl::Hw1opengl(QWidget* parent)
     : QGLWidget(parent)
 {
-   mode = 0;
-   init  = false;
-   light = false;
-   mouse = false;
-   asp = 1;
-   dim = 3;
-   fov = 0;
-   th = ph = 0;
+    mode = 0;
+    init  = false;
+    light = false;
+    mouse = false;
+    asp = 1;
+    dim = 3;
+    fov = 0;
+    th = ph = 0;
 }
 
 //
@@ -32,9 +32,9 @@ Hw1opengl::Hw1opengl(QWidget* parent)
 //
 void Hw1opengl::setShader(int on)
 {
-   mode = on;
-   //  Request redisplay
-   updateGL();
+    mode = on;
+    //  Request redisplay
+    updateGL();
 }
 
 //
@@ -42,9 +42,9 @@ void Hw1opengl::setShader(int on)
 //
 void Hw1opengl::setLighting(int on)
 {
-   light = on;
-   //  Request redisplay
-   updateGL();
+    light = on;
+    //  Request redisplay
+    updateGL();
 }
 
 //
@@ -78,13 +78,25 @@ void Hw1opengl::initializeGL()
 
    //  Enable Z-buffer depth testing
    glEnable(GL_DEPTH_TEST);
-   //  Build shader
-   if (!shader.addShaderFromSourceFile(QGLShader::Vertex,":/hw1.vert"))
-      Fatal("Error compiling hw1.vert\n"+shader.log());
-   if (!shader.addShaderFromSourceFile(QGLShader::Fragment,":/hw1.frag"))
-      Fatal("Error compiling hw1.frag\n"+shader.log());
-   if (!shader.link())
-      Fatal("Error linking shader\n"+shader.log());
+
+   //  Build shaders
+   QGLShaderProgram* shader = new QGLShaderProgram();
+   if (!shader->addShaderFromSourceFile(QGLShader::Vertex,":/ex01.vert"))
+      Fatal("Error compiling ex01.vert\n"+shader->log());
+   if (!shader->addShaderFromSourceFile(QGLShader::Fragment,":/ex01.frag"))
+      Fatal("Error compiling ex01.frag\n"+shader->log());
+   if (!shader->link())
+      Fatal("Error linking shader\n"+shader->log());
+   shaders.push_back(shader);
+
+   shader = new QGLShaderProgram();
+   if (!shader->addShaderFromSourceFile(QGLShader::Vertex,":/hw1.vert"))
+      Fatal("Error compiling hw1.vert\n"+shader->log());
+   if (!shader->addShaderFromSourceFile(QGLShader::Fragment,":/hw1.frag"))
+      Fatal("Error compiling hw1.frag\n"+shader->log());
+   if (!shader->link())
+      Fatal("Error linking shader\n"+shader->log());
+   shaders.push_back(shader);
 
    // Cube
    objects.push_back(new Cube());
@@ -214,15 +226,15 @@ void Hw1opengl::paintGL()
    //  Apply shader
    if (mode)
    {
-      shader.bind();
-      shader.setUniformValue("time",t);
+      shaders[mode-1]->bind();
+      shaders[mode-1]->setUniformValue("time",t);
    }
 
    //  Draw scene
    if (obj) obj->display();
 
    //  Release shader
-   if (mode) shader.release();
+   if (mode) shaders[mode-1]->release();
 
    //  Disable lighting
    glDisable(GL_LIGHTING);
