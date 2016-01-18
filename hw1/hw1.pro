@@ -1,4 +1,4 @@
-HEADERS = ex01viewer.h ex01opengl.h Object.h Cube.h Sphere.h Teapot.h WaveOBJ.h
-SOURCES = ex01.cpp ex01viewer.cpp ex01opengl.cpp Object.cpp Cube.cpp Sphere.cpp Teapot.cpp WaveOBJ.cpp
+HEADERS = hw1viewer.h hw1opengl.h Object.h Cube.h Sphere.h Teapot.h WaveOBJ.h
+SOURCES = hw1.cpp hw1viewer.cpp hw1opengl.cpp Object.cpp Cube.cpp Sphere.cpp Teapot.cpp WaveOBJ.cpp
 QT += opengl
-RESOURCES = ex01.qrc
+RESOURCES = hw1.qrc

@@ -2,8 +2,8 @@
 //  OpenGL Ex01opengl Widget
 //
 
-#ifndef EX01OPENGL_H
-#define EX01OPENGL_H
+#ifndef HW1OPENGL_H
+#define HW1OPENGL_H
 
 #include <QtOpenGL>
 #include <QString>
@@ -12,7 +12,7 @@
 #include <QElapsedTimer>
 #include "Object.h"
 
-class Ex01opengl : public QGLWidget
+class Hw1opengl : public QGLWidget
 {
 Q_OBJECT
 private:
@@ -31,7 +31,7 @@ private:
    QGLShaderProgram shader;  //  Shader
    QVector<Object*> objects; //  Objects
 public:
-   Ex01opengl(QWidget* parent=0);                  //  Constructor
+   Hw1opengl(QWidget* parent=0);                  //  Constructor
    QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
 public slots:
     void setShader(int on);                //  Slot to set shader

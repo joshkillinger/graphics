@@ -6,19 +6,19 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QGridLayout>
-#include "ex01viewer.h"
-#include "ex01opengl.h"
+#include "hw1viewer.h"
+#include "hw1opengl.h"
 
 //
 //  Constructor
 //
-Ex01viewer::Ex01viewer()
+Hw1viewer::Hw1viewer()
 {
    //  Set window title
-   setWindowTitle(tr("Ex01:  Basic Shader"));
+   setWindowTitle(tr("Assignment 1: Josh Killinger"));
 
    //  Create new OpenGL widget
-   Ex01opengl* ex01opengl = new Ex01opengl;
+   Hw1opengl* hw1opengl = new Hw1opengl;
 
    //  Select shader
    QComboBox* shader = new QComboBox();
@@ -47,7 +47,7 @@ Ex01viewer::Ex01viewer()
 
    //  Set layout of child widgets
    QGridLayout* layout = new QGridLayout;
-   layout->addWidget(ex01opengl,0,0,7,1);
+   layout->addWidget(hw1opengl,0,0,7,1);
    layout->addWidget(new QLabel("Shader"),0,1);
    layout->addWidget(shader,0,2);
    layout->addWidget(new QLabel("Projection"),1,1);
@@ -66,12 +66,12 @@ Ex01viewer::Ex01viewer()
    setLayout(layout);
 
    //  Connect valueChanged() signals to ex01opengl
-   connect(shader,SIGNAL(currentIndexChanged(int))     , ex01opengl,SLOT(setShader(int)));
-   connect(object,SIGNAL(currentIndexChanged(int))     , ex01opengl,SLOT(setObject(int)));
-   connect(projection,SIGNAL(currentIndexChanged(int)) , ex01opengl,SLOT(setPerspective(int)));
-   connect(lighting,SIGNAL(stateChanged(int))          , ex01opengl,SLOT(setLighting(int)));
+   connect(shader,SIGNAL(currentIndexChanged(int))     , hw1opengl,SLOT(setShader(int)));
+   connect(object,SIGNAL(currentIndexChanged(int))     , hw1opengl,SLOT(setObject(int)));
+   connect(projection,SIGNAL(currentIndexChanged(int)) , hw1opengl,SLOT(setPerspective(int)));
+   connect(lighting,SIGNAL(stateChanged(int))          , hw1opengl,SLOT(setLighting(int)));
    //  Connect angles() signal to label
-   connect(ex01opengl,SIGNAL(angles(QString)) , angles,SLOT(setText(QString)));
+   connect(hw1opengl,SIGNAL(angles(QString)) , angles,SLOT(setText(QString)));
    //  Connect quit() signal to qApp::quit()
    connect(quit,SIGNAL(pressed()) , qApp,SLOT(quit()));
 }

@@ -1,7 +1,7 @@
 //
 //  OpenGL Ex01opengl widget
 //
-#include "ex01opengl.h"
+#include "hw1opengl.h"
 #include <QtOpenGL>
 #include <QMessageBox>
 #include "Cube.h"
@@ -14,7 +14,7 @@
 //
 //  Constructor
 //
-Ex01opengl::Ex01opengl(QWidget* parent)
+Hw1opengl::Hw1opengl(QWidget* parent)
     : QGLWidget(parent)
 {
    mode = 0;
@@ -30,7 +30,7 @@ Ex01opengl::Ex01opengl(QWidget* parent)
 //
 //  Set shader
 //
-void Ex01opengl::setShader(int on)
+void Hw1opengl::setShader(int on)
 {
    mode = on;
    //  Request redisplay
@@ -40,7 +40,7 @@ void Ex01opengl::setShader(int on)
 //
 //  Set lighting
 //
-void Ex01opengl::setLighting(int on)
+void Hw1opengl::setLighting(int on)
 {
    light = on;
    //  Request redisplay
@@ -50,7 +50,7 @@ void Ex01opengl::setLighting(int on)
 //
 //  Set projection
 //
-void Ex01opengl::setPerspective(int on)
+void Hw1opengl::setPerspective(int on)
 {
    fov = on ? 55 : 0;
    Projection();
@@ -61,7 +61,7 @@ void Ex01opengl::setPerspective(int on)
 //
 //  Set object
 //
-void Ex01opengl::setObject(int type)
+void Hw1opengl::setObject(int type)
 {
    obj = objects[type];
    //  Request redisplay
@@ -71,7 +71,7 @@ void Ex01opengl::setObject(int type)
 //
 //  Initialize
 //
-void Ex01opengl::initializeGL()
+void Hw1opengl::initializeGL()
 {
    if (init) return;
    init = true;
@@ -79,10 +79,10 @@ void Ex01opengl::initializeGL()
    //  Enable Z-buffer depth testing
    glEnable(GL_DEPTH_TEST);
    //  Build shader
-   if (!shader.addShaderFromSourceFile(QGLShader::Vertex,":/ex01.vert"))
-      Fatal("Error compiling ex01.vert\n"+shader.log());
-   if (!shader.addShaderFromSourceFile(QGLShader::Fragment,":/ex01.frag"))
-      Fatal("Error compiling ex01.frag\n"+shader.log());
+   if (!shader.addShaderFromSourceFile(QGLShader::Vertex,":/hw1.vert"))
+      Fatal("Error compiling hw1.vert\n"+shader.log());
+   if (!shader.addShaderFromSourceFile(QGLShader::Fragment,":/hw1.frag"))
+      Fatal("Error compiling hw1.frag\n"+shader.log());
    if (!shader.link())
       Fatal("Error linking shader\n"+shader.log());
 
@@ -124,7 +124,7 @@ void Ex01opengl::initializeGL()
 //
 //  Set projection when window is resized
 //
-void Ex01opengl::resizeGL(int width, int height)
+void Hw1opengl::resizeGL(int width, int height)
 {
    //  Window aspect ration
    asp = height ? width / (float)height : 1;
@@ -170,7 +170,7 @@ static void ball(double x,double y,double z,double r)
 //
 //  Draw the window
 //
-void Ex01opengl::paintGL()
+void Hw1opengl::paintGL()
 {
    //  Wall time (seconds)
    float t = 0.001*time.elapsed();
@@ -245,7 +245,7 @@ void Ex01opengl::paintGL()
 //
 //  Throw a fatal error and die
 //
-void Ex01opengl::Fatal(QString message)
+void Hw1opengl::Fatal(QString message)
 {
    QMessageBox::critical(this,"Ex01opengl",message);
    QApplication::quit();
@@ -254,7 +254,7 @@ void Ex01opengl::Fatal(QString message)
 //
 //  Set OpenGL projection
 //
-void Ex01opengl::Projection()
+void Hw1opengl::Projection()
 {
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
@@ -278,7 +278,7 @@ void Ex01opengl::Projection()
 //
 //  Mouse pressed
 //
-void Ex01opengl::mousePressEvent(QMouseEvent* e)
+void Hw1opengl::mousePressEvent(QMouseEvent* e)
 {
    mouse = true;
    pos = e->pos();  //  Remember mouse location
@@ -287,7 +287,7 @@ void Ex01opengl::mousePressEvent(QMouseEvent* e)
 //
 //  Mouse released
 //
-void Ex01opengl::mouseReleaseEvent(QMouseEvent*)
+void Hw1opengl::mouseReleaseEvent(QMouseEvent*)
 {
     mouse = false;
 }
@@ -295,7 +295,7 @@ void Ex01opengl::mouseReleaseEvent(QMouseEvent*)
 //
 //  Mouse moved
 //
-void Ex01opengl::mouseMoveEvent(QMouseEvent* e)
+void Hw1opengl::mouseMoveEvent(QMouseEvent* e)
 {
    if (mouse)
    {
@@ -310,7 +310,7 @@ void Ex01opengl::mouseMoveEvent(QMouseEvent* e)
 //
 //  Mouse wheel
 //
-void Ex01opengl::wheelEvent(QWheelEvent* e)
+void Hw1opengl::wheelEvent(QWheelEvent* e)
 {
    //  Zoom out
    if (e->delta()<0)

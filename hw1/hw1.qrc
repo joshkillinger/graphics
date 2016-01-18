@@ -1,7 +1,7 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-    <file>ex01.vert</file>
-    <file>ex01.frag</file>
-    <file>tyra.obj</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>hw1.vert</file>
+        <file>hw1.frag</file>
+        <file>tyra.obj</file>
+    </qresource>
 </RCC>

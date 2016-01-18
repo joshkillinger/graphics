@@ -1,7 +1,7 @@
 //
 //  Utah Teapot
 //
-#include <Teapot.h>
+#include "Teapot.h"
 #include <math.h>
 
 #define MAXN 64

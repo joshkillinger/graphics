@@ -1,13 +1,13 @@
-#ifndef EX01V_H
-#define EX01V_H
+#ifndef HW1V_H
+#define HW1V_H
 
 #include <QWidget>
 
-class Ex01viewer : public QWidget
+class Hw1viewer : public QWidget
 {
 Q_OBJECT
 public:
-    Ex01viewer();
+    Hw1viewer();
 };
 
 #endif
