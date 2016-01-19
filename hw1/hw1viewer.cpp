@@ -47,9 +47,9 @@ Hw1viewer::Hw1viewer()
     QSlider* xSlider = new QSlider(Qt::Horizontal);
     QSlider* ySlider = new QSlider(Qt::Horizontal);
     QSlider* zSlider = new QSlider(Qt::Horizontal);
-    xSlider->setRange(-1000, 1000);
-    ySlider->setRange(-1000, 1000);
-    zSlider->setRange(-1000, 1000);
+    xSlider->setRange(-2000, 2000);
+    ySlider->setRange(-2000, 2000);
+    zSlider->setRange(-2000, 2000);
     xSlider->setTracking(true);
     ySlider->setTracking(true);
     zSlider->setTracking(true);

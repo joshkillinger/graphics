@@ -57,7 +57,7 @@ void Hw1opengl::setXPos(int pos)
 
 void Hw1opengl::setYPos(int pos)
 {
-    float y = (pos / 500.0);
+    float y = (pos / 1000.0);
     obj->setY(y);
     //  Request redisplay
     updateGL();
