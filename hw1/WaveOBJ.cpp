@@ -217,7 +217,7 @@ static void SetMaterial(const QString& name)
 WaveOBJ::WaveOBJ(const char* file)
 {
    //  Initialize location
-   translate(0,0,0);
+   translation(0,0,0);
    rotate(0,1,0,0);
    scale(1);
    //  Initialize color and scale

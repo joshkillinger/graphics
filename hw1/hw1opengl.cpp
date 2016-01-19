@@ -47,6 +47,30 @@ void Hw1opengl::setLighting(int on)
     updateGL();
 }
 
+void Hw1opengl::setXPos(int pos)
+{
+    float x = (pos / 500.0);
+    obj->setX(x);
+    //  Request redisplay
+    updateGL();
+}
+
+void Hw1opengl::setYPos(int pos)
+{
+    float y = (pos / 500.0);
+    obj->setY(y);
+    //  Request redisplay
+    updateGL();
+}
+
+void Hw1opengl::setZPos(int pos)
+{
+    float z = (pos / 500.0);
+    obj->setZ(z);
+    //  Request redisplay
+    updateGL();
+}
+
 //
 //  Set projection
 //

@@ -17,8 +17,11 @@ protected:
    float x0,y0,z0;                          //  Location
    Object(float x=0,float y=0,float z=0);   //  Constructor
 public:
-   void translate(float x,float y,float z); //  Set translation
+   void translation(float x,float y,float z); //  Set translation
    virtual void display()=0;                //  Render the object
+   void setX(float x);
+   void setY(float y);
+   void setZ(float z);
    virtual ~Object() {};                    //  Do nothing destructor
 };
 

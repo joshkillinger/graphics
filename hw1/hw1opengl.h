@@ -36,20 +36,23 @@ public:
     Hw1opengl(QWidget* parent=0);                  //  Constructor
     QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
 public slots:
-    void setShader(int on);                //  Slot to set shader
-    void setPerspective(int on);           //  Slot to set projection type
-    void setObject(int type);              //  Slot to set displayed object
-    void setLighting(int on);              //  Slot to set lighting
+    void setShader(int on);                 //  Slot to set shader
+    void setPerspective(int on);            //  Slot to set projection type
+    void setObject(int type);               //  Slot to set displayed object
+    void setLighting(int on);               //  Slot to set lighting
+    void setXPos(int pos);                  //  Slot to set model x position
+    void setYPos(int pos);                  //  Slot to set model y position
+    void setZPos(int pos);                  //  Slot to set model z position
 signals:
-    void angles(QString text);             //  Signal for view angles
+    void angles(QString text);              //  Signal for view angles
 protected:
-    void initializeGL();                   //  Initialize widget
-    void resizeGL(int width, int height);  //  Resize widget
-    void paintGL();                        //  Draw widget
-    void mousePressEvent(QMouseEvent*);    //  Mouse pressed
-    void mouseReleaseEvent(QMouseEvent*);  //  Mouse released
-    void mouseMoveEvent(QMouseEvent*);     //  Mouse moved
-    void wheelEvent(QWheelEvent*);         //  Mouse wheel
+    void initializeGL();                    //  Initialize widget
+    void resizeGL(int width, int height);   //  Resize widget
+    void paintGL();                         //  Draw widget
+    void mousePressEvent(QMouseEvent*);     //  Mouse pressed
+    void mouseReleaseEvent(QMouseEvent*);   //  Mouse released
+    void mouseMoveEvent(QMouseEvent*);      //  Mouse moved
+    void wheelEvent(QWheelEvent*);          //  Mouse wheel
 private:
     void Fatal(QString message);            //  Error handler
     void Projection();                      //  Update projection
