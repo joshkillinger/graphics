@@ -2,7 +2,6 @@
 //  Ex01viewer Widget
 //
 
-#include <QSlider>
 #include <QComboBox>
 #include <QLabel>
 #include <QGridLayout>
@@ -18,7 +17,7 @@ Hw1viewer::Hw1viewer()
     setWindowTitle(tr("Assignment 1: Josh Killinger"));
 
     //  Create new OpenGL widget
-    Hw1opengl* hw1opengl = new Hw1opengl;
+    Hw1opengl* hw1opengl = new Hw1opengl(this);
 
     //  Select shader
     QComboBox* shader = new QComboBox();
@@ -44,9 +43,9 @@ Hw1viewer::Hw1viewer()
     QLabel* angles = new QLabel();
 
     //  Position Sliders
-    QSlider* xSlider = new QSlider(Qt::Horizontal);
-    QSlider* ySlider = new QSlider(Qt::Horizontal);
-    QSlider* zSlider = new QSlider(Qt::Horizontal);
+    xSlider = new QSlider(Qt::Horizontal);
+    ySlider = new QSlider(Qt::Horizontal);
+    zSlider = new QSlider(Qt::Horizontal);
     xSlider->setRange(-2000, 2000);
     ySlider->setRange(-2000, 2000);
     zSlider->setRange(-2000, 2000);
@@ -99,4 +98,11 @@ Hw1viewer::Hw1viewer()
     connect(hw1opengl,SIGNAL(angles(QString)) , angles,SLOT(setText(QString)));
     //  Connect quit() signal to qApp::quit()
     connect(quit,SIGNAL(pressed()) , qApp,SLOT(quit()));
+}
+
+void Hw1viewer::SetXYZ(float x, float y, float z)
+{
+    xSlider->setValue(x * 1000);
+    ySlider->setValue(y * 1000);
+    zSlider->setValue(z * 1000);
 }

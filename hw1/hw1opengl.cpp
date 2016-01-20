@@ -14,7 +14,7 @@
 //
 //  Constructor
 //
-Hw1opengl::Hw1opengl(QWidget* parent)
+Hw1opengl::Hw1opengl(Hw1viewer* viewer, QWidget* parent)
     : QGLWidget(parent)
 {
     mode = 0;
@@ -25,6 +25,7 @@ Hw1opengl::Hw1opengl(QWidget* parent)
     dim = 3;
     fov = 0;
     th = ph = 0;
+    parentViewer = viewer;
 }
 
 //
@@ -90,6 +91,9 @@ void Hw1opengl::setObject(int type)
    obj = objects[type];
    //  Request redisplay
    updateGL();
+
+   //update parent controls
+   parentViewer->SetXYZ(obj->getX(), obj->getY(), obj->getZ());
 }
 
 //

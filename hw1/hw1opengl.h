@@ -5,6 +5,7 @@
 #ifndef HW1OPENGL_H
 #define HW1OPENGL_H
 
+#include "hw1viewer.h"
 #include <QtOpenGL>
 #include <QString>
 #include <QVector>
@@ -31,9 +32,10 @@ private:
     //QGLShaderProgram shader;  //  Shader
     QVector<Object*> objects; //  Objects
     QVector<QGLShaderProgram*> shaders; //  Shaders
+    Hw1viewer* parentViewer; //  Parent viewer for callbacks
 
 public:
-    Hw1opengl(QWidget* parent=0);                  //  Constructor
+    Hw1opengl(Hw1viewer* viewer, QWidget* parent=0);                  //  Constructor
     QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
 public slots:
     void setShader(int on);                 //  Slot to set shader

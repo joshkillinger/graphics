@@ -23,6 +23,21 @@ void Object::translation(float x,float y,float z)
    z0 = z;
 }
 
+float Object::getX()
+{
+    return x0;
+}
+
+float Object::getY()
+{
+    return y0;
+}
+
+float Object::getZ()
+{
+    return z0;
+}
+
 void Object::setX(float x)
 {
     x0 = x;
