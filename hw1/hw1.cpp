@@ -2,6 +2,7 @@
 //  Ex 01:  Basic Shader
 //  Willem A. (Vlakkies) Schreuder
 //  CSCI 4239/5239 Spring 2016
+//  Program modified by Josh Killinger for Homework 1
 //
 
 #include <QApplication>
