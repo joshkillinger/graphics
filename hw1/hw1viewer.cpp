@@ -100,6 +100,9 @@ Hw1viewer::Hw1viewer()
     connect(quit,SIGNAL(pressed()) , qApp,SLOT(quit()));
 }
 
+///
+/// Sets the slider positions based on object world coordinates
+///
 void Hw1viewer::SetXYZ(float x, float y, float z)
 {
     xSlider->setValue(x * 1000);
