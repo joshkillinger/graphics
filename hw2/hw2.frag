@@ -78,7 +78,8 @@ float fbm(vec2 P, int octaves, float lacunarity, float gain)
     return sum;
 }
 
-float pattern(in vec2 p) {
+float pattern(in vec2 p)
+{
     float l = 2.5;
     float g = 0.4;
     int oc = 10;
@@ -90,7 +91,8 @@ float pattern(in vec2 p) {
 
 void main()
 {
-    float intensity = pattern(ModelPos);
+    //float intensity = fbm(ModelPos, 2, 1, 1) * 2.0;
+	float intensity = cnoise(ModelPos);
     vec3 color  = vec3(intensity, intensity, intensity) * LightIntensity;
     //  Adjust color intensity for lighting (interpolated from vertex shader values)
     //  Pad color with alpha
