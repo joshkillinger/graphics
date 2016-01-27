@@ -11,6 +11,7 @@
 #define Cos(th) cos(3.1415926/180*(th))
 #define Sin(th) sin(3.1415926/180*(th))
 #include <QVector3D>
+#include "noise.h"
 
 //
 //  Draw vertex in polar coordinates
@@ -61,6 +62,45 @@ Hw2opengl::Hw2opengl(QWidget* parent)
    x0 = y0 = 0;
    z0 = 1;
    zh = 0;
+   perlin = new Noise();
+}
+
+void Hw2opengl::GenerateNoiseTexture()
+{
+    int f, i, j, k, inc;
+    int startFrequency = 4;
+    int numOctaves = 4;
+    float ni[3];
+    float inci, incj, inck;
+    int frequency = startFrequency;
+    GLubyte *ptr;
+    float amp = 0.5;
+    int noise3DTexSize = 128;
+    GLuint noise3DTexName = 0;
+    GLubyte *noise3DTexPtr;
+
+    noise3DTexPtr = (GLubyte *) malloc(noise3DTexSize * noise3DTexSize * noise3DTexSize * 4);
+
+    for (f = 0, inc = 0; f < numOctaves; ++f, frequency *= 2, ++inc, amp *= 0.5)
+    {
+        //setNoiseFrequency(frequency);
+        ptr = noise3DTexPtr;
+        ni[0] = ni[1] = ni[2] = 0;
+
+        inci = 1.0 / (noise3DTexSize / frequency);
+        for (i = 0; i < noise3DTexSize; ++i, ni[0] += inci)
+        {
+            incj = 1.0 / (noise3DTexSize / frequency);
+            for (j = 0; j < noise3DTexSize; ++j, ni[1] += incj)
+            {
+                inck = 1.0 / (noise3DTexSize / frequency);
+                for (k = 0; k < noise3DTexSize; ++k, ni[2] += inck, ptr += 4)
+                {
+                    *(ptr+inc) = (GLubyte)(((perlin->Noise3(ni) + 1.0) * amp) * 128.0);
+                }
+            }
+        }
+    }
 }
 
 //
@@ -374,3 +414,4 @@ void Hw2opengl::Shader(int k,QString vert,QString frag)
    if (!shader[k].link())
       Fatal("Error linking shader\n"+shader[k].log());
 }
+
