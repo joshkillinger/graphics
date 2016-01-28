@@ -161,7 +161,6 @@ void Hw2opengl::initializeGL()
    Shader(1,":/ex03a.vert",":/ex03a.frag");
    Shader(2,":/ex03b.vert",":/ex03b.frag");
    Shader(3,":/ex03b.vert",":/ex03c.frag");
-   Shader(4,":/ex03b.vert",":/hw2.frag");
 
    // Cube
    objects.push_back(new Cube());

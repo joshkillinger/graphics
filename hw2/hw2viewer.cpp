@@ -24,7 +24,6 @@ Hw2viewer::Hw2viewer()
    shader->addItem("Stored");
    shader->addItem("Brick");
    shader->addItem("Mandelbrot");
-   shader->addItem("Noise");
 
    //  Select projection
    QComboBox* projection = new QComboBox();
