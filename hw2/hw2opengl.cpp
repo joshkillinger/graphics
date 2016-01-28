@@ -1,6 +1,7 @@
 //
 //  OpenGL Hw2opengl widget
 //
+#include <iostream>
 #include "hw2opengl.h"
 #include <QtOpenGL>
 #include <QMessageBox>
@@ -12,6 +13,8 @@
 #define Sin(th) sin(3.1415926/180*(th))
 #include <QVector3D>
 #include "noise.h"
+
+using namespace std;
 
 //
 //  Draw vertex in polar coordinates
@@ -52,21 +55,27 @@ static void ball(double x,double y,double z,double r)
 Hw2opengl::Hw2opengl(QWidget* parent)
     : QGLWidget(parent)
 {
-   mode = 0;
-   init  = false;
-   mouse = false;
-   asp = 1;
-   dim = 3;
-   fov = 0;
-   th = ph = 0;
-   x0 = y0 = 0;
-   z0 = 1;
-   zh = 0;
-   perlin = new Noise();
+    cout << "Started to construct Hw2opengl" << endl;
+
+    mode = 0;
+    init  = false;
+    mouse = false;
+    asp = 1;
+    dim = 3;
+    fov = 0;
+    th = ph = 0;
+    x0 = y0 = 0;
+    z0 = 1;
+    zh = 0;
+    perlin = new Noise();
+    noise3DTexSize = 128;
+    noise3DTexName = 0;
+    GenerateNoiseTexture();
 }
 
 void Hw2opengl::GenerateNoiseTexture()
 {
+    cout << "Started to generate noise" << endl;
     int f, i, j, k, inc;
     int startFrequency = 4;
     int numOctaves = 4;
@@ -75,10 +84,6 @@ void Hw2opengl::GenerateNoiseTexture()
     int frequency = startFrequency;
     GLubyte *ptr;
     float amp = 0.5;
-    int noise3DTexSize = 128;
-    GLuint noise3DTexName = 0;
-    GLubyte *noise3DTexPtr;
-
     noise3DTexPtr = (GLubyte *) malloc(noise3DTexSize * noise3DTexSize * noise3DTexSize * 4);
 
     for (f = 0, inc = 0; f < numOctaves; ++f, frequency *= 2, ++inc, amp *= 0.5)
@@ -101,6 +106,38 @@ void Hw2opengl::GenerateNoiseTexture()
             }
         }
     }
+
+    cout << "Done generating noise" << endl;
+}
+
+void Hw2opengl::Init3DNoiseTexture()
+{
+    cout << "Started to export noise to hardware" << endl;
+    isValid() ? cout << "gl context exists" << endl : Fatal("gl context not created!");
+
+    GLuint texID = 0;
+    glGenTextures(1, &texID);
+    //glGenTextures(1, &noise3DTexName);
+    cout << "a";
+
+    gl.glActiveTexture(GL_TEXTURE1);
+    cout << "b";
+    glBindTexture(GL_TEXTURE_3D, noise3DTexName);
+    cout << "c";
+    glTexParameterf(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    cout << "d";
+    glTexParameterf(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    cout << "e";
+    glTexParameterf(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+    cout << "f";
+    glTexParameterf(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    cout << "g";
+    glTexParameterf(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    cout << "h";
+
+    gl.glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, noise3DTexSize, noise3DTexSize, noise3DTexSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, noise3DTexPtr);
+
+    cout << "Done exporting noise to hardware" << endl;
 }
 
 //
@@ -195,13 +232,13 @@ void Hw2opengl::initializeGL()
 
    //  Load textures
    QPixmap img(":/pi.png");
-   bindTexture(img,GL_TEXTURE_2D);
+   //bindTexture(img,GL_TEXTURE_2D);
 
    //  Load shaders
    Shader(1,":/ex03a.vert",":/ex03a.frag");
    Shader(2,":/ex03b.vert",":/ex03b.frag");
    Shader(3,":/ex03b.vert",":/ex03c.frag");
-   Shader(4,":/ex03b.vert",":/hw2.frag");
+   Shader(4,":/cloud.vert",":/cloud.frag");
 
    // Cube
    objects.push_back(new Cube());
@@ -237,6 +274,8 @@ void Hw2opengl::initializeGL()
    connect(&timer,SIGNAL(timeout()),this,SLOT(updateGL()));
    timer.start();
    time.start();
+
+   Init3DNoiseTexture();
 }
 
 //
@@ -300,6 +339,13 @@ void Hw2opengl::paintGL()
       QVector3D loc(x0,y0,1/z0);
       shader[mode].setUniformValue("loc",loc);
       shader[mode].setUniformValue("time",t);
+      if (mode == 4)
+      {
+          QVector3D SkyColor = QVector3D(0.0f, 0.0f, 0.8f);
+          QVector3D CloudColor = QVector3D(0.8f, 0.8f, 0.8f);
+          shader[mode].setUniformValue("SkyColor", SkyColor);
+          shader[mode].setUniformValue("CloudColor", CloudColor);
+      }
    }
 
    //  Draw scene

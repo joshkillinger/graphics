@@ -9,5 +9,7 @@
         <file>suzanne.mtl</file>
         <file>pi.png</file>
         <file>hw2.frag</file>
+        <file>cloud.frag</file>
+        <file>cloud.vert</file>
     </qresource>
 </RCC>

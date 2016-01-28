@@ -135,7 +135,6 @@ Noise::Noise()
     int i, j, k;
 
     start = 1;
-    //p = malloc(B + B + 2);
 
     for (i = 0 ; i < B ; i++) {
         p[i] = i;

@@ -6,4 +6,5 @@ SOURCES = Object.cpp Cube.cpp Sphere.cpp Teapot.cpp WaveOBJ.cpp noise.cpp \
     hw2opengl.cpp \
     hw2viewer.cpp
 QT += opengl
+QT += gui
 RESOURCES = hw2.qrc
