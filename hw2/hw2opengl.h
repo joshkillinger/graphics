@@ -27,10 +27,13 @@ private:
    double  dim;       //  Display size
    double  asp;       //  Sceen aspect ratio
    Object* obj;       //  Object
-   QGLShaderProgram shader[4]; //  Shaders
+   QGLShaderProgram shader[5]; //  Shaders
    QVector<Object*> objects;   //  Objects
    QTimer           timer;     //  Timer for animations
    QElapsedTimer    time;      //  Track elapsed time
+   float    lasttime;  //  Time at previous frame
+   float    adjustedtime; //animation time
+   float speed;         //speed of animation, if applicable
 
 public:
    Hw2opengl(QWidget* parent=0);                  //  Constructor
@@ -42,6 +45,7 @@ public slots:
     void setX(double X);                   //  Slot to set X position
     void setY(double Y);                   //  Slot to set Y position
     void setZoom(double Z);                //  Slot to set Zoom level
+    void setSpeed(double s);               //  Slot to set speed
     void setLightMove(bool on);            //  Slot to set light movement
     void reset();                          //  Reset view
 signals:

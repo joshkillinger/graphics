@@ -24,6 +24,7 @@ Hw2viewer::Hw2viewer()
    shader->addItem("Stored");
    shader->addItem("Brick");
    shader->addItem("Mandelbrot");
+   shader->addItem("Rings");
 
    //  Select projection
    QComboBox* projection = new QComboBox();
@@ -44,6 +45,10 @@ Hw2viewer::Hw2viewer()
    Ypos->setRange(-100,100);Ypos->setDecimals(6);Ypos->setSingleStep(0.1);
    Zpos->setRange(0,100);
 
+   Speed = new QDoubleSpinBox();
+   Speed->setRange(-10,10);Speed->setDecimals(1);Speed->setSingleStep(0.1);
+   Speed->setValue(1.0);
+
    //  View angle and zoom
    QLabel* angles = new QLabel();
    QLabel* zoom  = new QLabel();
@@ -58,7 +63,7 @@ Hw2viewer::Hw2viewer()
 
    //  Set layout of child widgets
    QGridLayout* layout = new QGridLayout;
-   layout->addWidget(ogl,0,0,11,1);
+   layout->addWidget(ogl,0,0,12,1);
    layout->addWidget(new QLabel("Shader"),0,1);
    layout->addWidget(shader,0,2);
    layout->addWidget(new QLabel("Projection"),1,1);
@@ -71,18 +76,20 @@ Hw2viewer::Hw2viewer()
    layout->addWidget(Ypos,4,2);
    layout->addWidget(new QLabel("Zoom Level"),5,1);
    layout->addWidget(Zpos,5,2);
-   layout->addWidget(new QLabel("Angles"),6,1);
-   layout->addWidget(angles,6,2);
-   layout->addWidget(new QLabel("Zoom"),7,1);
-   layout->addWidget(zoom,7,2);
-   layout->addWidget(new QLabel("Light"),8,1);
-   layout->addWidget(light,8,2);
-   layout->addWidget(rst,10,1);
-   layout->addWidget(quit,10,2);
+   layout->addWidget(new QLabel("Animation Speed"),6,1);
+   layout->addWidget(Speed, 6, 2);
+   layout->addWidget(new QLabel("Angles"),7,1);
+   layout->addWidget(angles,7,2);
+   layout->addWidget(new QLabel("Zoom"),8,1);
+   layout->addWidget(zoom,8,2);
+   layout->addWidget(new QLabel("Light"),9,1);
+   layout->addWidget(light,9,2);
+   layout->addWidget(rst,11,1);
+   layout->addWidget(quit,11,2);
    //  Manage resizing
    layout->setColumnStretch(0,100);
    layout->setColumnMinimumWidth(0,100);
-   layout->setRowStretch(9,100);
+   layout->setRowStretch(10,100);
    setLayout(layout);
 
    //  Connect valueChanged() signals to ogl
@@ -92,6 +99,7 @@ Hw2viewer::Hw2viewer()
    connect(Xpos,SIGNAL(valueChanged(double)) , ogl,SLOT(setX(double)));
    connect(Ypos,SIGNAL(valueChanged(double)) , ogl,SLOT(setY(double)));
    connect(Zpos,SIGNAL(valueChanged(int)) , this,SLOT(izoom(int)));
+   connect(Speed,SIGNAL(valueChanged(double)) , ogl,SLOT(setSpeed(double)));
    //  Connect angles() and zoom() signal to labels
    //  Connect angles() and zoom() signal to labels
    connect(ogl,SIGNAL(angles(QString)) , angles,SLOT(setText(QString)));
@@ -111,6 +119,7 @@ void Hw2viewer::reset()
    Xpos->setValue(0);
    Ypos->setValue(0);
    Zpos->setValue(0);
+   Speed->setValue(1);
    ogl->reset();
 }
 

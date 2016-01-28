@@ -13,6 +13,7 @@ private:
    QDoubleSpinBox* Xpos;
    QDoubleSpinBox* Ypos;
    QSlider*        Zpos;
+   QDoubleSpinBox* Speed;
    QPushButton*    light;
    Hw2opengl*     ogl;
 private slots:

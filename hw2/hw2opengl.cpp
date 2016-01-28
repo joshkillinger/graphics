@@ -61,6 +61,7 @@ Hw2opengl::Hw2opengl(QWidget* parent)
    x0 = y0 = 0;
    z0 = 1;
    zh = 0;
+   speed = 1.0;
 }
 
 //
@@ -125,6 +126,14 @@ void Hw2opengl::setZoom(double Z)
 }
 
 //
+//  Set Speed
+//
+void Hw2opengl::setSpeed(double s)
+{
+   speed = s;
+}
+
+//
 //  Set projection
 //
 void Hw2opengl::setPerspective(int on)
@@ -161,6 +170,7 @@ void Hw2opengl::initializeGL()
    Shader(1,":/ex03a.vert",":/ex03a.frag");
    Shader(2,":/ex03b.vert",":/ex03b.frag");
    Shader(3,":/ex03b.vert",":/ex03c.frag");
+   Shader(4,":/ex03b.vert",":/rings.frag");
 
    // Cube
    objects.push_back(new Cube());
@@ -196,6 +206,8 @@ void Hw2opengl::initializeGL()
    connect(&timer,SIGNAL(timeout()),this,SLOT(updateGL()));
    timer.start();
    time.start();
+   lasttime = time.elapsed();
+   adjustedtime = lasttime;
 }
 
 //
@@ -218,6 +230,9 @@ void Hw2opengl::paintGL()
 {
    //  Wall time (seconds)
    float t = 0.001*time.elapsed();
+   adjustedtime += ((t - lasttime) * speed);
+   lasttime = t;
+
    if (move) zh = fmod(90*t,360);
 
    //  Clear screen and Z-buffer
@@ -258,7 +273,7 @@ void Hw2opengl::paintGL()
       //  Dimensions
       QVector3D loc(x0,y0,1/z0);
       shader[mode].setUniformValue("loc",loc);
-      shader[mode].setUniformValue("time",t);
+      shader[mode].setUniformValue("time",adjustedtime);
    }
 
    //  Draw scene
