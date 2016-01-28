@@ -32,7 +32,7 @@ private:
    QTimer           timer;     //  Timer for animations
    QElapsedTimer    time;      //  Track elapsed time
    float    lasttime;  //  Time at previous frame
-   float    adjustedtime; //animation time
+   float    adjustedtime; //animation time (scaled)
    float speed;         //speed of animation, if applicable
 
 public:

@@ -12,9 +12,11 @@ uniform float time;
 
 void main()
 {
+    //square distance means the rings get smaller as we get farther from center, multiply by 8 to make it a bit more interesting to look at
     float sqrdist = ((ModelPos.x*ModelPos.x) + (ModelPos.y*ModelPos.y))*8.0;
+    //add time to sqrdist to get an animated wave function, shifted into the 0-1 range
     float intensity = (sin(sqrdist + time) + 1.0) / 2.0;
-    //  Interpolate color (0 or 1 gives sharp transition)
+    //  Interpolate colors
     vec3 color  = mix(ColorA, ColorB, intensity);
     //  Adjust color intensity for lighting (interpolated from vertex shader values)
     color *= LightIntensity;

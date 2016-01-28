@@ -230,6 +230,7 @@ void Hw2opengl::paintGL()
 {
    //  Wall time (seconds)
    float t = 0.001*time.elapsed();
+   //keep track of the scaled time relative to the last frame, for smoothness purposes when changing speed
    adjustedtime += ((t - lasttime) * speed);
    lasttime = t;
 
