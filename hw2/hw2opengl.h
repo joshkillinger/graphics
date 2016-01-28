@@ -9,7 +9,6 @@
 #include <QString>
 #include <QVector>
 #include "Object.h"
-#include "noise.h"
 
 class Hw2opengl : public QGLWidget
 {
@@ -32,7 +31,6 @@ private:
    QVector<Object*> objects;   //  Objects
    QTimer           timer;     //  Timer for animations
    QElapsedTimer    time;      //  Track elapsed time
-   Noise*  perlin;     //  Perlin Noise gradient generator
 
 public:
    Hw2opengl(QWidget* parent=0);                  //  Constructor
@@ -61,7 +59,6 @@ private:
    void Fatal(QString message);            //  Error handler
    void Projection();                      //  Update projection
    void Shader(int k,QString vert,QString frag);  //  Create shader
-   void GenerateNoiseTexture();
 };
 
 #endif
