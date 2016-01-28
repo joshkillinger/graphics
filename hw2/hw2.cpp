@@ -8,16 +8,11 @@
 #include <QApplication>
 #include "hw2viewer.h"
 
-#include <iostream>
-
-using namespace std;
-
 //
 //  Main function
 //
 int main(int argc, char *argv[])
 {
-    cout << "Launched app" << endl;
    //  Create the application
    QApplication app(argc,argv);
    //  Create and show view widget

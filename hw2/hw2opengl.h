@@ -6,7 +6,6 @@
 #define EX03OPENGL_H
 
 #include <QtOpenGL>
-#include <QOpenGLFunctions_2_0>
 #include <QString>
 #include <QVector>
 #include "Object.h"
@@ -16,34 +15,28 @@ class Hw2opengl : public QGLWidget
 {
 Q_OBJECT
 private:
-    bool    init;      //  Initialized
-    bool    move;      //  Light animation
-    float   zh;        //  Light position
-    float   x0,y0;     //  Object center
-    float   z0;        //  Zoom
-    int     mode;      //  Display mode
-    int     th,ph;     //  Display angles
-    bool    mouse;     //  Mouse pressed
-    QPoint  pos;       //  Mouse position
-    int     fov;       //  Field of view
-    double  dim;       //  Display size
-    double  asp;       //  Sceen aspect ratio
-    Object* obj;       //  Object
-    QGLShaderProgram shader[5]; //  Shaders
-    QVector<Object*> objects;   //  Objects
-    QTimer           timer;     //  Timer for animations
-    QElapsedTimer    time;      //  Track elapsed time
-    QOpenGLFunctions_2_0 gl;
-
-    Noise*  perlin;          //  Perlin Noise gradient generator
-    int noise3DTexSize;      //
-    GLubyte *noise3DTexPtr;  //
+   bool    init;      //  Initialized
+   bool    move;      //  Light animation
+   float   zh;        //  Light position
+   float   x0,y0;     //  Object center
+   float   z0;        //  Zoom
+   int     mode;      //  Display mode
+   int     th,ph;     //  Display angles
+   bool    mouse;     //  Mouse pressed
+   QPoint  pos;       //  Mouse position
+   int     fov;       //  Field of view
+   double  dim;       //  Display size
+   double  asp;       //  Sceen aspect ratio
+   Object* obj;       //  Object
+   QGLShaderProgram shader[5]; //  Shaders
+   QVector<Object*> objects;   //  Objects
+   QTimer           timer;     //  Timer for animations
+   QElapsedTimer    time;      //  Track elapsed time
+   Noise*  perlin;     //  Perlin Noise gradient generator
 
 public:
-    GLuint noise3DTexName;   //
-    Hw2opengl(QWidget* parent=0);                  //  Constructor
-    QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
-
+   Hw2opengl(QWidget* parent=0);                  //  Constructor
+   QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
 public slots:
     void setShader(int sel);               //  Slot to set shader
     void setPerspective(int on);           //  Slot to set projection type
@@ -69,7 +62,6 @@ private:
    void Projection();                      //  Update projection
    void Shader(int k,QString vert,QString frag);  //  Create shader
    void GenerateNoiseTexture();
-   void Init3DNoiseTexture();
 };
 
 #endif
