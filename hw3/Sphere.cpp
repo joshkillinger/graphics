@@ -12,8 +12,28 @@
 //
 Sphere::Sphere(int n)
 {
-   sr = 1;
-   inc = (n>0) ? n : 1;
+    sr = 1;
+    inc = (n>0) ? n : 1;
+
+    //  Start new displaylist
+    list = glGenLists(1);
+    glNewList(list,GL_COMPILE);
+
+    //  Bands of latitude
+    float dh = 90.0/inc;
+    for (int i=-inc;i<inc;i++)
+    {
+      float ph = i*dh;
+      glBegin(GL_QUAD_STRIP);
+      for (int j=0;j<=inc;j++)
+      {
+         float th = ph*dh;
+         Vertex(th,ph);
+         Vertex(th,ph+dh);
+      }
+      glEnd();
+    }
+    glEndList();
 }
 
 //
@@ -27,7 +47,7 @@ void Sphere::scale(float r)
 //
 //  Draw vertex in polar coordinates with normal
 //
-static void Vertex(float th,float ph)
+void Sphere::Vertex(float th,float ph)
 {
    float s = th/360;
    float t = ph/180+0.5;
@@ -46,27 +66,16 @@ static void Vertex(float th,float ph)
 //
 void Sphere::display()
 {
-   //  Save transformation
-   glPushMatrix();
-   //  Offset, scale, rotate and color
-   setTransform(sr,sr,sr);
-   setColor();
-   EnableTex();
-   //  Bands of latitude
-   float dh = 90.0/inc;
-   for (int i=-inc;i<inc;i++)
-   {
-      float ph = i*dh;
-      glBegin(GL_QUAD_STRIP);
-      for (int j=0;j<=inc;j++)
-      {
-         float th = ph*dh;
-         Vertex(th,ph);
-         Vertex(th,ph+dh);
-      }
-      glEnd();
-   }
-   DisableTex();
-   //  Undo transofrmations
-   glPopMatrix();
+    //  Save transformation
+    glPushMatrix();
+    //  Offset, scale, rotate and color
+    setTransform(sr,sr,sr);
+    setColor();
+    EnableTex();
+
+    glCallList(list);
+
+    DisableTex();
+    //  Undo transofrmations
+    glPopMatrix();
 }

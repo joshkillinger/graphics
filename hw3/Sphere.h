@@ -13,10 +13,12 @@ class Sphere: public Object
 private:
    int   inc;  //  Increment
    float sr;   //  Radius
+   int   list;            // Display list
 public:
    Sphere(int n);       //  Constuctor
    void scale(float r); //  Set radius
    void display();      //  Render the sphere
+   void Vertex(float th,float ph);
 };
 
 #endif
