@@ -18,12 +18,14 @@ protected:
    float x0,y0,z0;    //  Location
    float th,nx,ny,nz; //  Rotation (angle and axis)
    float r0,g0,b0;    //  Color
+   float sx,sy,sz;    //  Scale
    unsigned int tex;  //  Texture
    Object();          //  Constructor
 public:
    void translate(float x,float y,float z);          //  Set translation
    void texture(QString file);                       //  Set default texture
    void rotate(float th,float dx,float dy,float dz); //  Set rotation
+   void scale(float dx,float dy,float dz);           //  Set scale
    void color(float r,float g,float b);              //  Set color
    virtual void display()=0;                         //  Render the object
    virtual ~Object() {};                             //  Do nothing destructor
@@ -32,6 +34,7 @@ protected:
    void setColor(Color c);
    void setColor(Color a,Color d,Color s,Color e,float Ns);
    void setTransform(float dx,float dy,float dz);
+   void setTransform();
    void EnableTex();
    void DisableTex();
    int  Increment(int n);

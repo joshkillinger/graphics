@@ -13,10 +13,12 @@ private:
    QSlider*     Lpos;
    QSlider*     Zpos;
    QPushButton* light;
-   Hw3opengl*  ogl;
+   Hw3opengl*   ogl;
    QLabel*      fps;
+   QLabel*      verts;
 private slots:
    void lmove();        //  Light movement
+   void divsChanged(int d);
 public:
     Hw3viewer();
 };

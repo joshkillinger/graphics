@@ -9,33 +9,37 @@
 #include <QString>
 #include <QVector>
 #include "Object.h"
+#include "Sphere.h"
 
 class Hw3opengl : public QGLWidget
 {
 Q_OBJECT
 private:
-   bool    init;      //  Initialized
-   bool    move;      //  Light animation
-   float   zh;        //  Light position
-   float   x0,y0;     //  Object center
-   float   z0;        //  Zoom
-   int     mode;      //  Display mode
-   int     th,ph;     //  Display angles
-   bool    mouse;     //  Mouse pressed
-   QPoint  pos;       //  Mouse position
-   int     fov;       //  Field of view
-   double  dim;       //  Display size
-   double  asp;       //  Sceen aspect ratio
-   int     framecount;
-   Object* obj;       //  Object
-   QGLShaderProgram shader[6]; //  Shaders
-   QVector<Object*> objects;   //  Objects
-   QTimer           timer;     //  Timer for animations
-   QTimer           frameTimer;//  Timer for frame count
-   QElapsedTimer    time;      //  Track elapsed time
+    bool    init;       //  Initialized
+    bool    move;       //  Light animation
+    float   zh;         //  Light position
+    float   x0,y0;      //  Object center
+    float   z0;         //  Zoom
+    int     mode;       //  Display mode
+    int     th,ph;      //  Display angles
+    bool    mouse;      //  Mouse pressed
+    QPoint  pos;        //  Mouse position
+    int     fov;        //  Field of view
+    double  dim;        //  Display size
+    double  asp;        //  Sceen aspect ratio
+    int     framecount; //  number of frames so far this second
+    int     divs;       //  used for building spheres
+    Sphere* sphere;
+    Object* obj;        //  Object
+    QGLShaderProgram shader[6]; //  Shaders
+    QVector<Object*> objects;   //  Objects
+    QTimer           timer;     //  Timer for animations
+    QTimer           frameTimer;//  Timer for frame count
+    QElapsedTimer    time;      //  Track elapsed time
 public:
-   Hw3opengl(QWidget* parent=0);                  //  Constructor
-   QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
+    Hw3opengl(QWidget* parent=0);                  //  Constructor
+    QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
+    void setDivs(int d);
 public slots:
     void setShader(int sel);               //  Slot to set shader
     void setPerspective(int on);           //  Slot to set projection type

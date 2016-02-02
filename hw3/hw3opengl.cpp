@@ -7,9 +7,13 @@
 #include "Cube.h"
 #include "WaveOBJ.h"
 #include "Teapot.h"
+#include "Sphere.h"
 #include <math.h>
+#include <iostream>
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
+
+using namespace std;
 
 //
 //  Draw vertex in polar coordinates
@@ -50,16 +54,19 @@ static void ball(double x,double y,double z,double r)
 Hw3opengl::Hw3opengl(QWidget* parent)
     : QGLWidget(parent)
 {
-   mode = 0;
-   init  = false;
-   mouse = false;
-   asp = 1;
-   dim = 3;
-   fov = 55;
-   th = ph = 0;
-   x0 = y0 = 0;
-   z0 = 1;
-   zh = 0;
+    //cerr << "Constructing QGLWidget" << endl;
+
+    mode = 0;
+    init  = false;
+    mouse = false;
+    asp = 1;
+    dim = 3;
+    fov = 55;
+    th = ph = 0;
+    x0 = y0 = 0;
+    z0 = 1;
+    zh = 0;
+    //cerr << "Done constructing QGLWidget" << endl;
 }
 
 //
@@ -134,6 +141,15 @@ void Hw3opengl::setObject(int type)
    //updateGL();
 }
 
+void Hw3opengl::setDivs(int d)
+{
+    divs = d;
+    if (init)
+    {
+        sphere->rebuild(divs);
+    }
+}
+
 //
 //  Initialize
 //
@@ -142,6 +158,7 @@ void Hw3opengl::initializeGL()
    if (init) return;
    init = true;
 
+   //cerr << "Initializing OpenGL" << endl;
 
    //  Load shaders
    Shader(1,"",":/ex04a.frag");
@@ -176,6 +193,11 @@ void Hw3opengl::initializeGL()
       cruiser->color(1,1,0);
       objects.push_back(cruiser);
    }
+
+   sphere = new Sphere(divs);
+   //sphere->scale(0.5);
+   sphere->color(1.0,1.0,1.0);
+   objects.push_back(sphere);
 
    //  Set initial object
    obj = objects[0];

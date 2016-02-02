@@ -3,18 +3,31 @@
 //
 #include "Sphere.h"
 #include <math.h>
+#include <iostream>
 #define M_PI 3.14159265
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
+
+using namespace std;
 
 //
 //  Constructor
 //
 Sphere::Sphere(int n)
 {
-    sr = 1;
-    inc = (n>0) ? n : 1;
+    scale(1);
+    rebuild(n);
+}
 
+void Sphere::rebuild(int divs)
+{
+    if (divs == inc) return;
+
+    //cerr << "building sphere with " << divs << " divs" << endl;
+    inc = (divs>0) ? divs : 1;
+
+    //  clear the old list, if applicable
+    glDeleteLists(list, 1);
     //  Start new displaylist
     list = glGenLists(1);
     glNewList(list,GL_COMPILE);
@@ -34,6 +47,8 @@ Sphere::Sphere(int n)
       glEnd();
     }
     glEndList();
+
+    //cerr << "done building sphere" << endl;
 }
 
 //
@@ -41,7 +56,7 @@ Sphere::Sphere(int n)
 //
 void Sphere::scale(float r)
 {
-   sr = r;
+   Object::scale(r,r,r);
 }
 
 //
@@ -69,13 +84,13 @@ void Sphere::display()
     //  Save transformation
     glPushMatrix();
     //  Offset, scale, rotate and color
-    setTransform(sr,sr,sr);
+    setTransform();
     setColor();
-    EnableTex();
+    //EnableTex();
 
     glCallList(list);
 
-    DisableTex();
+    //DisableTex();
     //  Undo transofrmations
     glPopMatrix();
 }

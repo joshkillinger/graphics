@@ -41,6 +41,17 @@ void Object::rotate(float t,float dx,float dy,float dz)
 }
 
 //
+//  Object rotation
+//
+void Object::scale(float dx,float dy,float dz)
+{
+   sx = dx;
+   sy = dy;
+   sz = dz;
+}
+
+
+//
 //  Object color
 //
 void Object::color(float r,float g,float b)
@@ -58,6 +69,13 @@ void Object::setTransform(float dx,float dy,float dz)
    glTranslated(x0,y0,z0);
    glRotated(th,nx,ny,nz);
    glScaled(dx,dy,dz);
+}
+
+void Object::setTransform()
+{
+   glTranslated(x0,y0,z0);
+   glRotated(th,nx,ny,nz);
+   glScaled(sx,sy,sz);
 }
 
 //
