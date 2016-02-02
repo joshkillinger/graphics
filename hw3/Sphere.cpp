@@ -34,15 +34,15 @@ void Sphere::rebuild(int divs)
 
     //  Bands of latitude
     float dh = 90.0/inc;
-    for (int i=-inc;i<inc;i++)
+    for (float phi=-90.0; phi<=90.0; phi+=dh)
     {
-      float ph = i*dh;
+      //float ph = i*dh;
       glBegin(GL_QUAD_STRIP);
-      for (int j=0;j<=inc;j++)
+      float dw = 180.0/inc;
+      for (float theta=0.0; theta<=360.0; theta+=dw)
       {
-         float th = ph*dh;
-         Vertex(th,ph);
-         Vertex(th,ph+dh);
+         Vertex(theta,phi);
+         Vertex(theta,phi+dh);
       }
       glEnd();
     }
@@ -69,11 +69,20 @@ void Sphere::Vertex(float th,float ph)
    float x = Cos(th)*Cos(ph);
    float y = Sin(th)*Cos(ph);
    float z =         Sin(ph);
+
+   float d = sqrt((x*x) + (y*y) + (z*z));
+   x /= d;
+   y /= d;
+   z /= d;
+
    //  For a sphere at the origin, the position
    //  and normal vectors are the same
    glTexCoord2f(s,t);
    glNormal3f(x,y,z);
    glVertex3f(x,y,z);
+
+   //glVertex3d(Sin(th)*Cos(ph),Cos(th)*Cos(ph),Sin(ph));
+
 }
 
 //
