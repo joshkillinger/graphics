@@ -58,9 +58,11 @@ Hw3viewer::Hw3viewer()
     light = new QPushButton("Animate");
 
     //  Number of Vertices on Sphere
-    QSlider* divs = new QSlider(Qt::Horizontal);
+    QDoubleSpinBox* divs = new QDoubleSpinBox();
     divs->setRange(4,1000);
     divs->setValue(4);
+    divs->setDecimals(0);
+    divs->setSingleStep(1);
     verts = new QLabel();
 
     //  Reset
@@ -113,20 +115,20 @@ Hw3viewer::Hw3viewer()
     connect(light,SIGNAL(pressed()),this,SLOT(lmove()));
     //  Connect quit() signal to qApp::quit()
     connect(quit,SIGNAL(pressed()) , qApp,SLOT(quit()));
-    connect(divs,SIGNAL(valueChanged(int)), this, SLOT(divsChanged(int)));
+    connect(divs,SIGNAL(valueChanged(double)), this, SLOT(divsChanged(double)));
 
 
     divsChanged(divs->value());
 }
 
-void Hw3viewer::divsChanged(int d)
+void Hw3viewer::divsChanged(double d)
 {
     //cerr << "Divs changed" << endl;
 
     int v = d * 2;
     v = v * v;
     verts->setNum(v);
-    ogl->setDivs(d);
+    ogl->setDivs((int)d);
 }
 
 //

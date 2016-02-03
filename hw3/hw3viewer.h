@@ -18,7 +18,7 @@ private:
    QLabel*      verts;
 private slots:
    void lmove();        //  Light movement
-   void divsChanged(int d);
+   void divsChanged(double d);
 public:
     Hw3viewer();
 };
