@@ -34,17 +34,18 @@ void Sphere::rebuild(int divs)
 
     //  Bands of latitude
     float dh = 90.0/inc;
-    for (float phi=-90.0; phi<=90.0; phi+=dh)
+    for (int i = -inc; i <= inc; i++)
     {
-      //float ph = i*dh;
-      glBegin(GL_QUAD_STRIP);
-      float dw = 180.0/inc;
-      for (float theta=0.0; theta<=360.0; theta+=dw)
-      {
-         Vertex(theta,phi);
-         Vertex(theta,phi+dh);
-      }
-      glEnd();
+        float phi = i * dh;
+        glBegin(GL_QUAD_STRIP);
+        float dw = 180.0/inc;
+        for (int j = 0; j <= (inc * 2); j++)
+        {
+            float theta = j * dw;
+            Vertex(theta,phi);
+            Vertex(theta,phi+dh);
+        }
+        glEnd();
     }
     glEndList();
 
@@ -56,7 +57,7 @@ void Sphere::rebuild(int divs)
 //
 void Sphere::scale(float r)
 {
-   Object::scale(r,r,r);
+    Object::scale(r,r,r);
 }
 
 //
@@ -64,25 +65,24 @@ void Sphere::scale(float r)
 //
 void Sphere::Vertex(float th,float ph)
 {
-   float s = th/360;
-   float t = ph/180+0.5;
-   float x = Cos(th)*Cos(ph);
-   float y = Sin(th)*Cos(ph);
-   float z =         Sin(ph);
+    float s = th/360;
+    float t = ph/180+0.5;
+    float x = Cos(th)*Cos(ph);
+    float y = Sin(th)*Cos(ph);
+    float z =         Sin(ph);
 
-   float d = sqrt((x*x) + (y*y) + (z*z));
-   x /= d;
-   y /= d;
-   z /= d;
+    float d = sqrt((x*x) + (y*y) + (z*z));
+    x /= d;
+    y /= d;
+    z /= d;
 
-   //  For a sphere at the origin, the position
-   //  and normal vectors are the same
-   glTexCoord2f(s,t);
-   glNormal3f(x,y,z);
-   glVertex3f(x,y,z);
+    //  For a sphere at the origin, the position
+    //  and normal vectors are the same
+    glTexCoord2f(s,t);
+    glNormal3f(x,y,z);
+    glVertex3f(x,y,z);
 
-   //glVertex3d(Sin(th)*Cos(ph),Cos(th)*Cos(ph),Sin(ph));
-
+    //glVertex3d(Sin(th)*Cos(ph),Cos(th)*Cos(ph),Sin(ph));
 }
 
 //
