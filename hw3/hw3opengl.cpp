@@ -2,6 +2,7 @@
 //  OpenGL Hw3opengl widget
 //
 #include "hw3opengl.h"
+#include <cstdlib>
 #include <QtOpenGL>
 #include <QMessageBox>
 #include "Cube.h"
@@ -9,7 +10,7 @@
 #include "Teapot.h"
 #include "Sphere.h"
 #include <math.h>
-#include <iostream>
+#include <sstream>
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
 
@@ -217,7 +218,9 @@ void Hw3opengl::initializeGL()
 
 void Hw3opengl::frameTimerTicked()
 {
-    emit fps(framecount);
+    QString s = "FPS: ";
+    s = s + QString::number(framecount);
+    emit fps(s);
     framecount = 0;
 }
 

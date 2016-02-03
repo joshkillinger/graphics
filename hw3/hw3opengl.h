@@ -52,7 +52,7 @@ public slots:
 signals:
     void angles(QString text);             //  Signal for view angles
     void light(int);                       //  Light position
-    void fps(int);
+    void fps(QString);
 protected:
     void initializeGL();                   //  Initialize widget
     void resizeGL(int width, int height);  //  Resize widget

@@ -107,7 +107,7 @@ Hw3viewer::Hw3viewer()
     //  Connect angles() and zoom() signal to labels
     connect(ogl,SIGNAL(angles(QString)) , angles,SLOT(setText(QString)));
     connect(ogl,SIGNAL(light(int))      , Lpos,SLOT(setValue(int)));
-    connect(ogl,SIGNAL(fps(int))        , fps,SLOT(setNum(int)));
+    connect(ogl,SIGNAL(fps(QString))        , fps,SLOT(setText(QString)));
     //  Connect reset() and lmove() signals
     connect(rst  ,SIGNAL(pressed()),ogl,SLOT(reset()));
     connect(light,SIGNAL(pressed()),this,SLOT(lmove()));
