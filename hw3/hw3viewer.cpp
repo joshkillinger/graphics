@@ -65,6 +65,8 @@ Hw3viewer::Hw3viewer()
     divs->setSingleStep(1);
     verts = new QLabel();
 
+    pixels = new QLabel();
+
     //  Reset
     QPushButton* rst = new QPushButton("Reset");
     //  Quit
@@ -72,31 +74,34 @@ Hw3viewer::Hw3viewer()
 
     //  Set layout of child widgets
     QGridLayout* layout = new QGridLayout;
-    layout->addWidget(ogl,0,0,10,1);
-    layout->addWidget(new QLabel("Shader"),0,1);
-    layout->addWidget(shader,0,2);
-    layout->addWidget(new QLabel("Projection"),1,1);
-    layout->addWidget(projection,1,2);
-    layout->addWidget(new QLabel("Object"),2,1);
-    layout->addWidget(object,2,2);
-    layout->addWidget(new QLabel("Light Position"),3,1);
-    layout->addWidget(Lpos,3,2);
-    layout->addWidget(new QLabel("Light"),4,1);
-    layout->addWidget(light,4,2);
-    layout->addWidget(new QLabel("Light Elevation"),5,1);
-    layout->addWidget(Zpos,5,2);
-    layout->addWidget(new QLabel("Angles"),6,1);
-    layout->addWidget(angles,6,2);
-    layout->addWidget(new QLabel("Divisions"),7,1);
-    layout->addWidget(divs, 7, 2);
-    layout->addWidget(new QLabel("Vertices:"),8,1);
-    layout->addWidget(verts, 8, 2);
+    layout->addWidget(ogl,0,0,10,2);
+    layout->addWidget(new QLabel("Shader"),0,2);
+    layout->addWidget(shader,0,3);
+    layout->addWidget(new QLabel("Projection"),1,2);
+    layout->addWidget(projection,1,3);
+    layout->addWidget(new QLabel("Object"),2,2);
+    layout->addWidget(object,2,3);
+    layout->addWidget(new QLabel("Light Position"),3,2);
+    layout->addWidget(Lpos,3,3);
+    layout->addWidget(new QLabel("Light"),4,2);
+    layout->addWidget(light,4,3);
+    layout->addWidget(new QLabel("Light Elevation"),5,2);
+    layout->addWidget(Zpos,5,3);
+    layout->addWidget(new QLabel("Angles"),6,2);
+    layout->addWidget(angles,6,3);
+    layout->addWidget(new QLabel("Divisions"),7,2);
+    layout->addWidget(divs, 7, 3);
+    layout->addWidget(new QLabel("Vertices:"),8,2);
+    layout->addWidget(verts, 8, 3);
     layout->addWidget(fps,10,0);
-    layout->addWidget(rst,10,1);
-    layout->addWidget(quit,10,2);
+    layout->addWidget(pixels,10,1);
+    layout->addWidget(rst,10,2);
+    layout->addWidget(quit,10,3);
     //  Manage resizing
-    layout->setColumnStretch(0,100);
-    layout->setColumnMinimumWidth(0,100);
+    layout->setColumnStretch(0,50);
+    layout->setColumnMinimumWidth(0,50);
+    layout->setColumnStretch(1,50);
+    layout->setColumnMinimumWidth(1,50);
     layout->setRowStretch(9,100);
     setLayout(layout);
 
@@ -110,6 +115,7 @@ Hw3viewer::Hw3viewer()
     connect(ogl,SIGNAL(angles(QString)) , angles,SLOT(setText(QString)));
     connect(ogl,SIGNAL(light(int))      , Lpos,SLOT(setValue(int)));
     connect(ogl,SIGNAL(fps(QString))        , fps,SLOT(setText(QString)));
+    connect(ogl,SIGNAL(pixels(QString))     , pixels,SLOT(setText(QString)));
     //  Connect reset() and lmove() signals
     connect(rst  ,SIGNAL(pressed()),ogl,SLOT(reset()));
     connect(light,SIGNAL(pressed()),this,SLOT(lmove()));

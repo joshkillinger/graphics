@@ -53,6 +53,7 @@ signals:
     void angles(QString text);             //  Signal for view angles
     void light(int);                       //  Light position
     void fps(QString);
+    void pixels(QString);
 protected:
     void initializeGL();                   //  Initialize widget
     void resizeGL(int width, int height);  //  Resize widget

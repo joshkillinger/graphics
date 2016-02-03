@@ -235,6 +235,9 @@ void Hw3opengl::resizeGL(int width, int height)
    glViewport(0,0,width,height);
    //  Set projection
    Projection();
+
+   QString p = QString::number(width) + "x" + QString::number(height) + " : " + QString::number(width * height) + " pixels";
+   emit pixels(p);
 }
 
 //

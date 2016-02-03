@@ -16,6 +16,7 @@ private:
    Hw3opengl*   ogl;
    QLabel*      fps;
    QLabel*      verts;
+   QLabel*      pixels;
 private slots:
    void lmove();        //  Light movement
    void divsChanged(double d);
