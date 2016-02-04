@@ -2,7 +2,7 @@
 //  Ex 03:  Procedural Textures
 //  Willem A. (Vlakkies) Schreuder
 //  CSCI 4239/5239 Spring 2016
-//
+//  Modified by Josh Killinger for HW3
 
 #include <QApplication>
 #include "hw3viewer.h"
