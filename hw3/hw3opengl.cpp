@@ -214,14 +214,21 @@ void Hw3opengl::initializeGL()
    frameTimer.setInterval(1000);
    connect(&frameTimer,SIGNAL(timeout()),this,SLOT(frameTimerTicked()));
    frameTimer.start();
+
+   frameDuration.start();
 }
 
 void Hw3opengl::frameTimerTicked()
 {
     QString s = "FPS: ";
-    s = s + QString::number(framecount);
+
+    double time = 1.0 / ((lastframe * .000000001) / framecount);
+
+    s = s + QString::number(time);
+
     emit fps(s);
     framecount = 0;
+    lastframe = 0;
 }
 
 //
@@ -245,9 +252,12 @@ void Hw3opengl::resizeGL(int width, int height)
 //
 void Hw3opengl::paintGL()
 {
+
    //  Wall time (seconds)
    float t = 0.001*time.elapsed();
    if (move) zh = fmod(90*t,360);
+
+   frameDuration.restart();
 
    //  Clear screen and Z-buffer
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -292,7 +302,9 @@ void Hw3opengl::paintGL()
    if (mode) shader[mode].release();
    glDisable(GL_LIGHTING);
    glDisable(GL_DEPTH_TEST);
-   
+
+   lastframe += frameDuration.nsecsElapsed();
+
    //  Emit angles to display
    emit angles(QString::number(th)+","+QString::number(ph));
    //  Emit light angle

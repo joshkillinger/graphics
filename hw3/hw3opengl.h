@@ -36,6 +36,8 @@ private:
     QTimer           timer;     //  Timer for animations
     QTimer           frameTimer;//  Timer for frame count
     QElapsedTimer    time;      //  Track elapsed time
+    QElapsedTimer    frameDuration;
+    int     lastframe;
 public:
     Hw3opengl(QWidget* parent=0);                  //  Constructor
     QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
