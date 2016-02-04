@@ -31,7 +31,7 @@ private:
     int     divs;       //  used for building spheres
     Sphere* sphere;
     Object* obj;        //  Object
-    QGLShaderProgram shader[8]; //  Shaders
+    QGLShaderProgram shader[9]; //  Shaders
     QVector<Object*> objects;   //  Objects
     QTimer           timer;     //  Timer for animations
     QTimer           frameTimer;//  Timer for frame count

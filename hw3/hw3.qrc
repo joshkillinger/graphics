@@ -16,5 +16,6 @@
         <file>pi.png</file>
         <file>ex04ci.vert</file>
         <file>ex04bi.vert</file>
+        <file>ex04bm.vert</file>
     </qresource>
 </RCC>
