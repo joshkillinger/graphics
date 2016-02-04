@@ -164,9 +164,11 @@ void Hw3opengl::initializeGL()
    //  Load shaders
    Shader(1,"",":/ex04a.frag");
    Shader(2,":/ex04b.vert",":/ex04b.frag");
-   Shader(3,":/ex04c.vert",":/ex04c.frag");
-   Shader(4,":/ex04d.vert",":/ex04d.frag");
-   Shader(5,":/ex04e.vert",":/ex04e.frag");
+   Shader(3,":/ex04bi.vert",":/ex04b.frag");
+   Shader(4,":/ex04c.vert",":/ex04c.frag");
+   Shader(5,":/ex04ci.vert",":/ex04c.frag");
+   Shader(6,":/ex04d.vert",":/ex04d.frag");
+   Shader(7,":/ex04e.vert",":/ex04e.frag");
 
    // Cube
    Cube* cube = new Cube();

@@ -28,7 +28,9 @@ Hw3viewer::Hw3viewer()
     shader->addItem("None");
     shader->addItem("Stored");
     shader->addItem("Vertex Blinn");
+    shader->addItem("Vertex Blinn Inline");
     shader->addItem("Vertex Phong");
+    shader->addItem("Vertex Phong Inline");
     shader->addItem("Pixel Blinn");
     shader->addItem("Pixel Phong");
 
