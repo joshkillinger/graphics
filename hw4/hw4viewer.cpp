@@ -21,7 +21,8 @@ Hw4viewer::Hw4viewer()
    //  Select shader
    QComboBox* shader = new QComboBox();
    shader->addItem("Fixed Pipeline");
-   shader->addItem("Programmable Pipeline");
+   shader->addItem("Programmable Pipeline (Basic");
+   shader->addItem("Programmable Pipelin (Adv)");
 
    //  Select projection
    QComboBox* projection = new QComboBox();

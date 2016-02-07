@@ -6,7 +6,9 @@ uniform mat4 ProjectionMatrix;
 
 //  Vertex attributes (input)
 layout(location = 0) in vec4 Vertex;
-layout(location = 1) in vec3 Color;
+layout(location = 1) in vec3 Normal;
+layout(location = 2) in vec3 Color;
+layout(location = 4) in vec2 TexCoord;
 
 //  Output to next shader
 out vec3 FrontColor;

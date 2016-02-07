@@ -196,7 +196,8 @@ void Hw4opengl::initializeGL()
    tex = bindTexture(crate,GL_TEXTURE_2D);
 
    //  Load shaders
-   Shader(shader,":/ex06.vert",":/ex06.frag");
+   Shader(1,":/ex06.vert",":/ex06.frag");
+   Shader(2,":/hw4.vert",":/hw4.frag");
 
    //  Start 100 fps timer connected to updateGL
    move = true;
@@ -316,32 +317,38 @@ void Hw4opengl::paintGL()
       mv.rotate(th,0,1,0);
 
       // Enable shader
-      shader.bind();
+      shader[mode].bind();
       //  Set Modelview and Projection Matrix
-      shader.setUniformValue("ProjectionMatrix",proj);
-      shader.setUniformValue("ModelViewMatrix",mv);
+      shader[mode].setUniformValue("ProjectionMatrix",proj);
+      shader[mode].setUniformValue("ModelViewMatrix",mv);
 
       //  Select cube buffer
       cube_buffer.bind();
       //   Attribute 0: vertex coordinate (vec4) at offset 0
-      shader.enableAttributeArray(0);
-      shader.setAttributeBuffer(0,GL_FLOAT,0,4,12*sizeof(float));
-      //   Attribute 1:  vertex color (vec3) offset 7 floats
-      shader.enableAttributeArray(1);
-      shader.setAttributeBuffer(1,GL_FLOAT,7*sizeof(float),3,12*sizeof(float));
+      shader[mode].enableAttributeArray(0);
+      shader[mode].setAttributeBuffer(0,GL_FLOAT,0,4,12*sizeof(float));
+      //   Attribute 1:  vertex norm (vec3) offset 4 floats
+      shader[mode].enableAttributeArray(1);
+      shader[mode].setAttributeBuffer(1,GL_FLOAT,4*sizeof(float),3,12*sizeof(float));
+      //   Attribute 2:  vertex color (vec3) offset 7 floats
+      shader[mode].enableAttributeArray(2);
+      shader[mode].setAttributeBuffer(2,GL_FLOAT,7*sizeof(float),3,12*sizeof(float));
+      //   Attribute 3:  tex coord (vec1) offset 10 floats
+      shader[mode].enableAttributeArray(3);
+      shader[mode].setAttributeBuffer(3,GL_FLOAT,10*sizeof(float),2,12*sizeof(float));
 
       // Draw the cube
       glDrawArrays(GL_TRIANGLES,0,cube_size);
 
       //  Disable vertex arrays
-      shader.disableAttributeArray(0);
-      shader.disableAttributeArray(1);
+      shader[mode].disableAttributeArray(0);
+      shader[mode].disableAttributeArray(1);
 
       //  Unbind this buffer
       cube_buffer.release();
 
       // Back to fixed pipeline
-      shader.release();
+      shader[mode].release();
    }
 
    //  Axes for reference
@@ -456,15 +463,15 @@ void Hw4opengl::wheelEvent(QWheelEvent* e)
 //
 //  Load shader
 //
-void Hw4opengl::Shader(QGLShaderProgram& shader,QString vert,QString frag)
+void Hw4opengl::Shader(int k,QString vert,QString frag)
 {
    //  Vertex shader
-   if (vert.length() && !shader.addShaderFromSourceFile(QGLShader::Vertex,vert))
-      Fatal("Error compiling "+vert+"\n"+shader.log());
+   if (vert.length() && !shader[k].addShaderFromSourceFile(QGLShader::Vertex,vert))
+      Fatal("Error compiling "+vert+"\n"+shader[k].log());
    //  Fragment shader
-   if (frag.length() && !shader.addShaderFromSourceFile(QGLShader::Fragment,frag))
-      Fatal("Error compiling "+frag+"\n"+shader.log());
+   if (frag.length() && !shader[k].addShaderFromSourceFile(QGLShader::Fragment,frag))
+      Fatal("Error compiling "+frag+"\n"+shader[k].log());
    //  Link
-   if (!shader.link())
-      Fatal("Error linking shader\n"+shader.log());
+   if (!shader[k].link())
+      Fatal("Error linking shader\n"+shader[k].log());
 }

@@ -30,7 +30,7 @@ private:
    unsigned int tex;  //  Textures
    QGLBuffer cube_buffer;     //  Vertex buffer
    QMatrix4x4       proj;     //  Projection matrix
-   QGLShaderProgram shader;   //  Shader
+   QGLShaderProgram shader[3];   //  Shader
    QTimer           timer;    //  Timer for animations
    QElapsedTimer    time;     //  Track elapsed time
 public:
@@ -58,7 +58,7 @@ protected:
 private:
    void Fatal(QString message);            //  Error handler
    void Projection();                      //  Update projection
-   void Shader(QGLShaderProgram& shader,QString vert,QString frag);  //  Create shader
+   void Shader(int k,QString vert,QString frag);  //  Create shader
 };
 
 #endif
