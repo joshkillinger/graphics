@@ -69,7 +69,7 @@ void Hw4opengl::reset()
    dim = 3;
    Projection();
    //  Request redisplay
-   updateGL();
+   //updateGL();
 }
 
 //
@@ -78,7 +78,7 @@ void Hw4opengl::reset()
 void Hw4opengl::setLightMove(bool on)
 {
    move = on;
-   updateGL();
+   //updateGL();
 }
 
 //
@@ -88,7 +88,7 @@ void Hw4opengl::setShader(int sel)
 {
    mode = sel;
    //  Request redisplay
-   updateGL();
+   //updateGL();
 }
 
 //
@@ -98,7 +98,7 @@ void Hw4opengl::setPos(int Zh)
 {
    zh = Zh;
    //  Request redisplay
-   updateGL();
+   //updateGL();
 }
 
 //
@@ -108,7 +108,7 @@ void Hw4opengl::setElev(int Z)
 {
    z0 = 0.02*Z;
    //  Request redisplay
-   updateGL();
+   //updateGL();
 }
 
 //
@@ -119,7 +119,7 @@ void Hw4opengl::setPerspective(int on)
    fov = on ? 55 : 0;
    Projection();
    //  Request redisplay
-   updateGL();
+   //updateGL();
 }
 
 //
@@ -129,7 +129,7 @@ void Hw4opengl::setObject(int type)
 {
    obj = type;
    //  Request redisplay
-   updateGL();
+   //updateGL();
 }
 
 //
@@ -433,7 +433,7 @@ void Hw4opengl::mouseMoveEvent(QMouseEvent* e)
       th = (th+d.x())%360;      //  Translate x movement to azimuth
       ph = (ph+d.y())%360;      //  Translate y movement to elevation
       pos = e->pos();           //  Remember new location
-      updateGL();               //  Request redisplay
+      //updateGL();               //  Request redisplay
    }
 }
 
@@ -450,7 +450,7 @@ void Hw4opengl::wheelEvent(QWheelEvent* e)
       dim -= 0.1;
    //  Request redisplay
    Projection();
-   updateGL();
+   //updateGL();
 }
 
 //
