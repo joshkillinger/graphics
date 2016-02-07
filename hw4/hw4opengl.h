@@ -33,6 +33,7 @@ private:
    QGLShaderProgram shader[3];   //  Shader
    QTimer           timer;    //  Timer for animations
    QElapsedTimer    time;     //  Track elapsed time
+   QPixmap   qtex;
 public:
    Hw4opengl(QWidget* parent=0);                  //  Constructor
    QSize sizeHint() const {return QSize(400,400);} //  Default size of widget

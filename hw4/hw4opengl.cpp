@@ -192,8 +192,8 @@ void Hw4opengl::initializeGL()
    init = true;
 
    // Texture
-   QPixmap crate(":/crate.png");
-   tex = bindTexture(crate,GL_TEXTURE_2D);
+   qtex = QPixmap(":/crate.png");
+   tex = bindTexture(qtex,GL_TEXTURE_2D);
 
    //  Load shaders
    Shader(1,":/ex06.vert",":/ex06.frag");
@@ -235,141 +235,160 @@ void Hw4opengl::resizeGL(int width, int height)
 //
 void Hw4opengl::paintGL()
 {
-   //  Wall time (seconds)
-   float t = 0.001*time.elapsed();
-   if (move) zh = fmod(90*t,360);
+    //  Wall time (seconds)
+    float t = 0.001*time.elapsed();
+    if (move) zh = fmod(90*t,360);
 
-   //  Clear screen and Z-buffer
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   glEnable(GL_DEPTH_TEST);
+    //  Clear screen and Z-buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
 
-   //  Translate intensity to color vectors
-   float Ambient[]  = {0.3,0.3,0.3,1.0};
-   float Diffuse[]  = {0.8,0.8,0.8,1.0};
-   float Specular[] = {1.0,1.0,1.0,1.0};
-   float Position[] = {(float)(3*Cos(zh)),z0,(float)(3*Sin(zh)),1.0};
+    //  Translate intensity to color vectors
+    float Ambient[]  = {0.3,0.3,0.3,1.0};
+    float Diffuse[]  = {0.8,0.8,0.8,1.0};
+    float Specular[] = {1.0,1.0,1.0,1.0};
+    float Position[] = {(float)(3*Cos(zh)),z0,(float)(3*Sin(zh)),1.0};
 
-   //  Draw light position (no lighting yet)
-   glColor3f(1,1,1);
-   ball(Position[0],Position[1],Position[2] , 0.1);
+    //  Draw light position (no lighting yet)
+    glColor3f(1,1,1);
+    ball(Position[0],Position[1],Position[2] , 0.1);
 
-   //  Set view
-   glLoadIdentity();
-   if (fov) glTranslated(0,0,-2*dim);
-   glRotated(ph,1,0,0);
-   glRotated(th,0,1,0);
+    //  Set view
+    glLoadIdentity();
+    if (fov) glTranslated(0,0,-2*dim);
+    glRotated(ph,1,0,0);
+    glRotated(th,0,1,0);
 
-   //  Fixed pipeline
-   if (mode==0)
-   {
-      //  OpenGL should normalize normal vectors
-      glEnable(GL_NORMALIZE);
-      //  Enable lighting
-      glEnable(GL_LIGHTING);
-      //  glColor sets ambient and diffuse color materials
-      glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
-      glEnable(GL_COLOR_MATERIAL);
-      //  Enable light 0
-      glEnable(GL_LIGHT0);
-      //  Set ambient, diffuse, specular components and position of light 0
-      glLightfv(GL_LIGHT0,GL_AMBIENT ,Ambient);
-      glLightfv(GL_LIGHT0,GL_DIFFUSE ,Diffuse);
-      glLightfv(GL_LIGHT0,GL_SPECULAR,Specular);
-      glLightfv(GL_LIGHT0,GL_POSITION,Position);
+    //  Fixed pipeline
+    if (mode==0)
+    {
+        //  OpenGL should normalize normal vectors
+        glEnable(GL_NORMALIZE);
+        //  Enable lighting
+        glEnable(GL_LIGHTING);
+        //  glColor sets ambient and diffuse color materials
+        glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+        glEnable(GL_COLOR_MATERIAL);
+        //  Enable light 0
+        glEnable(GL_LIGHT0);
+        //  Set ambient, diffuse, specular components and position of light 0
+        glLightfv(GL_LIGHT0,GL_AMBIENT ,Ambient);
+        glLightfv(GL_LIGHT0,GL_DIFFUSE ,Diffuse);
+        glLightfv(GL_LIGHT0,GL_SPECULAR,Specular);
+        glLightfv(GL_LIGHT0,GL_POSITION,Position);
 
-      //  Enable textures
-      glEnable(GL_TEXTURE_2D);
-      glBindTexture(GL_TEXTURE_2D,tex);
+        //  Enable textures
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D,tex);
 
-      //  Enabe arrays
-      glEnableClientState(GL_VERTEX_ARRAY);
-      glEnableClientState(GL_NORMAL_ARRAY);
-      glEnableClientState(GL_COLOR_ARRAY);
-      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        //  Enabe arrays
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-      //  Set pointers
-      
-      glVertexPointer  (4,GL_FLOAT,12*sizeof(GLfloat),cube_data);
-      glNormalPointer  (  GL_FLOAT,12*sizeof(GLfloat),cube_data+4);
-      glColorPointer   (3,GL_FLOAT,12*sizeof(GLfloat),cube_data+7);
-      glTexCoordPointer(2,GL_FLOAT,12*sizeof(GLfloat),cube_data+10);
+        //  Set pointers
 
-      //  Draw the cube
-      glDrawArrays(GL_TRIANGLES,0,cube_size);
+        glVertexPointer  (4,GL_FLOAT,12*sizeof(GLfloat),cube_data);
+        glNormalPointer  (  GL_FLOAT,12*sizeof(GLfloat),cube_data+4);
+        glColorPointer   (3,GL_FLOAT,12*sizeof(GLfloat),cube_data+7);
+        glTexCoordPointer(2,GL_FLOAT,12*sizeof(GLfloat),cube_data+10);
 
-      //  Disable arrays
-      glDisableClientState(GL_VERTEX_ARRAY);
-      glDisableClientState(GL_NORMAL_ARRAY);
-      glDisableClientState(GL_COLOR_ARRAY);
-      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        //  Draw the cube
+        glDrawArrays(GL_TRIANGLES,0,cube_size);
 
-      //  Disable textures and lighting
-      glDisable(GL_TEXTURE_2D);
-      glDisable(GL_LIGHTING);
-   }
-   //  OpenGL 4 style shaders
-   else
-   {
-      //  Create Modelview matrix
-      QMatrix4x4 mv;
-      if (fov) mv.translate(0,0,-2*dim);
-      mv.rotate(ph,1,0,0);
-      mv.rotate(th,0,1,0);
+        //  Disable arrays
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_NORMAL_ARRAY);
+        glDisableClientState(GL_COLOR_ARRAY);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-      // Enable shader
-      shader[mode].bind();
-      //  Set Modelview and Projection Matrix
-      shader[mode].setUniformValue("ProjectionMatrix",proj);
-      shader[mode].setUniformValue("ModelViewMatrix",mv);
+        //  Disable textures and lighting
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_LIGHTING);
+    }
+    //  OpenGL 4 style shaders
+    else
+    {
+        //  Create Modelview matrix
+        QMatrix4x4 mv;
+        if (fov) mv.translate(0,0,-2*dim);
+        mv.rotate(ph,1,0,0);
+        mv.rotate(th,0,1,0);
 
-      //  Select cube buffer
-      cube_buffer.bind();
-      //   Attribute 0: vertex coordinate (vec4) at offset 0
-      shader[mode].enableAttributeArray(0);
-      shader[mode].setAttributeBuffer(0,GL_FLOAT,0,4,12*sizeof(float));
-      //   Attribute 1:  vertex norm (vec3) offset 4 floats
-      shader[mode].enableAttributeArray(1);
-      shader[mode].setAttributeBuffer(1,GL_FLOAT,4*sizeof(float),3,12*sizeof(float));
-      //   Attribute 2:  vertex color (vec3) offset 7 floats
-      shader[mode].enableAttributeArray(2);
-      shader[mode].setAttributeBuffer(2,GL_FLOAT,7*sizeof(float),3,12*sizeof(float));
-      //   Attribute 3:  tex coord (vec1) offset 10 floats
-      shader[mode].enableAttributeArray(3);
-      shader[mode].setAttributeBuffer(3,GL_FLOAT,10*sizeof(float),2,12*sizeof(float));
+        QMatrix3x3 norm = mv.normalMatrix();
 
-      // Draw the cube
-      glDrawArrays(GL_TRIANGLES,0,cube_size);
+        // Enable shader
+        shader[mode].bind();
+        //  Set Modelview and Projection Matrix
+        shader[mode].setUniformValue("ProjectionMatrix",proj);
+        shader[mode].setUniformValue("ModelViewMatrix",mv);
+        shader[mode].setUniformValue("NormalMatrix",norm);
 
-      //  Disable vertex arrays
-      shader[mode].disableAttributeArray(0);
-      shader[mode].disableAttributeArray(1);
+        shader[mode].setUniformValue("LightPosition",QVector4D(Position[0], Position[1], Position[2], Position[3]));
+        shader[mode].setUniformValue("LightAmbient",QVector4D(Ambient[0], Ambient[1], Ambient[2], Ambient[3]));
+        shader[mode].setUniformValue("LightDiffuse",QVector4D(Diffuse[0], Diffuse[1], Diffuse[2], Diffuse[3]));
+        shader[mode].setUniformValue("LightSpecular",QVector4D(Specular[0], Specular[1], Specular[2], Specular[3]));
 
-      //  Unbind this buffer
-      cube_buffer.release();
+        shader[mode].setUniformValue("shininess",32.0f);
 
-      // Back to fixed pipeline
-      shader[mode].release();
-   }
+        //shader[mode].setUniformValue("Texture",qtex);
 
-   //  Axes for reference
-   glColor3f(1,1,1);
-   glBegin(GL_LINES);
-   glVertex3f(0,0,0);
-   glVertex3f(2,0,0);
-   glVertex3f(0,0,0);
-   glVertex3f(0,2,0);
-   glVertex3f(0,0,0);
-   glVertex3f(0,0,2);
-   glEnd();
-   glDisable(GL_DEPTH_TEST);
-   renderText(2,0,0,"X");
-   renderText(0,2,0,"Y");
-   renderText(0,0,2,"Z");
-   
-   //  Emit angles to display
-   emit angles(QString::number(th)+","+QString::number(ph));
-   //  Emit light angle
-   emit light((int)zh);
+        //glEnable(GL_TEXTURE_2D);
+        //glBindTexture(GL_TEXTURE_2D, tex);
+
+        //bindTexture(qtex);
+
+        //  Select cube buffer
+        cube_buffer.bind();
+        //   Attribute 0: vertex coordinate (vec4) at offset 0
+        shader[mode].enableAttributeArray(0);
+        shader[mode].setAttributeBuffer(0,GL_FLOAT,0,4,12*sizeof(float));
+        //   Attribute 1:  vertex norm (vec3) offset 4 floats
+        shader[mode].enableAttributeArray(1);
+        shader[mode].setAttributeBuffer(1,GL_FLOAT,4*sizeof(float),3,12*sizeof(float));
+        //   Attribute 2:  vertex color (vec3) offset 7 floats
+        shader[mode].enableAttributeArray(2);
+        shader[mode].setAttributeBuffer(2,GL_FLOAT,7*sizeof(float),3,12*sizeof(float));
+        //   Attribute 3:  tex coord (vec1) offset 10 floats
+        shader[mode].enableAttributeArray(3);
+        shader[mode].setAttributeBuffer(3,GL_FLOAT,10*sizeof(float),2,12*sizeof(float));
+
+        // Draw the cube
+        glDrawArrays(GL_TRIANGLES,0,cube_size);
+
+        //  Disable vertex arrays
+        shader[mode].disableAttributeArray(0);
+        shader[mode].disableAttributeArray(1);
+
+        //  Unbind this buffer
+        cube_buffer.release();
+
+        //glDisable(GL_TEXTURE_2D);
+
+        // Back to fixed pipeline
+        shader[mode].release();
+    }
+
+    //  Axes for reference
+    glColor3f(1,1,1);
+    glBegin(GL_LINES);
+    glVertex3f(0,0,0);
+    glVertex3f(2,0,0);
+    glVertex3f(0,0,0);
+    glVertex3f(0,2,0);
+    glVertex3f(0,0,0);
+    glVertex3f(0,0,2);
+    glEnd();
+    glDisable(GL_DEPTH_TEST);
+    renderText(2,0,0,"X");
+    renderText(0,2,0,"Y");
+    renderText(0,0,2,"Z");
+
+    //  Emit angles to display
+    emit angles(QString::number(th)+","+QString::number(ph));
+    //  Emit light angle
+    emit light((int)zh);
 }
 
 //
