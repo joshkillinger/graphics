@@ -24,11 +24,11 @@ vec4 phong()
    vec3 L = normalize(Light);
 
    //  Emission and ambient color
-   vec4 color = Ambient;
+   vec4 color = vec4(0);//Ambient;
 
    //  Diffuse light is cosine of light and normal vectors
    float Id = dot(L,N);
-   if (Id>0.0)
+   //if (Id>0.0)
    {
       //  Add diffuse
       color += Id*LightDiffuse;

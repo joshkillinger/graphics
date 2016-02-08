@@ -327,18 +327,18 @@ void Hw4opengl::paintGL()
     //  OpenGL 4 style shaders
     else
     {
+        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
+
         //  Create Modelview matrix
         QMatrix4x4 mv;
         if (fov) mv.translate(0,0,-2*dim);
         mv.rotate(ph,1,0,0);
         mv.rotate(th,0,1,0);
 
-        const float *f = mv.constData();
-        PrintQMatrix(f, 4, "ModelViewMatrix");
+        PrintQMatrix(mv.constData(), 4, "ModelViewMatrix");
 
         QMatrix3x3 norm = mv.normalMatrix();
-        f = norm.constData();
-        PrintQMatrix(f, 3, "NormalMatrix");
+        PrintQMatrix(norm.constData(), 3, "NormalMatrix");
 
         // Enable shader
         shader[mode].bind();
@@ -347,7 +347,10 @@ void Hw4opengl::paintGL()
         shader[mode].setUniformValue("ModelViewMatrix",mv);
         shader[mode].setUniformValue("NormalMatrix",norm);
 
-        shader[mode].setUniformValue("LightPosition",QVector4D(Position[0], Position[1], Position[2], Position[3]));
+        QVector4D LightPosition = QVector4D(Position[0], Position[1], Position[2], Position[3]);
+        LightPosition = mv * LightPosition;
+
+        shader[mode].setUniformValue("LightPosition",LightPosition);
         shader[mode].setUniformValue("LightAmbient",QVector4D(Ambient[0], Ambient[1], Ambient[2], Ambient[3]));
         shader[mode].setUniformValue("LightDiffuse",QVector4D(Diffuse[0], Diffuse[1], Diffuse[2], Diffuse[3]));
         shader[mode].setUniformValue("LightSpecular",QVector4D(Specular[0], Specular[1], Specular[2], Specular[3]));
