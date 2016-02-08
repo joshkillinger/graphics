@@ -5,8 +5,11 @@
 #include <QtOpenGL>
 #include <QMessageBox>
 #include <math.h>
+#include <iostream>
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
+
+using namespace std;
 
 //
 //  Draw vertex in polar coordinates
@@ -217,6 +220,20 @@ void Hw4opengl::initializeGL()
    cube_buffer.release();
 }
 
+static void PrintQMatrix(const float *f, int size, QString label)
+{
+    cout << label.toStdString() << " = " << endl;
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            cout << f[(i * size) + j] << ", ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
 //
 //  Set projection when window is resized
 //
@@ -316,7 +333,12 @@ void Hw4opengl::paintGL()
         mv.rotate(ph,1,0,0);
         mv.rotate(th,0,1,0);
 
+        const float *f = mv.constData();
+        PrintQMatrix(f, 4, "ModelViewMatrix");
+
         QMatrix3x3 norm = mv.normalMatrix();
+        f = norm.constData();
+        PrintQMatrix(f, 3, "NormalMatrix");
 
         // Enable shader
         shader[mode].bind();
