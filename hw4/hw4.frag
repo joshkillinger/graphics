@@ -33,12 +33,12 @@ vec4 phong()
       //  Add diffuse
       color += Id*LightDiffuse;
       //  R is the reflected light vector R = 2(L.N)N - L
-      //vec3 R = reflect(-L,N);
+      vec3 R = reflect(-L,N);
       //  V is the view vector (eye vector)
-      //vec3 V = normalize(View);
+      vec3 V = normalize(View);
       //  Specular is cosine of reflected and view vectors
-      //float Is = dot(R,V);
-      //if (Is>0.0) color += pow(Is,shininess)*LightSpecular;
+      float Is = dot(R,V);
+      if (Is>0.0) color += pow(Is,shininess)*LightSpecular;
    }
 
    //  Return sum of color components
