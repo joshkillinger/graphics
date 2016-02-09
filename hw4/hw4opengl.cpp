@@ -335,10 +335,10 @@ void Hw4opengl::paintGL()
         mv.rotate(ph,1,0,0);
         mv.rotate(th,0,1,0);
 
-        PrintQMatrix(mv.constData(), 4, "ModelViewMatrix");
+        //PrintQMatrix(mv.constData(), 4, "ModelViewMatrix");
 
         QMatrix3x3 norm = mv.normalMatrix();
-        PrintQMatrix(norm.constData(), 3, "NormalMatrix");
+        //PrintQMatrix(norm.constData(), 3, "NormalMatrix");
 
         // Enable shader
         shader[mode].bind();
@@ -357,7 +357,8 @@ void Hw4opengl::paintGL()
 
         shader[mode].setUniformValue("shininess",32.0f);
 
-        //shader[mode].setUniformValue("Texture",qtex);
+        tex = bindTexture(qtex,GL_TEXTURE_2D);
+        shader[mode].setUniformValue("Texture",tex);
 
         //glEnable(GL_TEXTURE_2D);
         //glBindTexture(GL_TEXTURE_2D, tex);
@@ -385,6 +386,8 @@ void Hw4opengl::paintGL()
         //  Disable vertex arrays
         shader[mode].disableAttributeArray(0);
         shader[mode].disableAttributeArray(1);
+        shader[mode].disableAttributeArray(2);
+        shader[mode].disableAttributeArray(3);
 
         //  Unbind this buffer
         cube_buffer.release();
