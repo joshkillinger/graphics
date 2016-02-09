@@ -327,7 +327,7 @@ void Hw4opengl::paintGL()
     //  OpenGL 4 style shaders
     else
     {
-        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
+        //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
 
         //  Create Modelview matrix
         QMatrix4x4 mv;

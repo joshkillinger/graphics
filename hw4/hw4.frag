@@ -24,11 +24,11 @@ vec4 phong()
    vec3 L = normalize(Light);
 
    //  Emission and ambient color
-   vec4 color = vec4(0);//Ambient;
+   vec4 color = Ambient;
 
    //  Diffuse light is cosine of light and normal vectors
    float Id = dot(L,N);
-   //if (Id>0.0)
+   if (Id>0.0)
    {
       //  Add diffuse
       color += Id*LightDiffuse;
@@ -50,5 +50,6 @@ void main()
    //Fragcolor = vec4(FrontColor,1.0) * texture(tex, vs_tex_coord);
    //Fragcolor = texture(tex, vs_tex_coord);
    Fragcolor = phong();
+   //Fragcolor = Ambient;
    //Fragcolor = phong() * texture(Texture, vs_tex_coord);
 }
