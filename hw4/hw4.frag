@@ -48,8 +48,8 @@ vec4 phong()
 void main()
 {
    //Fragcolor = vec4(FrontColor,1.0) * texture(tex, vs_tex_coord);
-   Fragcolor = texture(Texture, vs_tex_coord);
+   //Fragcolor = texture(Texture, vs_tex_coord);
    //Fragcolor = phong();
    //Fragcolor = Ambient;
-   //Fragcolor = phong() * texture(Texture, vs_tex_coord);
+   Fragcolor = phong() * texture(Texture, vs_tex_coord);
 }
