@@ -358,7 +358,8 @@ void Hw4opengl::paintGL()
         shader[mode].setUniformValue("shininess",32.0f);
 
         tex = bindTexture(qtex,GL_TEXTURE_2D);
-        shader[mode].setUniformValue("Texture",tex);
+        //cout << "tex = " << tex << endl;
+        shader[mode].setUniformValue("Texture",0);
 
         //glEnable(GL_TEXTURE_2D);
         //glBindTexture(GL_TEXTURE_2D, tex);

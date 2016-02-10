@@ -12,7 +12,7 @@ uniform vec4 LightAmbient;
 layout(location = 0) in vec4 Vertex;
 layout(location = 1) in vec3 VNormal;
 layout(location = 2) in vec3 Color;
-layout(location = 4) in vec2 TexCoord;
+layout(location = 3) in vec2 TexCoord;
 
 //  Output to next shader
 out vec3 View;
