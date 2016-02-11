@@ -8,6 +8,7 @@ I used Ex06 as the starting point for this assignment. I extended the provided s
 Once I achieved the minimum specification for the assignment, I started looking into structures as shader parameters.
 It turns out that structures can be used fairly easily as uniforms, but can't be used as in or out parameters.
 Even still, they do clean up the code and make it more maintainable and readable.
+My shader is listed in the GUI as "Programmable Pipeline (Adv)".
 
 I spent roughly 10 hours on this assignment.
 

@@ -327,18 +327,13 @@ void Hw4opengl::paintGL()
     //  OpenGL 4 style shaders
     else
     {
-        //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
-
         //  Create Modelview matrix
         QMatrix4x4 mv;
         if (fov) mv.translate(0,0,-2*dim);
         mv.rotate(ph,1,0,0);
         mv.rotate(th,0,1,0);
 
-        //PrintQMatrix(mv.constData(), 4, "ModelViewMatrix");
-
         QMatrix3x3 norm = mv.normalMatrix();
-        //PrintQMatrix(norm.constData(), 3, "NormalMatrix");
 
         // Enable shader
         shader[mode].bind();
@@ -353,6 +348,7 @@ void Hw4opengl::paintGL()
         Light.Diffuse = QVector4D(Diffuse[0], Diffuse[1], Diffuse[2], Diffuse[3]);
         Light.Specular = QVector4D(Specular[0], Specular[1], Specular[2], Specular[3]);
 
+        //move the light by the view matrix (model matrix is the identity matrix in this case)
         Light.Position = mv * Light.Position;
 
         shader[mode].setUniformValue("Light.Position",Light.Position);
@@ -363,13 +359,7 @@ void Hw4opengl::paintGL()
         shader[mode].setUniformValue("shininess",32.0f);
 
         tex = bindTexture(qtex,GL_TEXTURE_2D);
-        //cout << "tex = " << tex << endl;
         shader[mode].setUniformValue("Texture",0);
-
-        //glEnable(GL_TEXTURE_2D);
-        //glBindTexture(GL_TEXTURE_2D, tex);
-
-        //bindTexture(qtex);
 
         //  Select cube buffer
         cube_buffer.bind();
@@ -382,7 +372,7 @@ void Hw4opengl::paintGL()
         //   Attribute 2:  vertex color (vec3) offset 7 floats
         shader[mode].enableAttributeArray(2);
         shader[mode].setAttributeBuffer(2,GL_FLOAT,7*sizeof(float),3,12*sizeof(float));
-        //   Attribute 3:  tex coord (vec1) offset 10 floats
+        //   Attribute 3:  tex coord (vec2) offset 10 floats
         shader[mode].enableAttributeArray(3);
         shader[mode].setAttributeBuffer(3,GL_FLOAT,10*sizeof(float),2,12*sizeof(float));
 
@@ -397,8 +387,6 @@ void Hw4opengl::paintGL()
 
         //  Unbind this buffer
         cube_buffer.release();
-
-        //glDisable(GL_TEXTURE_2D);
 
         // Back to fixed pipeline
         shader[mode].release();

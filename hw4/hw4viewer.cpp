@@ -13,7 +13,7 @@
 Hw4viewer::Hw4viewer()
 {
    //  Set window title
-   setWindowTitle(tr("Hw4:  OpenGL 4"));
+   setWindowTitle(tr("Josh Killinger: Hw4"));
 
    //  Create new Triangle widget
    ogl = new Hw4opengl;
@@ -22,7 +22,7 @@ Hw4viewer::Hw4viewer()
    QComboBox* shader = new QComboBox();
    shader->addItem("Fixed Pipeline");
    shader->addItem("Programmable Pipeline (Basic");
-   shader->addItem("Programmable Pipelin (Adv)");
+   shader->addItem("Programmable Pipeline (Adv)");
 
    //  Select projection
    QComboBox* projection = new QComboBox();
