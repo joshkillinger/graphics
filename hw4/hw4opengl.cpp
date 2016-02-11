@@ -347,13 +347,18 @@ void Hw4opengl::paintGL()
         shader[mode].setUniformValue("ModelViewMatrix",mv);
         shader[mode].setUniformValue("NormalMatrix",norm);
 
-        QVector4D LightPosition = QVector4D(Position[0], Position[1], Position[2], Position[3]);
-        LightPosition = mv * LightPosition;
+        struct light Light;
+        Light.Position = QVector4D(Position[0], Position[1], Position[2], Position[3]);
+        Light.Ambient = QVector4D(Ambient[0], Ambient[1], Ambient[2], Ambient[3]);
+        Light.Diffuse = QVector4D(Diffuse[0], Diffuse[1], Diffuse[2], Diffuse[3]);
+        Light.Specular = QVector4D(Specular[0], Specular[1], Specular[2], Specular[3]);
 
-        shader[mode].setUniformValue("LightPosition",LightPosition);
-        shader[mode].setUniformValue("LightAmbient",QVector4D(Ambient[0], Ambient[1], Ambient[2], Ambient[3]));
-        shader[mode].setUniformValue("LightDiffuse",QVector4D(Diffuse[0], Diffuse[1], Diffuse[2], Diffuse[3]));
-        shader[mode].setUniformValue("LightSpecular",QVector4D(Specular[0], Specular[1], Specular[2], Specular[3]));
+        Light.Position = mv * Light.Position;
+
+        shader[mode].setUniformValue("Light.Position",Light.Position);
+        shader[mode].setUniformValue("Light.Ambient",Light.Ambient);
+        shader[mode].setUniformValue("Light.Diffuse",Light.Diffuse);
+        shader[mode].setUniformValue("Light.Specular",Light.Specular);
 
         shader[mode].setUniformValue("shininess",32.0f);
 

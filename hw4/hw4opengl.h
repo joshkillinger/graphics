@@ -10,6 +10,14 @@
 #include <QVector>
 #include <QMatrix4x4>
 
+struct light
+{
+    QVector4D Position;
+    QVector4D Ambient;
+    QVector4D Diffuse;
+    QVector4D Specular;
+};
+
 class Hw4opengl : public QGLWidget
 {
 Q_OBJECT
