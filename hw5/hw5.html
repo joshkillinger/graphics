@@ -20,17 +20,17 @@
    uniform mat4 ModelviewMatrix;
    uniform mat4 NormalMatrix;
    uniform vec4 LightPosition;
-   uniform vec3 LightAmbient;
-   varying vec3 col;
+   varying vec3 tint;
    varying vec4 Light;
+   varying vec4 VertPos;
    varying vec3 Normal;
    void main(void)
    {
-      col = RGB*LightAmbient;
-	  gl_Position = ProjectionMatrix * ModelviewMatrix * vec4(XYZ,1);
+      tint = RGB;
+	  VertPos = ModelviewMatrix * vec4(XYZ,1);
+	  gl_Position = ProjectionMatrix * VertPos;
 	  Light = ModelviewMatrix * LightPosition;
-      //Normal = vec3(NormalMatrix * vec4(Norm, 1));
-      Normal = Norm;
+	  Normal = vec3(NormalMatrix * vec4(Norm, 0));
    }
 </script> 
  
@@ -39,22 +39,25 @@
   -->
 <script id="shader-fs" type="x-shader/x-fragment"> 
     precision highp float;
+    uniform vec4 LightPosition;
+    uniform vec3 LightAmbient;
     uniform vec3 LightDiffuse;
-    varying vec3 col;
+    varying vec3 tint;
     varying vec4 Light;
+	varying vec4 VertPos;
     varying vec3 Normal;
     void main(void)
     {
-        vec3 L = normalize(vec3(Light - gl_FragCoord));
+        vec3 L = normalize(vec3(Light - VertPos));
         vec3 N = normalize(Normal);
-        vec3 color = vec3(0);//col;
+        vec3 color = LightAmbient;
         float d = dot(L, N);
         if (d > 0.0)
         {
           color += d * LightDiffuse;
         }
-        //gl_FragColor = vec4(color,1);
-        gl_FragColor = vec4(abs(Normal),1);
+		gl_FragColor = vec4(tint * color,1);
+		//gl_FragColor = vec4(color,1);
     }
 </script> 
 
@@ -155,7 +158,7 @@ function webGLStart()
 
    //  Vertex array count
    var n = 36;
-   //  Cube vertex coordinates
+   //  Cube vertex coordinates (front, back, right, left, top, bot)
    var xyz = 
    [
       -1,-1, 1, +1,-1, 1, -1,+1, 1,    -1,+1, 1, +1,-1, 1, +1,+1, 1,
@@ -206,9 +209,9 @@ function webGLStart()
    var th = ph = 15;
    
    //  light stuff
-   var lightpos = [ 2, 2, 2, 0];
-   var lightamb = [.2,.2,.2];
-   var lightdif = [.5,.5,.5];
+   var lightpos = [2.0, 2.0, 2.0, 0.0];
+   var lightamb = [.1, .1, .1];
+   var lightdif = [.7, .7, .7];
    
    //  Draw scene the first time
    Display();
