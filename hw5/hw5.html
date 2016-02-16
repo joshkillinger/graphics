@@ -72,18 +72,11 @@ http://static.planetminecraft.com/files/resource_media/screenshot/1235/Companion
           color += Id * LightDiffuse;
           
           //  R is the reflected light vector R = 2(L.N)N - L
-          //vec3 R = ((dot(L,N)*N*2.0)) - L;
           vec3 R = reflect(-L,N);
           vec3 V = normalize(View);
 		  float Is = dot(R,V);
           if (Is>0.0) color += pow(Is,Shininess)*LightSpecular;
-		  //color = (L + 1.0)/2.0;
-          //color = vec3(pow(Is,Shininess));
-          //color = vec3(Is);
         }
-		//gl_FragColor = vec4(tint * color,1);
-		//gl_FragColor = vec4(VertPos.xyz,1);
-        //gl_FragColor = vec4(color,1);
         gl_FragColor = vec4(color,1) * texture2D(Tex, TexCoord);
     }
 </script> 
