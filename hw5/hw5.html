@@ -2,6 +2,10 @@
 <head>
 <title>Josh Killinger: HW5</title>
 
+<!-- Portal Cube Texture from:
+http://static.planetminecraft.com/files/resource_media/screenshot/1235/Companion_Cube_3471872.jpg
+  -->
+
 <!--
   CanvasMatrix class
   (c) Apple Inc
@@ -14,26 +18,28 @@
 <script id="shader-vs" type="x-shader/x-vertex"> 
    precision highp float;
    attribute vec3 XYZ;
-   attribute vec3 RGB;
    attribute vec3 Norm;
+   attribute vec2 TexCoords;
    uniform mat4 ProjectionMatrix;
    uniform mat4 ModelviewMatrix;
    uniform mat4 NormalMatrix;
    uniform vec4 LightPosition;
-   varying vec3 tint;
    varying vec4 Light;
    varying vec4 VertPos;
    varying vec3 Normal;
    varying vec3 View;
+   varying vec2 TexCoord;
    void main(void)
    {
-      tint = RGB;
 	  VertPos = ModelviewMatrix * vec4(XYZ,1);
 	  gl_Position = ProjectionMatrix * VertPos;
 	  Light = ModelviewMatrix * LightPosition;
       Light -= VertPos;
-      View = vec3(VertPos);
+      //View = -vec3(VertPos);
+	  View = vec3(0,0,1);
 	  Normal = vec3(NormalMatrix * vec4(Norm, 0));
+	  
+	  TexCoord = TexCoords;
    }
 </script> 
  
@@ -47,11 +53,12 @@
     uniform vec3 LightDiffuse;
     uniform vec3 LightSpecular;
     uniform float Shininess;
-    varying vec3 tint;
+    uniform sampler2D Tex;
     varying vec4 Light;
 	varying vec4 VertPos;
     varying vec3 Normal;
     varying vec3 View;
+    varying vec2 TexCoord;
     void main(void)
     {
         vec3 L = normalize(vec3(Light));
@@ -62,20 +69,22 @@
         float Id = dot(L, N);
         if (Id > 0.0)
         {
-          //color += Id * LightDiffuse;
+          color += Id * LightDiffuse;
           
           //  R is the reflected light vector R = 2(L.N)N - L
           //vec3 R = ((dot(L,N)*N*2.0)) - L;
           vec3 R = reflect(-L,N);
           vec3 V = normalize(View);
-          float Is = dot(R,V);
+		  float Is = dot(R,V);
           if (Is>0.0) color += pow(Is,Shininess)*LightSpecular;
+		  //color = (L + 1.0)/2.0;
           //color = vec3(pow(Is,Shininess));
-          color = vec3(Is);
+          //color = vec3(Is);
         }
 		//gl_FragColor = vec4(tint * color,1);
 		//gl_FragColor = vec4(VertPos.xyz,1);
-        gl_FragColor = vec4(color,1);
+        //gl_FragColor = vec4(color,1);
+        gl_FragColor = vec4(color,1) * texture2D(Tex, TexCoord);
     }
 </script> 
 
@@ -134,204 +143,223 @@ function CompileShaderProg(gl,vert,frag)
    return prog;
 }
 
+function HandleTextureLoaded(gl, image, texture) {
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.bindTexture(gl.TEXTURE_2D, null);
+}
+
 var gl,canvas;
 function webGLStart()
 {
-   //  Set canvas
-   canvas = document.getElementById("canvas");
-   //  Select canvas size
-   var size = Math.min(window.innerWidth,window.innerHeight)-10;
-   canvas.width  = size;
-   canvas.height = size;
-   //  Start WebGL
-   if (!window.WebGLRenderingContext)
-   {
+    //  Set canvas
+    canvas = document.getElementById("canvas");
+    //  Select canvas size
+    var size = Math.min(window.innerWidth,window.innerHeight)-10;
+    canvas.width  = size;
+    canvas.height = size;
+    //  Start WebGL
+    if (!window.WebGLRenderingContext)
+    {
       alert("Your browser does not support WebGL. See http://get.webgl.org");
       return;
-   }
-   try
-   {
+    }
+    try
+    {
       gl = canvas.getContext("experimental-webgl");
-   }
-   catch(e)
-   {}
-   if (!gl)
-   {
+    }
+    catch(e)
+    {}
+    if (!gl)
+    {
       alert("Can't get WebGL");
       return;
-   }
+    }
 
-   //  Set viewport to entire canvas
-   gl.viewport(0,0,size,size);
+    var cubeTexture = gl.createTexture();
+    var cubeImage = new Image();
+    cubeImage.onload = function() { HandleTextureLoaded(gl, cubeImage, cubeTexture); Display();}
+    cubeImage.src = "Companion_Cube.png";
+    //cubeImage.src = "cubetexture.png";
 
-   //  Load Shader
-   var prog = CompileShaderProg(gl,"shader-vs","shader-fs");
+    //  Set viewport to entire canvas
+    gl.viewport(0,0,size,size);
 
-   //  Set program
-   gl.useProgram(prog);
+    //  Load Shader
+    var prog = CompileShaderProg(gl,"shader-vs","shader-fs");
 
-   //  Set projection
-   var ProjectionMatrix = new CanvasMatrix4();
-   ProjectionMatrix.ortho(-2.5,+2.5,-2.5,+2.5,-2.5,+2.5);
+    //  Set program
+    gl.useProgram(prog);
 
-   //  Vertex array count
-   var n = 36;
-   //  Cube vertex coordinates (front, back, right, left, top, bot)
-   var xyz = 
-   [
-      -1,-1, 1, +1,-1, 1, -1,+1, 1,    -1,+1, 1, +1,-1, 1, +1,+1, 1,
-      +1,-1,-1, -1,-1,-1, +1,+1,-1,    +1,+1,-1, -1,-1,-1, -1,+1,-1,
-      +1,-1,+1, +1,-1,-1, +1,+1,+1,    +1,+1,+1, +1,-1,-1, +1,+1,-1,
-      -1,-1,-1, -1,-1,+1, -1,+1,-1,    -1,+1,-1, -1,-1,+1, -1,+1,+1,
-      -1,+1,+1, +1,+1,+1, -1,+1,-1,    -1,+1,-1, +1,+1,+1, +1,+1,-1,
-      -1,-1,-1, +1,-1,-1, -1,-1,+1,    -1,-1,+1, +1,-1,-1, +1,-1,+1,
-   ];
-   var verts = gl.createBuffer();
-   gl.bindBuffer(gl.ARRAY_BUFFER,verts);
-   gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(xyz),gl.STATIC_DRAW);
+    //  Set projection
+    var ProjectionMatrix = new CanvasMatrix4();
+    ProjectionMatrix.ortho(-2.5,+2.5,-2.5,+2.5,-2.5,+2.5);
 
-   var normals = 
-   [
-      0,0,1,  0,0,1,  0,0,1,    0,0,1,  0,0,1,  0,0,1,
-      0,0,-1, 0,0,-1, 0,0,-1,   0,0,-1, 0,0,-1, 0,0,-1,
-      1,0,0,  1,0,0,  1,0,0,    1,0,0,  1,0,0,  1,0,0,
-      -1,0,0, -1,0,0, -1,0,0,   -1,0,0, -1,0,0, -1,0,0,
-      0,1,0,  0,1,0,  0,1,0,    0,1,0,  0,1,0,  0,1,0,
-      0,-1,0, 0,-1,0, 0,-1,0,   0,-1,0, 0,-1,0, 0,-1,0,
-   ];
-   var norms = gl.createBuffer();
-   gl.bindBuffer(gl.ARRAY_BUFFER,norms);
-   gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(normals),gl.STATIC_DRAW);
-   
-   //  Cube colors
-   var rgb = 
-   [
-      1,0,0,  1,0,0,  1,0,0,     1,0,0,  1,0,0,  1,0,0,
-      0,0,1,  0,0,1,  0,0,1,     0,0,1,  0,0,1,  0,0,1,
-      1,1,0,  1,1,0,  1,1,0,     1,1,0,  1,1,0,  1,1,0,
-      0,1,0,  0,1,0,  0,1,0,     0,1,0,  0,1,0,  0,1,0,
-      0,1,1,  0,1,1,  0,1,1,     0,1,1,  0,1,1,  0,1,1,
-      1,0,1,  1,0,1,  1,0,1,     1,0,1,  1,0,1,  1,0,1,
-   ];
-   var color = gl.createBuffer();
-   gl.bindBuffer(gl.ARRAY_BUFFER,color);
-   gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(rgb),gl.STATIC_DRAW);
+    //  Vertex array count
+    var n = 36;
+    //  Cube vertex coordinates (front, back, right, left, top, bot)
+    var xyz = 
+    [
+        -1,-1, 1, +1,-1, 1, -1,+1, 1,    -1,+1, 1, +1,-1, 1, +1,+1, 1,
+        +1,-1,-1, -1,-1,-1, +1,+1,-1,    +1,+1,-1, -1,-1,-1, -1,+1,-1,
+        +1,-1,+1, +1,-1,-1, +1,+1,+1,    +1,+1,+1, +1,-1,-1, +1,+1,-1,
+        -1,-1,-1, -1,-1,+1, -1,+1,-1,    -1,+1,-1, -1,-1,+1, -1,+1,+1,
+        -1,+1,+1, +1,+1,+1, -1,+1,-1,    -1,+1,-1, +1,+1,+1, +1,+1,-1,
+        -1,-1,-1, +1,-1,-1, -1,-1,+1,    -1,-1,+1, +1,-1,-1, +1,-1,+1,
+    ];
+    var verts = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,verts);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(xyz),gl.STATIC_DRAW);
 
+    var normals = 
+    [
+        0,0,1,  0,0,1,  0,0,1,    0,0,1,  0,0,1,  0,0,1,
+        0,0,-1, 0,0,-1, 0,0,-1,   0,0,-1, 0,0,-1, 0,0,-1,
+        1,0,0,  1,0,0,  1,0,0,    1,0,0,  1,0,0,  1,0,0,
+        -1,0,0, -1,0,0, -1,0,0,   -1,0,0, -1,0,0, -1,0,0,
+        0,1,0,  0,1,0,  0,1,0,    0,1,0,  0,1,0,  0,1,0,
+        0,-1,0, 0,-1,0, 0,-1,0,   0,-1,0, 0,-1,0, 0,-1,0,
+    ];
+    var norms = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,norms);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(normals),gl.STATIC_DRAW);
 
-   //  Set state to draw scene
-   gl.enable(gl.DEPTH_TEST);
-   gl.clearColor(0.5,0.5,0.5,1);
-   //  Mouse control variables
-   var x0 = y0 = move  = 0;
-   //  Rotation angles
-   var th = ph = 15;
-   
-   //  light stuff
-   var lightpos = [2.0, 2.0, 2.0, 0.0];
-   var lightamb = [.0, .0, .0];
-   var lightdif = [.7, .7, .7];
-   var lightspc = [1.2, 1.2, 1.2];
-   var shiny = 2.0;
-   
-   //  Draw scene the first time
-   Display();
+    //texture coordinates (front, back, right, left, top, bot)
+    var uv = 
+    [
+        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
+        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
+        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
+        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
+        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
+        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
+    ];
+    var texcoords = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,texcoords);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(uv),gl.STATIC_DRAW);
 
-   //
-   //  Display the scene
-   //
-   function Display()
-   {
-      //  Clear the screen and Z buffer
-      gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    //  Set state to draw scene
+    gl.enable(gl.DEPTH_TEST);
+    gl.clearColor(0.2,0.2,0.2,1);
+    //  Mouse control variables
+    var x0 = y0 = move  = 0;
+    //  Rotation angles
+    var th = ph = 15;
 
-      // Compute modelview matrix
-      var ViewMatrix = new CanvasMatrix4();
-      ViewMatrix.makeIdentity();
-      ViewMatrix.rotate(ph,0,1,0);
-      ViewMatrix.rotate(th,1,0,0);
-      
-      var NormalMatrix = new CanvasMatrix4(ViewMatrix);
-      NormalMatrix.invert();
-      NormalMatrix.transpose();
-	  
-      // Set shader
-      gl.useProgram(prog);
+    //  light stuff
+    var lightpos = [2.0, 2.0, 2.0, 0.0];
+    var lightamb = [.2, .2, .2];
+    var lightdif = [.8, .8, .8];
+    var lightspc = [.25, .25, .25];
+    var shiny = 32.0;
 
-      //  Set projection and modelview matrixes
-      gl.uniformMatrix4fv(gl.getUniformLocation(prog,"ProjectionMatrix") , false , new Float32Array(ProjectionMatrix.getAsArray()));
-      gl.uniformMatrix4fv(gl.getUniformLocation(prog,"ModelviewMatrix")  , false , new Float32Array(ViewMatrix.getAsArray()));
-      gl.uniformMatrix4fv(gl.getUniformLocation(prog,"NormalMatrix")  , false , new Float32Array(NormalMatrix.getAsArray()));
-	  gl.uniform4fv(gl.getUniformLocation(prog,"LightPosition") , lightpos);
-	  gl.uniform3fv(gl.getUniformLocation(prog,"LightAmbient")  , lightamb);
-	  gl.uniform3fv(gl.getUniformLocation(prog,"LightDiffuse")  , lightdif);
-      gl.uniform3fv(gl.getUniformLocation(prog,"LightSpecular") , lightspc);
-      gl.uniform1f(gl.getUniformLocation(prog,"Shininess"), shiny);
+    //  Draw scene the first time
+    Display();
 
-      //  Set up 3D vertex array
-      gl.bindBuffer(gl.ARRAY_BUFFER,verts);
-      var XYZ = gl.getAttribLocation(prog,"XYZ");
-      gl.enableVertexAttribArray(XYZ);
-      gl.vertexAttribPointer(XYZ,3,gl.FLOAT,false,0,0);
+    //
+    //  Display the scene
+    //
+    function Display()
+    {
+        //  Clear the screen and Z buffer
+        gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
 
-      //  Set up 3D color array
-      gl.bindBuffer(gl.ARRAY_BUFFER,color);
-      var RGB = gl.getAttribLocation(prog,"RGB");
-      gl.enableVertexAttribArray(RGB);
-      gl.vertexAttribPointer(RGB,3,gl.FLOAT,false,0,0);
+        // Compute modelview matrix
+        var ViewMatrix = new CanvasMatrix4();
+        ViewMatrix.makeIdentity();
+        ViewMatrix.rotate(ph,0,1,0);
+        ViewMatrix.rotate(th,1,0,0);
 
-      //  Set up 3D normal array
-      gl.bindBuffer(gl.ARRAY_BUFFER,norms);
-      var Normals = gl.getAttribLocation(prog,"Norm");
-      gl.enableVertexAttribArray(Normals);
-      gl.vertexAttribPointer(Normals,3,gl.FLOAT,false,0,0);
+        var NormalMatrix = new CanvasMatrix4(ViewMatrix);
+        NormalMatrix.invert();
+        NormalMatrix.transpose();
 
-      //  Draw all vertexes
-      gl.drawArrays(gl.TRIANGLES,0,n);
+        // Set shader
+        gl.useProgram(prog);
 
-      //  Disable vertex arrays
-      gl.disableVertexAttribArray(XYZ);
-      gl.disableVertexAttribArray(RGB);
-      gl.disableVertexAttribArray(Normals);
+        //  Set projection and modelview matrixes
+        gl.uniformMatrix4fv(gl.getUniformLocation(prog,"ProjectionMatrix") , false , new Float32Array(ProjectionMatrix.getAsArray()));
+        gl.uniformMatrix4fv(gl.getUniformLocation(prog,"ModelviewMatrix")  , false , new Float32Array(ViewMatrix.getAsArray()));
+        gl.uniformMatrix4fv(gl.getUniformLocation(prog,"NormalMatrix")  , false , new Float32Array(NormalMatrix.getAsArray()));
+        gl.uniform4fv(gl.getUniformLocation(prog,"LightPosition") , lightpos);
+        gl.uniform3fv(gl.getUniformLocation(prog,"LightAmbient")  , lightamb);
+        gl.uniform3fv(gl.getUniformLocation(prog,"LightDiffuse")  , lightdif);
+        gl.uniform3fv(gl.getUniformLocation(prog,"LightSpecular") , lightspc);
+        gl.uniform1f(gl.getUniformLocation(prog,"Shininess"), shiny);
 
-      //  Flush
-      gl.flush ();
-   }
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, cubeTexture);
+        gl.uniform1i(gl.getUniformLocation(prog, "Tex"), 0);
+        
 
-   //
-   //  Resize canvas
-   //
-   canvas.resize = function ()
-   {
+        //  Set up 3D vertex array
+        gl.bindBuffer(gl.ARRAY_BUFFER,verts);
+        var XYZ = gl.getAttribLocation(prog,"XYZ");
+        gl.enableVertexAttribArray(XYZ);
+        gl.vertexAttribPointer(XYZ,3,gl.FLOAT,false,0,0);
+
+        //  Set up 3D normal array
+        gl.bindBuffer(gl.ARRAY_BUFFER,norms);
+        var Normals = gl.getAttribLocation(prog,"Norm");
+        gl.enableVertexAttribArray(Normals);
+        gl.vertexAttribPointer(Normals,3,gl.FLOAT,false,0,0);
+
+        //  Set up 2D tex coordinate array
+        gl.bindBuffer(gl.ARRAY_BUFFER,texcoords);
+        var TexCoords = gl.getAttribLocation(prog,"TexCoords");
+        gl.enableVertexAttribArray(TexCoords);
+        gl.vertexAttribPointer(TexCoords,2,gl.FLOAT,false,0,0);
+
+        //  Draw all vertexes
+        gl.drawArrays(gl.TRIANGLES,0,n);
+
+        //  Disable vertex arrays
+        gl.disableVertexAttribArray(XYZ);
+        gl.disableVertexAttribArray(Normals);
+        gl.disableVertexAttribArray(TexCoords);
+
+        //  Flush
+        gl.flush ();
+    }
+
+    //
+    //  Resize canvas
+    //
+    canvas.resize = function ()
+    {
       var size = Math.min(window.innerWidth, window.innerHeight)-10;
       canvas.width  = size;
       canvas.height = size;
       gl.viewport(0,0,size,size);
       Display();
-   }
+    }
 
-   //
-   //  Mouse button pressed
-   //
-   canvas.onmousedown = function (ev)
-   {
+    //
+    //  Mouse button pressed
+    //
+    canvas.onmousedown = function (ev)
+    {
       move  = 1;
       x0 = ev.clientX;
       y0 = ev.clientY;
-   }
+    }
 
-   //
-   //  Mouse button released
-   //
-   canvas.onmouseup = function (ev)
-   {
+    //
+    //  Mouse button released
+    //
+    canvas.onmouseup = function (ev)
+    {
       move  = 0;
-   }
+    }
 
-   //
-   //  Mouse movement
-   //
-   canvas.onmousemove = function (ev)
-   {
+    //
+    //  Mouse movement
+    //
+    canvas.onmousemove = function (ev)
+    {
       if (move==0) return;
       //  Update angles
       ph -= ev.clientX-x0;
@@ -341,7 +369,7 @@ function webGLStart()
       y0 = ev.clientY;
       //  Redisplay
       Display();
-   }
+    }
 }
 </script> 
 
