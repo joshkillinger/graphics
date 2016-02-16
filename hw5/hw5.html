@@ -24,12 +24,15 @@
    varying vec4 Light;
    varying vec4 VertPos;
    varying vec3 Normal;
+   varying vec3 View;
    void main(void)
    {
       tint = RGB;
 	  VertPos = ModelviewMatrix * vec4(XYZ,1);
 	  gl_Position = ProjectionMatrix * VertPos;
 	  Light = ModelviewMatrix * LightPosition;
+      Light -= VertPos;
+      View = vec3(VertPos);
 	  Normal = vec3(NormalMatrix * vec4(Norm, 0));
    }
 </script> 
@@ -42,22 +45,37 @@
     uniform vec4 LightPosition;
     uniform vec3 LightAmbient;
     uniform vec3 LightDiffuse;
+    uniform vec3 LightSpecular;
+    uniform float Shininess;
     varying vec3 tint;
     varying vec4 Light;
 	varying vec4 VertPos;
     varying vec3 Normal;
+    varying vec3 View;
     void main(void)
     {
-        vec3 L = normalize(vec3(Light - VertPos));
+        vec3 L = normalize(vec3(Light));
         vec3 N = normalize(Normal);
+        
         vec3 color = LightAmbient;
-        float d = dot(L, N);
-        if (d > 0.0)
+        
+        float Id = dot(L, N);
+        if (Id > 0.0)
         {
-          color += d * LightDiffuse;
+          //color += Id * LightDiffuse;
+          
+          //  R is the reflected light vector R = 2(L.N)N - L
+          //vec3 R = ((dot(L,N)*N*2.0)) - L;
+          vec3 R = reflect(-L,N);
+          vec3 V = normalize(View);
+          float Is = dot(R,V);
+          if (Is>0.0) color += pow(Is,Shininess)*LightSpecular;
+          //color = vec3(pow(Is,Shininess));
+          color = vec3(Is);
         }
-		gl_FragColor = vec4(tint * color,1);
-		//gl_FragColor = vec4(color,1);
+		//gl_FragColor = vec4(tint * color,1);
+		//gl_FragColor = vec4(VertPos.xyz,1);
+        gl_FragColor = vec4(color,1);
     }
 </script> 
 
@@ -210,8 +228,10 @@ function webGLStart()
    
    //  light stuff
    var lightpos = [2.0, 2.0, 2.0, 0.0];
-   var lightamb = [.1, .1, .1];
+   var lightamb = [.0, .0, .0];
    var lightdif = [.7, .7, .7];
+   var lightspc = [1.2, 1.2, 1.2];
+   var shiny = 2.0;
    
    //  Draw scene the first time
    Display();
@@ -244,6 +264,8 @@ function webGLStart()
 	  gl.uniform4fv(gl.getUniformLocation(prog,"LightPosition") , lightpos);
 	  gl.uniform3fv(gl.getUniformLocation(prog,"LightAmbient")  , lightamb);
 	  gl.uniform3fv(gl.getUniformLocation(prog,"LightDiffuse")  , lightdif);
+      gl.uniform3fv(gl.getUniformLocation(prog,"LightSpecular") , lightspc);
+      gl.uniform1f(gl.getUniformLocation(prog,"Shininess"), shiny);
 
       //  Set up 3D vertex array
       gl.bindBuffer(gl.ARRAY_BUFFER,verts);
