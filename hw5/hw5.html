@@ -240,39 +240,77 @@ function webGLStart()
     //  Cube vertex coordinates (front, back, right, left, top, bot)
     var xyz = 
     [
-        -1,-1, 1, +1,-1, 1, -1,+1, 1,    -1,+1, 1, +1,-1, 1, +1,+1, 1,
-        +1,-1,-1, -1,-1,-1, +1,+1,-1,    +1,+1,-1, -1,-1,-1, -1,+1,-1,
-        +1,-1,+1, +1,-1,-1, +1,+1,+1,    +1,+1,+1, +1,-1,-1, +1,+1,-1,
-        -1,-1,-1, -1,-1,+1, -1,+1,-1,    -1,+1,-1, -1,-1,+1, -1,+1,+1,
-        -1,+1,+1, +1,+1,+1, -1,+1,-1,    -1,+1,-1, +1,+1,+1, +1,+1,-1,
-        -1,-1,-1, +1,-1,-1, -1,-1,+1,    -1,-1,+1, +1,-1,-1, +1,-1,+1,
+        1, -1, -1,
+        1, -1, 1,
+        -1, -1, 1,
+        -1, -1, -1,
+        1, 1, -1,
+        1, 1, 1,
+        -1, 1, 1,
+        -1, 1, -1,
     ];
     var verts = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,verts);
     gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(xyz),gl.STATIC_DRAW);
 
+    var cubeVertexIndices =
+    [
+        1, 2, 3,
+        7, 6, 5,
+        4, 5, 1,
+        5, 6, 2,
+        2, 6, 7,
+        0, 3, 7,
+        0, 1, 3,
+        4, 7, 5,
+        0, 4, 1,
+        1, 5, 2,
+        3, 2, 7,
+        4, 0, 7,
+    ];
+    var cubeVerticesIndexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVerticesIndexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
+    
     var normals = 
     [
-        0,0,1,  0,0,1,  0,0,1,    0,0,1,  0,0,1,  0,0,1,
-        0,0,-1, 0,0,-1, 0,0,-1,   0,0,-1, 0,0,-1, 0,0,-1,
-        1,0,0,  1,0,0,  1,0,0,    1,0,0,  1,0,0,  1,0,0,
-        -1,0,0, -1,0,0, -1,0,0,   -1,0,0, -1,0,0, -1,0,0,
-        0,1,0,  0,1,0,  0,1,0,    0,1,0,  0,1,0,  0,1,0,
-        0,-1,0, 0,-1,0, 0,-1,0,   0,-1,0, 0,-1,0, 0,-1,0,
+        0, -1, 0,
+        0, 1, 0,
+        1, 0, 0,
+        -0, 0, 1,
+        -1, 0, 0,
+        0, 0, -1,
     ];
     var norms = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,norms);
     gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(normals),gl.STATIC_DRAW);
 
+    var normalIndices = 
+    [
+        0, 0, 0,
+        1, 1, 1,
+        2, 2, 2,
+        3, 3, 3,
+        4, 4, 4,
+        5, 5, 5,
+        0, 0, 0,
+        1, 1, 1,
+        2, 2, 2,
+        3, 3, 3,
+        4, 4, 4,
+        5, 5, 5,
+    ];
+    var cubeNormalsIndexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeNormalsIndexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(normalIndices), gl.STATIC_DRAW);
+    
     //texture coordinates (front, back, right, left, top, bot)
     var uv = 
     [
-        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
-        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
-        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
-        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
-        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
-        0,1, 1,1, 0,0,    0,0, 1,1, 1,0,
+        0,0,
+        0,1,
+        1,0,
+        1,1,
     ];
     var texcoords = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,texcoords);
@@ -344,25 +382,26 @@ function webGLStart()
         gl.enableVertexAttribArray(XYZ);
         gl.vertexAttribPointer(XYZ,3,gl.FLOAT,false,0,0);
 
-        //  Set up 3D normal array
+<!--         //  Set up 3D normal array
         gl.bindBuffer(gl.ARRAY_BUFFER,norms);
         var Normals = gl.getAttribLocation(prog,"Norm");
         gl.enableVertexAttribArray(Normals);
         gl.vertexAttribPointer(Normals,3,gl.FLOAT,false,0,0);
-
+ 
         //  Set up 2D tex coordinate array
         gl.bindBuffer(gl.ARRAY_BUFFER,texcoords);
         var TexCoords = gl.getAttribLocation(prog,"TexCoords");
         gl.enableVertexAttribArray(TexCoords);
         gl.vertexAttribPointer(TexCoords,2,gl.FLOAT,false,0,0);
-
-        //  Draw all vertexes
-        gl.drawArrays(gl.TRIANGLES,0,n);
+-->
+        
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVerticesIndexBuffer);
+        gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
 
         //  Disable vertex arrays
         gl.disableVertexAttribArray(XYZ);
-        gl.disableVertexAttribArray(Normals);
-        gl.disableVertexAttribArray(TexCoords);
+//        gl.disableVertexAttribArray(Normals);
+//        gl.disableVertexAttribArray(TexCoords);
 
         //  Flush
         gl.flush ();
