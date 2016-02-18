@@ -153,11 +153,7 @@ f 18//17 9//17 2//17
         View = vec3(0,0,1);
         Normal = vec3(NormalMatrix * vec4(Norm, 0));
 
-<<<<<<< HEAD
-        TexCoord = TexCoords;
-=======
         //TexCoord = TexCoords;
->>>>>>> hw5
     }
 </script> 
  
@@ -234,12 +230,8 @@ f 18//17 9//17 2//17
         color += pointLight(N);
         color += directionalLight(N);
         
-<<<<<<< HEAD
-        gl_FragColor = vec4(color,1) * texture2D(Tex, TexCoord);
-=======
         //gl_FragColor = vec4(color,1) * texture2D(Tex, TexCoord);
         gl_FragColor = vec4(color,1);
->>>>>>> hw5
     }
 </script> 
 
