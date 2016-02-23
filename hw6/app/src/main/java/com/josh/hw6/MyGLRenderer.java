@@ -16,18 +16,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     private Shape quad;
 
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
-    private final float[] mMVPMatrix = new float[16];
-    private final float[] mProjectionMatrix = new float[16];
-    private final float[] mViewMatrix = new float[16];
+    private float[] mMVPMatrix = new float[16];
+    private float[] mProjectionMatrix = new float[16];
+    private float[] mViewMatrix = new float[16];
+    private float[] mRotationMatrix = new float[16];
 
-    public volatile float Angle;
-    public float getAngle()
+    public void rotateView(float x, float y)
     {
-        return Angle;
-    }
-    public void setAngle(float angle)
-    {
-        Angle = angle;
+        Matrix.rotateM(mViewMatrix, 0, x, 1.0f, 0, 0);
+        Matrix.rotateM(mViewMatrix, 0, y, 0, 1.0f, 0);
     }
 
     public void onSurfaceCreated(GL10 gl, EGLConfig config)
@@ -36,26 +33,21 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         quad = new Shape();
-    }
-
-    private float[] mRotationMatrix = new float[16];
-
-    public void onDrawFrame(GL10 unused)
-    {
-        float[] scratch = new float[16];
-
-        // Redraw background color
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -6, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+    }
+
+
+    public void onDrawFrame(GL10 unused)
+    {
+        // Redraw background color
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        Matrix.setRotateM(mRotationMatrix, 0, Angle, 0, 1.0f, 0);
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-
-        quad.draw(scratch);
+        quad.draw(mMVPMatrix);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height)
