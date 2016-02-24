@@ -5,7 +5,9 @@ CPSC 5239
 Homework 6
 
 I used the tutorial at http://developer.android.com/training/graphics/opengl/index.html as the starting point for this assignment.
-
+Upgrades:
+Uses buffer indexing instead of raw buffers.
+Uses touch input to control view matrix.
 
 I spent roughly 15 hours on this assignment.
 
