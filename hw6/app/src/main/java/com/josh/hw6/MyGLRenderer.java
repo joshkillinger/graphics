@@ -34,7 +34,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         quad = new Shape();
 
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -6, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -7, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
         // depth testing
 //        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -54,9 +54,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         // Calculate the projection and view transformation
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+        //Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        quad.draw(mMVPMatrix);
+        quad.draw(mViewMatrix, mProjectionMatrix);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height)
