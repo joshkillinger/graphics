@@ -40,24 +40,50 @@ public class Shape
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
     static float faceCoords[] = {
-            -1,  1, -1,   // front top left
-            -1, -1, -1,   // front bottom left
+            -1,  1, -1,    // front top left
+            -1, -1, -1,    // front bottom left
              1, -1, -1,    // front bottom right
              1,  1, -1,    // front top right
-            -1,  1,  1,   // top back left
-            -1,  1, -1,   // top front left
+            -1,  1,  1,    // top back left
+            -1,  1, -1,    // top front left
              1,  1, -1,    // top front right
-             1,  1,  1 };  // top back right
+             1,  1,  1,    // top back right
+            -1,  1,  1,    // left top back
+            -1, -1,  1,    // left bottom back
+            -1, -1, -1,    // left bottom front
+            -1,  1, -1,    // left top front
+             1,  1, -1,    // right top front
+             1, -1, -1,    // right bottom front
+             1, -1,  1,    // right bottom back
+             1,  1,  1,    // right top back
+            -1, -1, -1,    // bottom front left
+            -1, -1,  1,    // bottom back left
+             1, -1,  1,    // bottom back right
+             1, -1, -1,    // bottom front right
+             1,  1,  1,    // back top right
+             1, -1,  1,    // back bottom right
+            -1, -1,  1,    // back bottom left
+            -1,  1,  1,    // back top left
+    };
 
     static float normals[] = {
-            0,  0, -1,    0,  0, -1,    0,  0, -1,    0,  0, -1,
-            0,  1,  0,    0,  1,  0,    0,  1,  0,    0,  1,  0
+             0,  0, -1,    0,  0, -1,    0,  0, -1,    0,  0, -1,   //front
+             0,  1,  0,    0,  1,  0,    0,  1,  0,    0,  1,  0,   //top
+            -1,  0,  0,   -1,  0,  0,   -1,  0,  0,   -1,  0,  0,   //left
+             1,  0,  0,    1,  0,  0,    1,  0,  0,    1,  0,  0,   //right
+             0, -1,  0,    0, -1,  0,    0, -1,  0,    0, -1,  0,   //bottom
+             0,  0,  1,    0,  0,  1,    0,  0,  1,    0,  0,  1,   //back
     };
 
     private float color[] = {0.5f, 0.5f, 0.0f, 1.0f};
 
-    private short drawOrder[] = { 0, 1, 2, 0, 2, 3,  // front
-                                  4, 5, 6, 4, 6, 7}; // top
+    private short drawOrder[] = {0, 1, 2, 0, 2, 3,          // front
+                                 4, 5, 6, 4, 6, 7,          // top
+                                 8, 9, 10, 8, 10, 11,       // left
+                                 12, 13, 14, 12, 14, 15,    // right
+                                 16, 17, 18, 16, 18, 19,    // bottom
+                                 20, 21, 22, 20, 22, 23,    // back
+    };
 
     public Shape()
     {
