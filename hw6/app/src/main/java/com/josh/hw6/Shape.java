@@ -40,23 +40,33 @@ public class Shape
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
     static float faceCoords[] = {
-            -0.5f,  0.5f, 0.0f,   // top left
-            -0.5f, -0.5f, 0.0f,   // bottom left
-            0.5f, -0.5f, 0.0f,    // bottom right
-            0.5f,  0.5f, 0.0f };  // top right
+            -1,  1, -1,   // front top left
+            -1, -1, -1,   // front bottom left
+             1, -1, -1,    // front bottom right
+             1,  1, -1,    // front top right
+            -1,  1,  1,   // top back left
+            -1,  1, -1,   // top front left
+             1,  1, -1,    // top front right
+             1,  1,  1 };  // top back right
+
+    static float normals[] = {
+            0,  0, -1,    0,  0, -1,    0,  0, -1,    0,  0, -1,
+            0,  1,  0,    0,  1,  0,    0,  1,  0,    0,  1,  0
+    };
 
     private float color[] = {0.5f, 0.5f, 0.0f, 1.0f};
 
-    private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
+    private short drawOrder[] = { 0, 1, 2, 0, 2, 3,  // front
+                                  4, 5, 6, 4, 6, 7}; // top
 
     public Shape()
     {
         // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(
+        ByteBuffer vpb = ByteBuffer.allocateDirect(
                 // (# of coordinate values * 4 bytes per float)
                 faceCoords.length * 4);
-        bb.order(ByteOrder.nativeOrder());
-        vertexBuffer = bb.asFloatBuffer();
+        vpb.order(ByteOrder.nativeOrder());
+        vertexBuffer = vpb.asFloatBuffer();
         vertexBuffer.put(faceCoords);
         vertexBuffer.position(0);
 
@@ -129,7 +139,7 @@ public class Shape
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Draw the triangle
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, 6, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
 
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);

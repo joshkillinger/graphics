@@ -19,7 +19,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     private float[] mMVPMatrix = new float[16];
     private float[] mProjectionMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
-    private float[] mRotationMatrix = new float[16];
 
     public void rotateView(float x, float y)
     {
@@ -36,6 +35,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -6, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+
+        // depth testing
+//        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+//        GLES20.glClearDepthf(10.0f);
+//        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+//        GLES20.glDepthMask(true);
+
+        // cull backface
+        GLES20.glEnable( GLES20.GL_CULL_FACE );
+        GLES20.glCullFace(GLES20.GL_BACK);
     }
 
 
@@ -58,6 +67,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
 
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 10);
+        Matrix.frustumM(mProjectionMatrix, 0, ratio, -ratio, -1, 1, 3, 10);
     }
 }

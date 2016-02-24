@@ -66,7 +66,7 @@ public class MainActivity extends Activity
                     float dx = x - mPreviousX;
                     float dy = y - mPreviousY;
 
-                    mRenderer.rotateView(-dy * TOUCH_SCALE_FACTOR, dx * TOUCH_SCALE_FACTOR);
+                    mRenderer.rotateView(-dy * TOUCH_SCALE_FACTOR, -dx * TOUCH_SCALE_FACTOR);
                     requestRender();
             }
 
