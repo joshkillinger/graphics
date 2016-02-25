@@ -46,6 +46,7 @@ public class MainActivity extends Activity
             // Set the Renderer for drawing on the GLSurfaceView
             setRenderer(mRenderer);
 
+            mRenderer.setResources(getResources());
             setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         }

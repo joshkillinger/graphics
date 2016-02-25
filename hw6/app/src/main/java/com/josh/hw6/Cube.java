@@ -1,7 +1,9 @@
 package com.josh.hw6;
 
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.util.Log;
 
@@ -9,6 +11,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+
+import android.graphics.Bitmap;
 
 /**
  * Created by Josh on 2/22/2016.
@@ -25,11 +29,13 @@ public class Cube
 
             "attribute vec4 vPosition;" +
             "attribute vec3 vNormal;" +
+            "attribute vec2 vTexCoord;" +
 
             "varying vec4 VertPos;" +
             "varying vec4 Light;" +
             "varying vec3 Normal;" +
             "varying vec3 View;" +
+            "varying vec2 TexCoord;" +
 
             "void main() {" +
             "  VertPos = MVMatrix * vPosition;" +
@@ -39,6 +45,7 @@ public class Cube
             "  View = -vec3(VertPos);" +
 
             "  Normal = vec3(NormalMatrix * vec4(vNormal, 0));" +
+            "  TexCoord = vTexCoord;" +
             "}";
 
     private final String fragmentShaderCode =
@@ -49,11 +56,13 @@ public class Cube
             "uniform vec3 Specular;" +
             "uniform vec3 LightColor;" +
             "uniform float Shininess;" +
+            "uniform sampler2D Tex;" +
 
             "varying vec4 VertPos;" +
             "varying vec4 Light;" +
             "varying vec3 Normal;" +
             "varying vec3 View;" +
+            "varying vec2 TexCoord;" +
 
             "void main() {" +
             "  vec3 color = Ambient;" +
@@ -69,14 +78,17 @@ public class Cube
             "    if (Is > 0.0) color += pow(Is,Shininess) * Specular;" +
             "  }" +
 
-            "  gl_FragColor = Color * vec4(color * LightColor, 1);" +
+            "  gl_FragColor = Color * vec4(color * LightColor, 1) * texture2D(Tex, TexCoord);" +
             "}";
 
     private int shaderProgram;
 
     private FloatBuffer vertexBuffer;
     private FloatBuffer normalBuffer;
+    private FloatBuffer uvBuffer;
     private ShortBuffer drawListBuffer;
+
+    private int[] textures = new int[1];
 
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
@@ -116,10 +128,19 @@ public class Cube
              0,  0,  1,    0,  0,  1,    0,  0,  1,    0,  0,  1,   //back
     };
 
+    static float uvs[] = {
+            0,0,    0,1,    1,1,    1,0,    //front
+            0,0,    0,1,    1,1,    1,0,    //top
+            0,0,    0,1,    1,1,    1,0,    //left
+            0,0,    0,1,    1,1,    1,0,    //right
+            0,0,    0,1,    1,1,    1,0,    //bottom
+            0,0,    0,1,    1,1,    1,0,    //back
+    };
+
     private float color[] = {1, 1, 1, 1};
-    private float ambient[] = {0.3f, 0.3f, 0.3f};
-    private float diffuse[] = {0.7f, 0.7f, 0.7f};
-    private float specular[] = {1f, 1f, 1f};
+    private float ambient[] = {0.2f, 0.2f, 0.2f};
+    private float diffuse[] = {0.8f, 0.8f, 0.8f};
+    private float specular[] = {0.8f, 0.8f, 0.8f};
     private float shininess = 32.f;
 
     private short drawOrder[] = {0, 1, 2, 0, 2, 3,          // front
@@ -131,10 +152,11 @@ public class Cube
     };
 
 
-    private float lightPosition[] = {2, 2, 2, 1};
-    private float lightColor[] = {0.2f, 0.2f, 1};
 
-    public Cube()
+    private float lightPosition[] = {1.5f, 1.5f, -3, 1};
+    private float lightColor[] = {0.6f, 0.6f, 1};
+
+    public Cube(Bitmap b)
     {
         // initialize buffer for vertex coordinates
         ByteBuffer vpb = ByteBuffer.allocateDirect(
@@ -154,6 +176,15 @@ public class Cube
         normalBuffer.put(normals);
         normalBuffer.position(0);
 
+        // initialize buffer for UV Coordinates
+        ByteBuffer uvb = ByteBuffer.allocateDirect(
+                // (# of coordinate values * 4 bytes per float)
+                uvs.length * 4);
+        uvb.order(ByteOrder.nativeOrder());
+        uvBuffer = uvb.asFloatBuffer();
+        uvBuffer.put(uvs);
+        uvBuffer.position(0);
+
 
         // initialize byte buffer for the draw list
         ByteBuffer dlb = ByteBuffer.allocateDirect(
@@ -172,6 +203,8 @@ public class Cube
         GLES20.glAttachShader(shaderProgram, vertexShader);
         GLES20.glAttachShader(shaderProgram, fragmentShader);
         GLES20.glLinkProgram(shaderProgram);
+
+        loadTexture(b);
     }
 
     public int loadShader(int type, String shaderCode)
@@ -190,6 +223,18 @@ public class Cube
         return shader;
     }
 
+    private void loadTexture(Bitmap b)
+    {
+        GLES20.glGenTextures(1, textures, 0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
+
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, b, 0);
+
+        b.recycle();
+    }
 
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
@@ -207,15 +252,18 @@ public class Cube
         int mPositionHandle = GLES20.glGetAttribLocation(shaderProgram, "vPosition");
         GLES20.glEnableVertexAttribArray(mPositionHandle);
         GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false,
-                vertexStride, vertexBuffer);
+                GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);
 
         // vertex normal attribute array
         int mNormalHandle = GLES20.glGetAttribLocation(shaderProgram, "vNormal");
         GLES20.glEnableVertexAttribArray(mNormalHandle);
         GLES20.glVertexAttribPointer(mNormalHandle, COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false,
-                vertexStride, normalBuffer);
+                GLES20.GL_FLOAT, false, vertexStride, normalBuffer);
+
+        // vertex UV attribute array
+        int mUVHandle = GLES20.glGetAttribLocation(shaderProgram, "vTexCoord");
+        GLES20.glEnableVertexAttribArray(mUVHandle);
+        GLES20.glVertexAttribPointer(mUVHandle, 2, GLES20.GL_FLOAT, false, 8, uvBuffer);
 
         // material data
         int mColorHandle = GLES20.glGetUniformLocation(shaderProgram, "Color");
@@ -243,12 +291,18 @@ public class Cube
         GLES20.glUniform4fv(mLightPosHandle, 1, lightPosition, 0);
         GLES20.glUniform3fv(mLightColorHandle, 1, lightColor, 0);
 
+        // texture
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
+        int mTexHandle = GLES20.glGetUniformLocation(shaderProgram, "Tex");
+        GLES20.glUniform1i(mTexHandle, 0);
+
         // Draw the object
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
 
         // Disable arrays
         GLES20.glDisableVertexAttribArray(mPositionHandle);
         GLES20.glDisableVertexAttribArray(mNormalHandle);
-
+        GLES20.glDisableVertexAttribArray(mUVHandle);
     }
 }
