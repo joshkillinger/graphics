@@ -35,12 +35,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -7, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
-        // depth testing
-//        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-//        GLES20.glClearDepthf(10.0f);
-//        GLES20.glDepthFunc(GLES20.GL_LEQUAL);
-//        GLES20.glDepthMask(true);
-
         // cull backface
         GLES20.glEnable( GLES20.GL_CULL_FACE );
         GLES20.glCullFace(GLES20.GL_BACK);

@@ -1,7 +1,5 @@
 package com.josh.hw6;
 
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
@@ -137,11 +135,11 @@ public class Cube
             0,0,    0,1,    1,1,    1,0,    //back
     };
 
-    private float color[] = {1, 1, 1, 1};
-    private float ambient[] = {0.2f, 0.2f, 0.2f};
-    private float diffuse[] = {0.8f, 0.8f, 0.8f};
-    private float specular[] = {0.8f, 0.8f, 0.8f};
-    private float shininess = 32.f;
+    private float color[] =     {1, 1, 1, 1};
+    private float ambient[] =   {0.2f, 0.2f, 0.2f};
+    private float diffuse[] =   {0.8f, 0.8f, 0.8f};
+    private float specular[] =  {0.8f, 0.8f, 0.8f};
+    private float shininess =   32.f;
 
     private short drawOrder[] = {0, 1, 2, 0, 2, 3,          // front
                                  4, 5, 6, 4, 6, 7,          // top

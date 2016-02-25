@@ -53,15 +53,14 @@ public class MainActivity extends Activity
 
 
         @Override
-        public boolean onTouchEvent(MotionEvent e) {
-            // MotionEvent reports input details from the touch screen
-            // and other input controls. In this case, you are only
-            // interested in events where the touch position changed.
+        public boolean onTouchEvent(MotionEvent e)
+        {
 
             float x = e.getX();
             float y = e.getY();
 
-            switch (e.getAction()) {
+            switch (e.getAction())
+            {
                 case MotionEvent.ACTION_MOVE:
 
                     float dx = x - mPreviousX;
