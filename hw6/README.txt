@@ -8,7 +8,8 @@ I used the tutorial at http://developer.android.com/training/graphics/opengl/ind
 Upgrades:
 Uses buffer indexing instead of raw buffers.
 Uses touch input to control view matrix.
-Converted from LHS to RHS (wat?!)
+Added a cube.
+Added lighting.
 
 I spent roughly 15 hours on this assignment.
 

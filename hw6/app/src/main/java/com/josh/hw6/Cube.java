@@ -3,6 +3,7 @@ package com.josh.hw6;
 import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -12,15 +13,15 @@ import java.nio.ShortBuffer;
 /**
  * Created by Josh on 2/22/2016.
  */
-public class Shape
+public class Cube
 {
     private final String vertexShaderCode =
             // This matrix member variable provides a hook to manipulate
             // the coordinates of the objects that use this vertex shader
-            "uniform mat4 uMVMatrix;" +
-            "uniform mat4 uNormalMatrix;" +
-            "uniform mat4 uPMatrix;" +
-            "uniform vec4 uLightPos;" +
+            "uniform mat4 MVMatrix;" +
+            "uniform mat4 NormalMatrix;" +
+            "uniform mat4 PMatrix;" +
+            "uniform vec4 LightPos;" +
 
             "attribute vec4 vPosition;" +
             "attribute vec3 vNormal;" +
@@ -28,26 +29,31 @@ public class Shape
             "varying vec4 VertPos;" +
             "varying vec4 Light;" +
             "varying vec3 Normal;" +
+            "varying vec3 View;" +
 
             "void main() {" +
-            "  VertPos = uMVMatrix * vPosition;" +
-            "  gl_Position = uPMatrix * VertPos;" +
+            "  VertPos = MVMatrix * vPosition;" +
+            "  gl_Position = PMatrix * VertPos;" +
 
-            "  Light = (uMVMatrix * uLightPos) - VertPos;" +
+            "  Light = (MVMatrix * LightPos) - VertPos;" +
+            "  View = -vec3(VertPos);" +
 
-            "  Normal = vec3(uNormalMatrix * vec4(vNormal, 0));" +
+            "  Normal = vec3(NormalMatrix * vec4(vNormal, 0));" +
             "}";
 
     private final String fragmentShaderCode =
             "precision mediump float;" +
-            "uniform vec4 vColor;" +
+            "uniform vec4 Color;" +
             "uniform vec3 Ambient;" +
             "uniform vec3 Diffuse;" +
+            "uniform vec3 Specular;" +
             "uniform vec3 LightColor;" +
+            "uniform float Shininess;" +
 
             "varying vec4 VertPos;" +
             "varying vec4 Light;" +
             "varying vec3 Normal;" +
+            "varying vec3 View;" +
 
             "void main() {" +
             "  vec3 color = Ambient;" +
@@ -57,9 +63,13 @@ public class Shape
             "  float Id = dot(L,N);" +
             "  if (Id > 0.0) {" +
             "    color += Id*Diffuse;" +
+            "    vec3 R = reflect(-L,N);" +
+            "    vec3 V = normalize(View);" +
+            "    float Is = dot(R,V);" +
+            "    if (Is > 0.0) color += pow(Is,Shininess) * Specular;" +
             "  }" +
 
-            "  gl_FragColor = vColor * vec4(color * LightColor, 1);" +
+            "  gl_FragColor = Color * vec4(color * LightColor, 1);" +
             "}";
 
     private int shaderProgram;
@@ -109,6 +119,8 @@ public class Shape
     private float color[] = {1, 1, 1, 1};
     private float ambient[] = {0.3f, 0.3f, 0.3f};
     private float diffuse[] = {0.7f, 0.7f, 0.7f};
+    private float specular[] = {1f, 1f, 1f};
+    private float shininess = 32.f;
 
     private short drawOrder[] = {0, 1, 2, 0, 2, 3,          // front
                                  4, 5, 6, 4, 6, 7,          // top
@@ -122,7 +134,7 @@ public class Shape
     private float lightPosition[] = {2, 2, 2, 1};
     private float lightColor[] = {0.2f, 0.2f, 1};
 
-    public Shape()
+    public Cube()
     {
         // initialize buffer for vertex coordinates
         ByteBuffer vpb = ByteBuffer.allocateDirect(
@@ -172,12 +184,13 @@ public class Shape
         GLES20.glShaderSource(shader, shaderCode);
         GLES20.glCompileShader(shader);
 
+        String logmsg = GLES20.glGetProgramInfoLog(shader);
+        Log.d("ShaderCompile",logmsg);
+
         return shader;
     }
 
 
-
-    private final int vertexCount = faceCoords.length / COORDS_PER_VERTEX;
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
     public void draw(float[] mvMatrix, float[] pMatrix)
@@ -190,47 +203,47 @@ public class Shape
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(shaderProgram);
 
-        // get handle to vertex shader's vPosition member
+        // vertex position attribute array
         int mPositionHandle = GLES20.glGetAttribLocation(shaderProgram, "vPosition");
-        // Enable a handle to the vertex positions
         GLES20.glEnableVertexAttribArray(mPositionHandle);
-        // Prepare the coordinate data
         GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
                 GLES20.GL_FLOAT, false,
                 vertexStride, vertexBuffer);
 
-        // get handle to vertex shader's vNormal member
+        // vertex normal attribute array
         int mNormalHandle = GLES20.glGetAttribLocation(shaderProgram, "vNormal");
-        // Enable a handle to the vertex normals
         GLES20.glEnableVertexAttribArray(mNormalHandle);
         GLES20.glVertexAttribPointer(mNormalHandle, COORDS_PER_VERTEX,
                 GLES20.GL_FLOAT, false,
                 vertexStride, normalBuffer);
 
-        // get handle to fragment shader's vColor member
-        int mColorHandle = GLES20.glGetUniformLocation(shaderProgram, "vColor");
-        // Set color for drawing the triangle
-        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
+        // material data
+        int mColorHandle = GLES20.glGetUniformLocation(shaderProgram, "Color");
         int mAmbientHandle = GLES20.glGetUniformLocation(shaderProgram, "Ambient");
-        GLES20.glUniform3fv(mAmbientHandle, 1, ambient, 0);
         int mDiffuseHandle = GLES20.glGetUniformLocation(shaderProgram, "Diffuse");
+        int mSpecularHandle = GLES20.glGetUniformLocation(shaderProgram, "Specular");
+        int mShininessHandle = GLES20.glGetUniformLocation(shaderProgram, "Shininess");
+        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
+        GLES20.glUniform3fv(mAmbientHandle, 1, ambient, 0);
         GLES20.glUniform3fv(mDiffuseHandle, 1, diffuse, 0);
+        GLES20.glUniform3fv(mSpecularHandle, 1, specular, 0);
+        GLES20.glUniform1f(mShininessHandle, shininess);
 
-        // get handle to shape's transformation matrix
-        int mMVMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "uMVMatrix");
-        int mPMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "uPMatrix");
-        int mNormalMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "uNormalMatrix");
-        // Pass the projection and view transformation to the shader
+        // transformation matrices
+        int mMVMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "MVMatrix");
+        int mPMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "PMatrix");
+        int mNormalMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "NormalMatrix");
         GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mvMatrix, 0);
         GLES20.glUniformMatrix4fv(mPMatrixHandle, 1, false, pMatrix, 0);
         GLES20.glUniformMatrix4fv(mNormalMatrixHandle, 1, false, normalMatrix, 0);
 
-        int mLightPosHandle = GLES20.glGetUniformLocation(shaderProgram, "uLightPos");
+        // lighting data
+        int mLightPosHandle = GLES20.glGetUniformLocation(shaderProgram, "LightPos");
         int mLightColorHandle = GLES20.glGetUniformLocation(shaderProgram, "LightColor");
         GLES20.glUniform4fv(mLightPosHandle, 1, lightPosition, 0);
         GLES20.glUniform3fv(mLightColorHandle, 1, lightColor, 0);
 
-        // Draw the triangle
+        // Draw the object
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
 
         // Disable arrays

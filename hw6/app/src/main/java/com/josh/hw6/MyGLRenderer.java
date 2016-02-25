@@ -13,10 +13,8 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class MyGLRenderer implements GLSurfaceView.Renderer
 {
-    private Shape quad;
+    private Cube cube;
 
-    // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
-    private float[] mMVPMatrix = new float[16];
     private float[] mProjectionMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
 
@@ -31,7 +29,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        quad = new Shape();
+        cube = new Cube();
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -7, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
@@ -56,7 +54,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         // Calculate the projection and view transformation
         //Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        quad.draw(mViewMatrix, mProjectionMatrix);
+        cube.draw(mViewMatrix, mProjectionMatrix);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height)
