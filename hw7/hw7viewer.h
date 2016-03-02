@@ -9,15 +9,12 @@
 class Hw7viewer : public QWidget
 {
 Q_OBJECT
-private:
-   QSlider*     Lpos;
-   QSlider*     Zpos;
-   QPushButton* light;
-   Hw7opengl*  ogl;
-private slots:
-   void lmove();        //  Light movement
 public:
     Hw7viewer();
+    QLabel*  flab;
+    QSlider* frac;
+private slots:
+    void setShader(int mode);
 };
 
 #endif

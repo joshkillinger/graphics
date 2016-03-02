@@ -4,45 +4,7 @@
 #include "hw7opengl.h"
 #include <QtOpenGL>
 #include <QMessageBox>
-#include "Cube.h"
-#include "WaveOBJ.h"
-#include "Teapot.h"
 #include <math.h>
-#define Cos(th) cos(M_PI/180*(th))
-#define Sin(th) sin(M_PI/180*(th))
-
-//
-//  Draw vertex in polar coordinates
-//
-static void Vertex(double th,double ph)
-{
-   glVertex3d(Sin(th)*Cos(ph),Cos(th)*Cos(ph),Sin(ph));
-}
-
-//
-//  Draw a ball at (x,y,z) radius r
-//
-static void ball(double x,double y,double z,double r)
-{
-   //  Save transformation
-   glPushMatrix();
-   //  Offset, scale and rotate
-   glTranslated(x,y,z);
-   glScaled(r,r,r);
-   //  Bands of latitude
-   for (int ph=-90;ph<90;ph+=10)
-   {
-      glBegin(GL_QUAD_STRIP);
-      for (int th=0;th<=360;th+=20)
-      {
-         Vertex(th,ph);
-         Vertex(th,ph+10);
-      }
-      glEnd();
-   }
-   //  Undo transofrmations
-   glPopMatrix();
-}
 
 //
 //  Constructor
@@ -51,18 +13,12 @@ Hw7opengl::Hw7opengl(QWidget* parent)
     : QGLWidget(parent)
 {
    mode = 0;
-   N = 1;
    init  = false;
    mouse = false;
-   asp = 1;
-   dim = 3;
-   fov = 55;
-   th = ph = 0;
    x0 = y0 = 0;
-   z0 = 1;
-   zh = 0;
-   framebuf[0] = 0;
-   framebuf[1] = 0;
+   zoom = 1;
+
+   gl = QOpenGLFunctions();
 }
 
 //
@@ -70,29 +26,19 @@ Hw7opengl::Hw7opengl(QWidget* parent)
 //
 void Hw7opengl::reset()
 {
-   th = ph = 0;
-   dim = 3;
-   //  Request redisplay
-   //updateGL();
+   x0 = y0 = 0;
+   zoom = 1;
+   frac = 0;
+   updateGL();
 }
 
 //
-//  Light animation
+//  Set shader
 //
-void Hw7opengl::setLightMove(bool on)
+void Hw7opengl::setFrac(int pct)
 {
-   move = on;
-   //updateGL();
-}
-
-//
-//  Set passes
-//
-void Hw7opengl::setPasses(int n)
-{
-   N = n;
-   //  Request redisplay
-   //updateGL();
+   frac = pct;
+   updateGL();
 }
 
 //
@@ -101,38 +47,30 @@ void Hw7opengl::setPasses(int n)
 void Hw7opengl::setShader(int sel)
 {
    mode = sel;
-   //  Request redisplay
-   //updateGL();
+   updateGL();
 }
 
 //
-//  Set light position
+//  Load image to texture unit
 //
-void Hw7opengl::setPos(int Zh)
+void Hw7opengl::LoadImage(GLenum unit,const QString file)
 {
-   zh = Zh;
-   //  Request redisplay
-   //updateGL();
-}
-
-//
-//  Set light elevation
-//
-void Hw7opengl::setElev(int Z)
-{
-   z0 = 0.02*Z;
-   //  Request redisplay
-   //updateGL();
-}
-
-//
-//  Set projection
-//
-void Hw7opengl::setPerspective(int on)
-{
-   fov = on ? 55 : 0;
-   //  Request redisplay
-   //updateGL();
+   //  Load image
+   QImage img(file);
+   //  Select texture unit
+   gl.glActiveTexture(unit);
+   //  Bind texture
+   unsigned int tex;
+   glGenTextures(1,&tex);
+   glBindTexture(GL_TEXTURE_2D,tex);
+   //  Copy image to texture
+   QImage rgba = QGLWidget::convertToGLFormat(img);
+   w = rgba.width();
+   h = rgba.height();
+   glTexImage2D(GL_TEXTURE_2D,0,4,w,h,0,GL_RGBA,GL_UNSIGNED_BYTE,rgba.bits());
+   //  Set pixel interpolation
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 }
 
 //
@@ -140,76 +78,35 @@ void Hw7opengl::setPerspective(int on)
 //
 void Hw7opengl::initializeGL()
 {
-   if (init) return;
-   init = true;
+    if (init) return;
+    init = true;
 
-   //  Load shaders
-   Shader(shader[1],"",":/ex11a.frag");
-   Shader(shader[2],"",":/ex11b.frag");
-   Shader(shader[3],"",":/ex11c.frag");
-   Shader(shader[4],"",":/ex11d.frag");
-   Shader(shader[5],"",":/ex11e.frag");
-   Shader(shader[6],"",":/ex11f.frag");
-   Shader(shader[7],"",":/ex11g.frag");
-   Shader(shader[8],"",":/ex11h.frag");
+    gl.initializeOpenGLFunctions();
 
-   // Cube
-   Cube* cube = new Cube();
-   cube->scale(0.5,0.5,0.5);
-   cube->translate(1,1,0);
-   objects.push_back(cube);
+    //  Load shader
+    Shader(shader,"",":/ex13.frag");
 
-   // Teapot
-   Teapot* pot = new Teapot(8);
-   pot->scale(0.3);
-   pot->texture(":/water.png");
-   pot->translate(-1,1,0);
-   objects.push_back(pot);
-
-   // Cruiser
-   WaveOBJ* cruiser=0;
-   try
-   {
-      cruiser = new WaveOBJ("cruiser.obj",":/");
-   }
-   catch (QString err)
-   {
-      Fatal("Error loading object\n"+err);
-   }
-   if (cruiser)
-   {
-      cruiser->color(1,1,0);
-      cruiser->scale(1.0);
-      cruiser->translate(0,-1,0);
-      objects.push_back(cruiser);
-   }
-
-   //  Start 100 fps timer connected to updateGL
-   move = true;
-   timer.setInterval(10);
-   connect(&timer,SIGNAL(timeout()),this,SLOT(updateGL()));
-   timer.start();
-   time.start();
+    //  Load images
+    LoadImage(GL_TEXTURE0,":/20090602.png");
+    LoadImage(GL_TEXTURE1,":/20090706.png");
 }
 
 //
-//  Set projection when window is resized
+//  Set projection
 //
 void Hw7opengl::resizeGL(int width, int height)
 {
-   //  Window aspect ration
-   asp = height ? width / (float)height : 1;
-   //  Viewport is whole screen
+   //  Window aspect ratio
+   float asp = width/(float)height;
+   //  Viewport is entire window
    glViewport(0,0,width,height);
-   //  Allocate frame buffer objects
-   for (int k=0;k<2;k++)
-   {
-      //  Allocate frame buffer objects
-      if (framebuf[k]) delete framebuf[k];
-      framebuf[k] = new QGLFramebufferObject(width,height,QGLFramebufferObject::Depth);
-   }
-   dX = 1.0/width;
-   dY = 1.0/height;
+   //  Set Projection
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glOrtho(-asp, +asp, -1, +1, -1, +1);
+   //  Set Projection
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
 }
 
 //
@@ -217,103 +114,34 @@ void Hw7opengl::resizeGL(int width, int height)
 //
 void Hw7opengl::paintGL()
 {
-   //  Wall time (seconds)
-   float t = 0.001*time.elapsed();
-   if (move) zh = fmod(90*t,360);
+   //  Image aspect ratio
+   float asp = w / (float)h;
 
-   //  Set projection
-   Projection();
-   //  Set view
+   //  Enable shader
+   shader.bind();
+
+   //  Set pixel increments
+   shader.setUniformValue("img0",0);
+   shader.setUniformValue("img1",1);
+   shader.setUniformValue("frac",(float)(frac/100.0));
+   shader.setUniformValue("mode",mode);
+
+   //  Set ModelView
+   glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   if (fov) glTranslated(0,0,-2*dim);
-   glRotated(ph,1,0,0);
-   glRotated(th,0,1,0);
+   glScaled(zoom,zoom,1);
+   glTranslated(x0,y0,0);
+   //  Draw to screen
+   glClear(GL_COLOR_BUFFER_BIT);
+   glBegin(GL_QUADS);
+   glTexCoord2f(0,0); glVertex2f(-asp,-1);
+   glTexCoord2f(1,0); glVertex2f(+asp,-1);
+   glTexCoord2f(1,1); glVertex2f(+asp,+1);
+   glTexCoord2f(0,1); glVertex2f(-asp,+1);
+   glEnd();
 
-   //  Translate intensity to color vectors
-   float Ambient[]  = {0.3,0.3,0.3,1.0};
-   float Diffuse[]  = {0.8,0.8,0.8,1.0};
-   float Specular[] = {1.0,1.0,1.0,1.0};
-   float Position[] = {(float)(3*Cos(zh)),z0,(float)(3*Sin(zh)),1.0};
-
-   //  Send output to framebuf[0]
-   if (mode) framebuf[0]->bind();
-
-
-   //  Z-buffer
-   glEnable(GL_DEPTH_TEST);
-   //  Clear screen and depth buffer
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   //  Draw light position (no lighting yet)
-   glColor3f(1,1,1);
-   ball(Position[0],Position[1],Position[2] , 0.1);
-   //  OpenGL should normalize normal vectors
-   glEnable(GL_NORMALIZE);
-   //  Enable lighting
-   glEnable(GL_LIGHTING);
-   //  Enable light 0
-   glEnable(GL_LIGHT0);
-   //  Set ambient, diffuse, specular components and position of light 0
-   glLightfv(GL_LIGHT0,GL_AMBIENT ,Ambient);
-   glLightfv(GL_LIGHT0,GL_DIFFUSE ,Diffuse);
-   glLightfv(GL_LIGHT0,GL_SPECULAR,Specular);
-   glLightfv(GL_LIGHT0,GL_POSITION,Position);
-
-   //  Draw scene
-   glPushMatrix();
-   for (int k=0;k<objects.size();k++)
-      objects[k]->display();
-   glPopMatrix();
-
-   //  Disable lighting and depth
-   glDisable(GL_LIGHTING);
-   glDisable(GL_DEPTH_TEST);
-
-   //  Apply shader
-   if (mode)
-   {
-      //  Reset projections
-      glMatrixMode(GL_PROJECTION);
-      glLoadIdentity();
-      glMatrixMode(GL_MODELVIEW);
-      glLoadIdentity();
-
-      //  Enable shader
-      shader[mode].bind();
-
-      //  Set shader increments
-      shader[mode].setUniformValue("dX",dX);
-      shader[mode].setUniformValue("dY",dY);
-
-      //  Ping-Pong
-      for (int k=0;k<N;k++)
-      {
-         int last = k%2;
-         int next = 1-last;
-         //  Set output to next framebuffer except for the last pass
-         if (k+1<N)
-            framebuf[next]->bind();
-         else
-            framebuf[last]->release();
-         //  Get the texture
-         glBindTexture(GL_TEXTURE_2D,framebuf[last]->texture());
-         //  Exercise shader
-         glClear(GL_COLOR_BUFFER_BIT);
-         glBegin(GL_QUADS);
-         glTexCoord2f(0,0); glVertex2f(-1,-1);
-         glTexCoord2f(1,0); glVertex2f(+1,-1);
-         glTexCoord2f(1,1); glVertex2f(+1,+1);
-         glTexCoord2f(0,1); glVertex2f(-1,+1);
-         glEnd();
-      }
-
-      //  Release shader
-      shader[mode].release();
-   }
-   
-   //  Emit angles to display
-   emit angles(QString::number(th)+","+QString::number(ph));
-   //  Emit light angle
-   emit light((int)zh);
+   //  Done with shader
+   shader.release();
 }
 
 //
@@ -323,27 +151,6 @@ void Hw7opengl::Fatal(QString message)
 {
    QMessageBox::critical(this,"Hw7opengl",message);
    QApplication::quit();
-}
-
-//
-//  Set OpenGL projection
-//
-void Hw7opengl::Projection()
-{
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   if (fov)
-   {
-      float zmin = dim/4;
-      float zmax = 4*dim;
-      float ydim = zmin*tan(fov*M_PI/360);
-      float xdim = ydim*asp;
-      glFrustum(-xdim,+xdim,-ydim,+ydim,zmin,zmax);
-   }
-   else
-      glOrtho(-dim*asp, +dim*asp, -dim, +dim, -dim, +dim);
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
 }
 
 /******************************************************************/
@@ -373,11 +180,11 @@ void Hw7opengl::mouseMoveEvent(QMouseEvent* e)
 {
    if (mouse)
    {
-      QPoint d = e->pos()-pos;  //  Change in mouse location
-      th = (th+d.x())%360;      //  Translate x movement to azimuth
-      ph = (ph+d.y())%360;      //  Translate y movement to elevation
-      pos = e->pos();           //  Remember new location
-      updateGL();               //  Request redisplay
+      QPoint d = e->pos()-pos;      //  Change in mouse location
+      x0 += d.x()/(zoom*width());   //  Translate x movement to azimuth
+      y0 -= d.y()/(zoom*height());  //  Translate y movement to elevation
+      pos = e->pos();               //  Remember new location
+      updateGL();
    }
 }
 
@@ -386,14 +193,13 @@ void Hw7opengl::mouseMoveEvent(QMouseEvent* e)
 //
 void Hw7opengl::wheelEvent(QWheelEvent* e)
 {
-   //  Zoom out
-   if (e->delta()<0)
-      dim += 0.1;
-   //  Zoom in
-   else if (dim>1)
-      dim -= 0.1;
-   //  Request redisplay
-   updateGL();
+    //  Zoom out
+    if (e->delta()<0)
+        zoom *= 1.05;
+    //  Zoom in
+    else if (zoom>1)
+        zoom /= 1.05;
+    updateGL();
 }
 
 //
