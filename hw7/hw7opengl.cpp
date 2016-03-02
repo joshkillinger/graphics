@@ -107,6 +107,7 @@ void Hw7opengl::resizeGL(int width, int height)
    //  Set Projection
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
+   updateGL();
 }
 
 //
