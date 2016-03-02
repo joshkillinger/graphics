@@ -1,0 +1,16 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>ex11a.frag</file>
+    <file>ex11b.frag</file>
+    <file>ex11c.frag</file>
+    <file>ex11d.frag</file>
+    <file>ex11e.frag</file>
+    <file>ex11f.frag</file>
+    <file>ex11g.frag</file>
+    <file>ex11h.frag</file>
+    <file>cruiser.obj</file>
+    <file>cruiser.mtl</file>
+    <file>cruiser.png</file>
+    <file>water.png</file>
+</qresource>
+</RCC>
