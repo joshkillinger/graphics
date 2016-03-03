@@ -23,6 +23,7 @@ Hw7opengl::Hw7opengl(QWidget* parent)
    pic = 0;
    N = 0;
    asp = 1;
+   range = 10.0f;
 
    //gl = QOpenGLFunctions();
 
@@ -64,7 +65,16 @@ void Hw7opengl::reset()
 }
 
 //
-//  Set shader
+//  Set number of colors to flatten to
+//
+void Hw7opengl::setRange(int r)
+{
+   range = r;
+   updateGL();
+}
+
+//
+//  Set number of shader passes
 //
 void Hw7opengl::setPasses(int n)
 {
@@ -118,6 +128,7 @@ void Hw7opengl::initializeGL()
     Shader(shader[0],"",":/ex11a.frag");
     Shader(shader[1],"",":/ex11c.frag");
     Shader(shader[2],"",":/ex11b.frag");
+    Shader(shader[3],"",":/flatten.frag");
 
     //  Load images
     LoadImage(1,":/landscape2.jpg");
@@ -165,28 +176,28 @@ void Hw7opengl::Projection()
 //
 void Hw7opengl::paintGL()
 {
-    if (mode == 3)
+    if (mode == 4)
     {
         mode = 1;
-        paint(true, false);
-        mode = 2;
-        paint(false, true);
+        Paint(true, false, N);
         mode = 3;
+        Paint(false, true, 1);
+        mode = 4;
     }
     else
     {
-        paint(true, true);
+        Paint(true, true, N);
     }
 }
 
-void Hw7opengl::paint(bool firstPass, bool output)
+void Hw7opengl::Paint(bool firstPass, bool output, int n)
 {
     //  Image aspect ratio
     float asp = w / (float)h;
 
     //  Send output to framebuf[0]
     cout << "mode = " << mode << endl;
-    if (mode && (N > 0)) framebuf[0]->bind();
+    if (mode && (n > 0)) framebuf[0]->bind();
 
     if (firstPass)
     {
@@ -215,12 +226,13 @@ void Hw7opengl::paint(bool firstPass, bool output)
         shader[0].release();
     }
 
-    if (mode && (N > 0))
+    if (mode && (n > 0))
     {
         shader[mode].bind();
         //  Set shader increments
         shader[mode].setUniformValue("dX",dX);
         shader[mode].setUniformValue("dY",dY);
+        shader[mode].setUniformValue("range",range);
 
         glDisable(GL_DEPTH_TEST);
 
@@ -231,12 +243,12 @@ void Hw7opengl::paint(bool firstPass, bool output)
         glLoadIdentity();
 
         //  Ping-Pong
-        for (int k=0;k<N;k++)
+        for (int k=0;k<n;k++)
         {
             int last = k%2;
             int next = 1-last;
             //  Set output to next framebuffer except for the last pass
-            if (k+1<N)
+            if (k+1<n)
             {
                framebuf[next]->bind();
             }

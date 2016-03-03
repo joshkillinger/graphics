@@ -16,5 +16,6 @@
         <file>landscape2.jpg</file>
         <file>landscape3.jpg</file>
         <file>landscape4.jpg</file>
+        <file>flatten.frag</file>
     </qresource>
 </RCC>
