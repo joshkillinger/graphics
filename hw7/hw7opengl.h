@@ -55,7 +55,7 @@ private:
    void LoadImage(int index, const QString file);  //  Load image to texture unit
    void Projection();
    void BindImage();
-   void Paint(bool firstPass, bool output, int n);                        //  Draw widget
+   void Paint(bool firstPass, bool output); //  Draw widget
 };
 
 #endif

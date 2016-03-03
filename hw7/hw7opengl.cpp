@@ -123,9 +123,9 @@ void Hw7opengl::initializeGL()
     init = true;
 
     //  Load shader
-    Shader(shader[0],"",":/ex11a.frag");
-    Shader(shader[1],"",":/ex11c.frag");
-    Shader(shader[2],"",":/ex11b.frag");
+    Shader(shader[0],"",":/blit.frag");
+    Shader(shader[1],"",":/blur.frag");
+    Shader(shader[2],"",":/sharpen.frag");
     Shader(shader[3],"",":/flatten.frag");
 
     //  Load images
@@ -177,19 +177,20 @@ void Hw7opengl::paintGL()
     if (mode == 4)
     {
         mode = 1;
-        Paint(true, false, N);
+        Paint(true, false);
         mode = 3;
-        Paint(false, true, N);
+        Paint(false, true);
         mode = 4;
     }
     else
     {
-        Paint(true, true, N);
+        Paint(true, true);
     }
 }
 
-void Hw7opengl::Paint(bool firstPass, bool output, int n)
+void Hw7opengl::Paint(bool firstPass, bool output)
 {
+    int n = N;
     if (mode == 3) n = 1;
 
     //  Image aspect ratio

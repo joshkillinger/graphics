@@ -1,21 +1,12 @@
 <RCC>
     <qresource prefix="/">
-        <file>ex11a.frag</file>
-        <file>ex11b.frag</file>
-        <file>ex11c.frag</file>
-        <file>ex11d.frag</file>
-        <file>ex11e.frag</file>
-        <file>ex11f.frag</file>
-        <file>ex11g.frag</file>
-        <file>ex11h.frag</file>
-        <file>water.png</file>
-        <file>20090602.png</file>
-        <file>20090706.png</file>
-        <file>ex13.frag</file>
         <file>landscape1.jpg</file>
         <file>landscape2.jpg</file>
         <file>landscape3.jpg</file>
         <file>landscape4.jpg</file>
         <file>flatten.frag</file>
+        <file>blit.frag</file>
+        <file>blur.frag</file>
+        <file>sharpen.frag</file>
     </qresource>
 </RCC>
