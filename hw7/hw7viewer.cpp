@@ -35,12 +35,13 @@ Hw7viewer::Hw7viewer()
 
    // Passes
    QSpinBox* passes = new QSpinBox();
-   passes->setRange(0,100);
+   passes->setRange(1,50);
+   passes->setValue(1);
 
    // Colors
    QSpinBox* colors = new QSpinBox();
-   colors->setRange(1,100);
-   colors->setValue(10);
+   colors->setRange(1,20);
+   colors->setValue(5);
 
    //  Reset
    QPushButton* rst = new QPushButton("Reset");

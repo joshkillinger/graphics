@@ -21,9 +21,9 @@ Hw7opengl::Hw7opengl(QWidget* parent)
    x0 = y0 = 0;
    zoom = 1;
    pic = 0;
-   N = 0;
+   N = 1;
    asp = 1;
-   range = 10.0f;
+   range = 5.0f;
 
    //gl = QOpenGLFunctions();
 
@@ -122,8 +122,6 @@ void Hw7opengl::initializeGL()
     if (init) return;
     init = true;
 
-    //gl.initializeOpenGLFunctions();
-
     //  Load shader
     Shader(shader[0],"",":/ex11a.frag");
     Shader(shader[1],"",":/ex11c.frag");
@@ -181,7 +179,7 @@ void Hw7opengl::paintGL()
         mode = 1;
         Paint(true, false, N);
         mode = 3;
-        Paint(false, true, 1);
+        Paint(false, true, N);
         mode = 4;
     }
     else
@@ -192,12 +190,13 @@ void Hw7opengl::paintGL()
 
 void Hw7opengl::Paint(bool firstPass, bool output, int n)
 {
+    if (mode == 3) n = 1;
+
     //  Image aspect ratio
     float asp = w / (float)h;
 
     //  Send output to framebuf[0]
-    cout << "mode = " << mode << endl;
-    if (mode && (n > 0)) framebuf[0]->bind();
+    if (mode) framebuf[0]->bind();
 
     if (firstPass)
     {
@@ -226,7 +225,7 @@ void Hw7opengl::Paint(bool firstPass, bool output, int n)
         shader[0].release();
     }
 
-    if (mode && (n > 0))
+    if (mode)
     {
         shader[mode].bind();
         //  Set shader increments
@@ -245,6 +244,12 @@ void Hw7opengl::Paint(bool firstPass, bool output, int n)
         //  Ping-Pong
         for (int k=0;k<n;k++)
         {
+            //in mode 3, if we had a previous shader running, and there were an odd number of passes, swap buffers
+            if ((mode == 3) && (N % 2) &! firstPass)
+            {
+                k ++;
+            }
+
             int last = k%2;
             int next = 1-last;
             //  Set output to next framebuffer except for the last pass
