@@ -16,6 +16,6 @@ Image 2, Passes 30, Colors 7
 Image 3, Passes 20+, Colors 10
 Image 4, Passes 20-30, Colors 10
 
-I spent roughly 15 hours on this assignment.
+I spent roughly 8 hours on this assignment.
 
 This was tested on Windows 7 x64 using MingW 4.9.2 for CMake, and Qt 5.2.1 MSVC2010 32bit OpenGL.
