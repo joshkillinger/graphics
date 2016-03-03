@@ -33,7 +33,7 @@ Hw7viewer::Hw7viewer()
    shader->addItem("Impressionist");
 
    // Fraction
-   QSlider* passes = new QSlider(Qt::Horizontal);
+   QSpinBox* passes = new QSpinBox();
    passes->setRange(0,100);
 
    //  Reset

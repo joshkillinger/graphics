@@ -21,7 +21,7 @@ Hw7opengl::Hw7opengl(QWidget* parent)
    x0 = y0 = 0;
    zoom = 1;
    pic = 0;
-   N = 1;
+   N = 0;
    asp = 1;
 
    //gl = QOpenGLFunctions();
@@ -186,15 +186,15 @@ void Hw7opengl::paint(bool firstPass, bool output)
 
     //  Send output to framebuf[0]
     cout << "mode = " << mode << endl;
-    if (mode) framebuf[0]->bind();
-
-    //  Enable shader
-    shader[mode].bind();
-    //  Set pixel increments
-    shader[mode].setUniformValue("img",0);
+    if (mode && (N > 0)) framebuf[0]->bind();
 
     if (firstPass)
     {
+        //  Enable shader
+        shader[0].bind();
+        //  Set pixel increments
+        shader[0].setUniformValue("img",0);
+
         Projection();
 
         glLoadIdentity();
@@ -211,10 +211,13 @@ void Hw7opengl::paint(bool firstPass, bool output)
         glTexCoord2f(1,1); glVertex2f(+asp,+1);
         glTexCoord2f(0,1); glVertex2f(-asp,+1);
         glEnd();
+
+        shader[0].release();
     }
 
-    if (mode)
+    if (mode && (N > 0))
     {
+        shader[mode].bind();
         //  Set shader increments
         shader[mode].setUniformValue("dX",dX);
         shader[mode].setUniformValue("dY",dY);
@@ -230,28 +233,38 @@ void Hw7opengl::paint(bool firstPass, bool output)
         //  Ping-Pong
         for (int k=0;k<N;k++)
         {
-           int last = k%2;
-           int next = 1-last;
-           //  Set output to next framebuffer except for the last pass
-           if (k+1<N)
-              framebuf[next]->bind();
-           else
-              framebuf[last]->release();
-           //  Get the texture
-           glBindTexture(GL_TEXTURE_2D,framebuf[last]->texture());
-           //  Exercise shader
-           glClear(GL_COLOR_BUFFER_BIT);
-           glBegin(GL_QUADS);
-           glTexCoord2f(0,0); glVertex2f(-1,-1);
-           glTexCoord2f(1,0); glVertex2f(+1,-1);
-           glTexCoord2f(1,1); glVertex2f(+1,+1);
-           glTexCoord2f(0,1); glVertex2f(-1,+1);
-           glEnd();
+            int last = k%2;
+            int next = 1-last;
+            //  Set output to next framebuffer except for the last pass
+            if (k+1<N)
+            {
+               framebuf[next]->bind();
+            }
+            else
+            {
+                if (output)
+                {
+                    framebuf[last]->release();
+                }
+                else
+                {
+                    framebuf[next]->bind();
+                }
+            }
+            //  Get the texture
+            glBindTexture(GL_TEXTURE_2D,framebuf[last]->texture());
+            //  Exercise shader
+            glClear(GL_COLOR_BUFFER_BIT);
+            glBegin(GL_QUADS);
+            glTexCoord2f(0,0); glVertex2f(-1,-1);
+            glTexCoord2f(1,0); glVertex2f(+1,-1);
+            glTexCoord2f(1,1); glVertex2f(+1,+1);
+            glTexCoord2f(0,1); glVertex2f(-1,+1);
+            glEnd();
         }
+        //  Done with shader
+        shader[mode].release();
     }
-
-    //  Done with shader
-    shader[mode].release();
 }
 
 //
