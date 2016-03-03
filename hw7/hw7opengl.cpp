@@ -17,8 +17,28 @@ Hw7opengl::Hw7opengl(QWidget* parent)
    mouse = false;
    x0 = y0 = 0;
    zoom = 1;
+   pic = 0;
 
-   gl = QOpenGLFunctions();
+   //gl = QOpenGLFunctions();
+
+}
+
+//
+//  Set image
+//
+void Hw7opengl::setImage(int sel)
+{
+   pic = sel;
+
+   glBindTexture(GL_TEXTURE_2D,textures[pic]);
+   w = images[pic].width();
+   h = images[pic].height();
+   glTexImage2D(GL_TEXTURE_2D,0,4,w,h,0,GL_RGBA,GL_UNSIGNED_BYTE,images[pic].bits());
+   //  Set pixel interpolation
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+
+   updateGL();
 }
 
 //
@@ -53,16 +73,15 @@ void Hw7opengl::setShader(int sel)
 //
 //  Load image to texture unit
 //
-void Hw7opengl::LoadImage(GLenum unit,const QString file)
+void Hw7opengl::LoadImage(int index, const QString file)
 {
    //  Load image
    QImage img(file);
    //  Select texture unit
-   gl.glActiveTexture(unit);
+   //gl.glActiveTexture(unit);
    //  Bind texture
-   unsigned int tex;
-   glGenTextures(1,&tex);
-   glBindTexture(GL_TEXTURE_2D,tex);
+   glGenTextures(1,&(textures[index]));
+   glBindTexture(GL_TEXTURE_2D,textures[index]);
    //  Copy image to texture
    QImage rgba = QGLWidget::convertToGLFormat(img);
    w = rgba.width();
@@ -71,6 +90,7 @@ void Hw7opengl::LoadImage(GLenum unit,const QString file)
    //  Set pixel interpolation
    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+   images.append(rgba);
 }
 
 //
@@ -81,14 +101,18 @@ void Hw7opengl::initializeGL()
     if (init) return;
     init = true;
 
-    gl.initializeOpenGLFunctions();
+    //gl.initializeOpenGLFunctions();
 
     //  Load shader
-    Shader(shader,"",":/ex13.frag");
+    Shader(shader,"",":/ex11a.frag");
 
     //  Load images
-    LoadImage(GL_TEXTURE0,":/20090602.png");
-    LoadImage(GL_TEXTURE1,":/20090706.png");
+    LoadImage(0,":/landscape1.jpg");
+    LoadImage(1,":/landscape2.jpg");
+    LoadImage(2,":/landscape3.jpg");
+    LoadImage(3,":/landscape4.jpg");
+
+    setImage(0);
 }
 
 //
@@ -122,10 +146,7 @@ void Hw7opengl::paintGL()
    shader.bind();
 
    //  Set pixel increments
-   shader.setUniformValue("img0",0);
-   shader.setUniformValue("img1",1);
-   shader.setUniformValue("frac",(float)(frac/100.0));
-   shader.setUniformValue("mode",mode);
+   shader.setUniformValue("img",0);
 
    //  Set ModelView
    glMatrixMode(GL_MODELVIEW);
