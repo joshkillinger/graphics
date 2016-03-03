@@ -5,6 +5,9 @@
 #include <QtOpenGL>
 #include <QMessageBox>
 #include <math.h>
+#include <iostream>
+
+using namespace std;
 
 //
 //  Constructor
@@ -18,18 +21,17 @@ Hw7opengl::Hw7opengl(QWidget* parent)
    x0 = y0 = 0;
    zoom = 1;
    pic = 0;
+   N = 1;
+   asp = 1;
 
    //gl = QOpenGLFunctions();
 
+   framebuf[0] = 0;
+   framebuf[1] = 0;
 }
 
-//
-//  Set image
-//
-void Hw7opengl::setImage(int sel)
+void Hw7opengl::BindImage()
 {
-   pic = sel;
-
    glBindTexture(GL_TEXTURE_2D,textures[pic]);
    w = images[pic].width();
    h = images[pic].height();
@@ -37,8 +39,18 @@ void Hw7opengl::setImage(int sel)
    //  Set pixel interpolation
    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+}
 
-   updateGL();
+//
+//  Set image
+//
+void Hw7opengl::setImage(int sel)
+{
+    pic = sel;
+
+    BindImage();
+
+    updateGL();
 }
 
 //
@@ -48,16 +60,15 @@ void Hw7opengl::reset()
 {
    x0 = y0 = 0;
    zoom = 1;
-   frac = 0;
    updateGL();
 }
 
 //
 //  Set shader
 //
-void Hw7opengl::setFrac(int pct)
+void Hw7opengl::setPasses(int n)
 {
-   frac = pct;
+   N = n;
    updateGL();
 }
 
@@ -104,15 +115,15 @@ void Hw7opengl::initializeGL()
     //gl.initializeOpenGLFunctions();
 
     //  Load shader
-    Shader(shader,"",":/ex11a.frag");
+    Shader(shader[0],"",":/ex11a.frag");
+    Shader(shader[1],"",":/ex11c.frag");
+    Shader(shader[2],"",":/ex11b.frag");
 
     //  Load images
-    LoadImage(0,":/landscape1.jpg");
     LoadImage(1,":/landscape2.jpg");
     LoadImage(2,":/landscape3.jpg");
     LoadImage(3,":/landscape4.jpg");
-
-    setImage(0);
+    LoadImage(0,":/landscape1.jpg");
 }
 
 //
@@ -121,17 +132,32 @@ void Hw7opengl::initializeGL()
 void Hw7opengl::resizeGL(int width, int height)
 {
    //  Window aspect ratio
-   float asp = width/(float)height;
+   asp = width/(float)height;
    //  Viewport is entire window
    glViewport(0,0,width,height);
-   //  Set Projection
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   glOrtho(-asp, +asp, -1, +1, -1, +1);
-   //  Set Projection
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
+
+   for (int k=0;k<2;k++)
+   {
+      //  Allocate frame buffer objects
+      if (framebuf[k]) delete framebuf[k];
+      framebuf[k] = new QGLFramebufferObject(width,height,QGLFramebufferObject::Depth);
+      framebuf[k]->release();
+   }
+
+   dX = 1.0/width;
+   dY = 1.0/height;
+
    updateGL();
+}
+
+void Hw7opengl::Projection()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-asp, +asp, -1, +1, -1, +1);
+    //  Set Projection
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 //
@@ -139,31 +165,93 @@ void Hw7opengl::resizeGL(int width, int height)
 //
 void Hw7opengl::paintGL()
 {
-   //  Image aspect ratio
-   float asp = w / (float)h;
+    if (mode == 3)
+    {
+        mode = 1;
+        paint(true, false);
+        mode = 2;
+        paint(false, true);
+        mode = 3;
+    }
+    else
+    {
+        paint(true, true);
+    }
+}
 
-   //  Enable shader
-   shader.bind();
+void Hw7opengl::paint(bool firstPass, bool output)
+{
+    //  Image aspect ratio
+    float asp = w / (float)h;
 
-   //  Set pixel increments
-   shader.setUniformValue("img",0);
+    //  Send output to framebuf[0]
+    cout << "mode = " << mode << endl;
+    if (mode) framebuf[0]->bind();
 
-   //  Set ModelView
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-   glScaled(zoom,zoom,1);
-   glTranslated(x0,y0,0);
-   //  Draw to screen
-   glClear(GL_COLOR_BUFFER_BIT);
-   glBegin(GL_QUADS);
-   glTexCoord2f(0,0); glVertex2f(-asp,-1);
-   glTexCoord2f(1,0); glVertex2f(+asp,-1);
-   glTexCoord2f(1,1); glVertex2f(+asp,+1);
-   glTexCoord2f(0,1); glVertex2f(-asp,+1);
-   glEnd();
+    //  Enable shader
+    shader[mode].bind();
+    //  Set pixel increments
+    shader[mode].setUniformValue("img",0);
 
-   //  Done with shader
-   shader.release();
+    if (firstPass)
+    {
+        Projection();
+
+        glLoadIdentity();
+
+        glScaled(zoom,zoom,1);
+        glTranslated(x0,y0,0);
+
+        BindImage();
+
+        glClear(GL_COLOR_BUFFER_BIT);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0,0); glVertex2f(-asp,-1);
+        glTexCoord2f(1,0); glVertex2f(+asp,-1);
+        glTexCoord2f(1,1); glVertex2f(+asp,+1);
+        glTexCoord2f(0,1); glVertex2f(-asp,+1);
+        glEnd();
+    }
+
+    if (mode)
+    {
+        //  Set shader increments
+        shader[mode].setUniformValue("dX",dX);
+        shader[mode].setUniformValue("dY",dY);
+
+        glDisable(GL_DEPTH_TEST);
+
+        //  Reset projections
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        //  Ping-Pong
+        for (int k=0;k<N;k++)
+        {
+           int last = k%2;
+           int next = 1-last;
+           //  Set output to next framebuffer except for the last pass
+           if (k+1<N)
+              framebuf[next]->bind();
+           else
+              framebuf[last]->release();
+           //  Get the texture
+           glBindTexture(GL_TEXTURE_2D,framebuf[last]->texture());
+           //  Exercise shader
+           glClear(GL_COLOR_BUFFER_BIT);
+           glBegin(GL_QUADS);
+           glTexCoord2f(0,0); glVertex2f(-1,-1);
+           glTexCoord2f(1,0); glVertex2f(+1,-1);
+           glTexCoord2f(1,1); glVertex2f(+1,+1);
+           glTexCoord2f(0,1); glVertex2f(-1,+1);
+           glEnd();
+        }
+    }
+
+    //  Done with shader
+    shader[mode].release();
 }
 
 //

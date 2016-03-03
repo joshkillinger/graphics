@@ -33,11 +33,8 @@ Hw7viewer::Hw7viewer()
    shader->addItem("Impressionist");
 
    // Fraction
-   flab = new QLabel("Fraction");
-   frac = new QSlider(Qt::Horizontal);
-   frac->setRange(0,100);
-   flab->hide();
-   frac->hide();
+   QSlider* passes = new QSlider(Qt::Horizontal);
+   passes->setRange(0,100);
 
    //  Reset
    QPushButton* rst = new QPushButton("Reset");
@@ -51,8 +48,8 @@ Hw7viewer::Hw7viewer()
    layout->addWidget(picture,0,2);
    layout->addWidget(new QLabel("Shader"),1,1);
    layout->addWidget(shader,1,2);
-   layout->addWidget(flab,2,1);
-   layout->addWidget(frac,2,2);
+   layout->addWidget(new QLabel("Passes"),2,1);
+   layout->addWidget(passes,2,2);
    layout->addWidget(rst,4,1);
    layout->addWidget(quit,4,2);
    //  Manage resizing
@@ -64,27 +61,9 @@ Hw7viewer::Hw7viewer()
    //  Connect valueChanged() signals to ogl
    connect(picture,SIGNAL(currentIndexChanged(int)) , ogl,SLOT(setImage(int)));
    connect(shader,SIGNAL(currentIndexChanged(int))  , ogl,SLOT(setShader(int)));
-   connect(frac,SIGNAL(valueChanged(int))           , ogl,SLOT(setFrac(int)));
-   connect(shader,SIGNAL(currentIndexChanged(int))  , this,SLOT(setShader(int)));
+   connect(passes,SIGNAL(valueChanged(int))         , ogl,SLOT(setPasses(int)));
    //  Connect reset() and lmove() signals
    connect(rst  ,SIGNAL(pressed()),ogl,SLOT(reset()));
    //  Connect quit() signal to qApp::quit()
    connect(quit,SIGNAL(pressed()) , qApp,SLOT(quit()));
-}
-
-//
-//  Shader adjust
-//
-void Hw7viewer::setShader(int mode)
-{
-   if (mode==2)
-   {
-      flab->show();
-      frac->show();
-   }
-   else
-   {
-      flab->hide();
-      frac->hide();
-   }
 }
