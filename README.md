@@ -1,5 +1,6 @@
-# graphics
-Repository for homework for Advanced Graphics
+#Graphics
+Repository for homework for Advanced Graphics CSCI 5239
+University of Colorado Boulder, S16
 
 ####Homework 1
 Basic shader (NDC to RGB), and Qt Introduction
