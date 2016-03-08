@@ -1,0 +1,10 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>ex16.vert</file>
+    <file>ex16a.frag</file>
+    <file>ex16b.frag</file>
+    <file>ex16c.frag</file>
+    <file>ex16d.frag</file>
+    <file>bunny.obj</file>
+</qresource>
+</RCC>
