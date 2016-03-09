@@ -1,12 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>ex16.vert</file>
-        <file>ex16a.frag</file>
-        <file>ex16b.frag</file>
-        <file>ex16c.frag</file>
-        <file>ex16d.frag</file>
-        <file>bunny.obj</file>
         <file>hw8.frag</file>
         <file>hw8.vert</file>
+        <file>hex-normal.jpg</file>
     </qresource>
 </RCC>

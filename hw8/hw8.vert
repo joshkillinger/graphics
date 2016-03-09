@@ -5,6 +5,7 @@ varying vec3 View;
 varying vec3 Light;
 varying vec3 Normal;
 varying vec4 Ambient;
+varying mat3 NormalMat;
 
 void main()
 {
@@ -16,7 +17,9 @@ void main()
    //  Light position
    Light  = vec3(gl_LightSource[0].position) - P;
    //  Normal
-   Normal = gl_NormalMatrix * gl_Normal;
+   //Normal = gl_NormalMatrix * gl_Normal;
+   Normal = gl_Normal;
+   NormalMat = gl_NormalMatrix;
    //  Eye position
    View  = -P;
    //  Ambient color

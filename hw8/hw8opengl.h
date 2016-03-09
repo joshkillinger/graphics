@@ -30,7 +30,10 @@ private:
    double  dim;       //  Display size
    double  asp;       //  Sceen aspect ratio
    Object* obj;       //  Object
-   QGLShaderProgram shader[2]; //  Shaders
+   int     pic;
+   GLuint  textures[4];
+   QVector<QImage>  images;
+   QGLShaderProgram shader[3]; //  Shaders
    QTimer           timer;     //  Timer for animations
    QElapsedTimer    time;      //  Track elapsed time
    QOpenGLFunctions* gl;
@@ -56,9 +59,12 @@ protected:
     void mouseMoveEvent(QMouseEvent*);     //  Mouse moved
     void wheelEvent(QWheelEvent*);         //  Mouse wheel
 private:
-   void Fatal(QString message);            //  Error handler
-   void Projection();                      //  Update projection
-   void Shader(QGLShaderProgram& shader,QString vert,QString frag);  //  Create shader
+    void Fatal(QString message);            //  Error handler
+    void Projection();                      //  Update projection
+    void Shader(QGLShaderProgram& shader,QString vert,QString frag);  //  Create shader
+    void BindImage();
+    void setImage(int sel);
+    void LoadImage(int index, const QString file);
 };
 
 #endif

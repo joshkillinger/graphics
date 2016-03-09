@@ -3,6 +3,7 @@
 //
 #include "hw8opengl.h"
 #include <QtOpenGL>
+#include <QOpenGLFunctions>
 #include <QMessageBox>
 #include <math.h>
 #define Cos(th) cos(M_PI/180*(th))
@@ -57,6 +58,7 @@ Hw8opengl::Hw8opengl(QWidget* parent)
    x0 = y0 = 0;
    z0 = 1;
    zh = 0;
+   pic = 0;
 }
 
 //
@@ -110,31 +112,79 @@ void Hw8opengl::setPerspective(int on)
    Projection();
 }
 
+
+void Hw8opengl::BindImage()
+{
+    glBindTexture(GL_TEXTURE_2D,textures[pic]);
+    int w = images[pic].width();
+    int h = images[pic].height();
+    glTexImage2D(GL_TEXTURE_2D,0,4,w,h,0,GL_RGBA,GL_UNSIGNED_BYTE,images[pic].bits());
+    //  Set pixel interpolation
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+}
+
+//
+//  Set image
+//
+void Hw8opengl::setImage(int sel)
+{
+    pic = sel;
+
+    BindImage();
+
+    updateGL();
+}
+
+//
+//  Load image to texture unit
+//
+void Hw8opengl::LoadImage(int index, const QString file)
+{
+    //  Load image
+    QImage img(file);
+    //  Select texture unit
+    //gl.glActiveTexture(unit);
+    //  Bind texture
+    glGenTextures(1,&(textures[index]));
+    glBindTexture(GL_TEXTURE_2D,textures[index]);
+    //  Copy image to texture
+    QImage rgba = QGLWidget::convertToGLFormat(img);
+    int w = rgba.width();
+    int h = rgba.height();
+    glTexImage2D(GL_TEXTURE_2D,0,4,w,h,0,GL_RGBA,GL_UNSIGNED_BYTE,rgba.bits());
+    //  Set pixel interpolation
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    images.append(rgba);
+}
+
 //
 //  Initialize
 //
 void Hw8opengl::initializeGL()
 {
-   if (init) return;
-   init = true;
+    if (init) return;
+    init = true;
 
-   gl = new QOpenGLFunctions();
+    gl = new QOpenGLFunctions();
 
-   //  Load shaders
-   Shader(shader[1],":/hw8.vert",":/hw8.frag");
+    //  Load shaders
+    Shader(shader[1],":/hw8.vert",":/hw8.frag");
 
-   // Quad
-   obj = new Quad();
+    // Quad
+    obj = new Quad();
 
-   //  Set noise texture
-   //CreateNoise3D(gl, GL_TEXTURE1);
+    //  Set noise texture
+    //CreateNoise3D(gl, GL_TEXTURE1);
+    LoadImage(0, ":/hex-normal.jpg");
 
-   //  Start 100 fps timer connected to updateGL
-   move = true;
-   timer.setInterval(10);
-   connect(&timer,SIGNAL(timeout()),this,SLOT(updateGL()));
-   timer.start();
-   time.start();
+    //  Start 100 fps timer connected to updateGL
+    move = true;
+    timer.setInterval(10);
+    connect(&timer,SIGNAL(timeout()),this,SLOT(updateGL()));
+    timer.start();
+    time.start();
 }
 
 //
