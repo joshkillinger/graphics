@@ -33,7 +33,7 @@ void Quad::display()
    //  Texture on
    //EnableTex();
    //  Top
-   setColor(Color(0,1,1));
+   setColor(Color(1,1,1));
    glBegin(GL_QUADS);
    glNormal3f( 0,+1, 0);
    glTexCoord2f(0,0); glVertex3f(-1,0,+1);

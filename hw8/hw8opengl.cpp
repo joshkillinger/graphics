@@ -121,10 +121,7 @@ void Hw8opengl::initializeGL()
    gl = new QOpenGLFunctions();
 
    //  Load shaders
-   Shader(shader[1],":/ex16.vert",":/ex16a.frag");
-   Shader(shader[2],":/ex16.vert",":/ex16b.frag");
-   Shader(shader[3],":/ex16.vert",":/ex16c.frag");
-   Shader(shader[4],":/ex16.vert",":/ex16d.frag");
+   Shader(shader[1],":/hw8.vert",":/hw8.frag");
 
    // Quad
    obj = new Quad();

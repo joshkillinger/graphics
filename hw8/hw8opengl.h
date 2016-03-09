@@ -30,7 +30,7 @@ private:
    double  dim;       //  Display size
    double  asp;       //  Sceen aspect ratio
    Object* obj;       //  Object
-   QGLShaderProgram shader[6]; //  Shaders
+   QGLShaderProgram shader[2]; //  Shaders
    QTimer           timer;     //  Timer for animations
    QElapsedTimer    time;      //  Track elapsed time
    QOpenGLFunctions* gl;

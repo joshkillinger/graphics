@@ -20,11 +20,9 @@ Hw8viewer::Hw8viewer()
 
    //  Select shader
    QComboBox* shader = new QComboBox();
-   shader->addItem("None");
-   shader->addItem("Cloud");
-   shader->addItem("Sun");
-   shader->addItem("Marble");
-   shader->addItem("Wood");
+   shader->addItem("Flat");
+   shader->addItem("Hex");
+   shader->addItem("Pool");
 
    //  Select projection
    QComboBox* projection = new QComboBox();
