@@ -10,6 +10,8 @@
 #include <QVector>
 #include <QOpenGLFunctions>
 #include "Object.h"
+#include "quad.h"
+#include "perlin.h"
 
 class Hw8opengl : public QGLWidget
 {
@@ -29,7 +31,6 @@ private:
    double  asp;       //  Sceen aspect ratio
    Object* obj;       //  Object
    QGLShaderProgram shader[6]; //  Shaders
-   QVector<Object*> objects;   //  Objects
    QTimer           timer;     //  Timer for animations
    QElapsedTimer    time;      //  Track elapsed time
    QOpenGLFunctions* gl;
@@ -39,7 +40,6 @@ public:
 public slots:
     void setShader(int sel);               //  Slot to set shader
     void setPerspective(int on);           //  Slot to set projection type
-    void setObject(int type);              //  Slot to set displayed object
     void setPos(int ang);                  //  Slot to light position
     void setElev(int z);                   //  Slot to light elevation (%)
     void setLightMove(bool on);            //  Slot to set light movement

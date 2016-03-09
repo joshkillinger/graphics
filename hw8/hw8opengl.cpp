@@ -4,10 +4,6 @@
 #include "hw8opengl.h"
 #include <QtOpenGL>
 #include <QMessageBox>
-#include "Cube.h"
-#include "WaveOBJ.h"
-#include "Teapot.h"
-#include "Noise.h"
 #include <math.h>
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
@@ -71,8 +67,6 @@ void Hw8opengl::reset()
    th = ph = 0;
    dim = 3;
    Projection();
-   //  Request redisplay
-   updateGL();
 }
 
 //
@@ -81,7 +75,6 @@ void Hw8opengl::reset()
 void Hw8opengl::setLightMove(bool on)
 {
    move = on;
-   updateGL();
 }
 
 //
@@ -90,8 +83,6 @@ void Hw8opengl::setLightMove(bool on)
 void Hw8opengl::setShader(int sel)
 {
    mode = sel;
-   //  Request redisplay
-   updateGL();
 }
 
 //
@@ -100,8 +91,6 @@ void Hw8opengl::setShader(int sel)
 void Hw8opengl::setPos(int Zh)
 {
    zh = Zh;
-   //  Request redisplay
-   updateGL();
 }
 
 //
@@ -110,8 +99,6 @@ void Hw8opengl::setPos(int Zh)
 void Hw8opengl::setElev(int Z)
 {
    z0 = 0.02*Z;
-   //  Request redisplay
-   updateGL();
 }
 
 //
@@ -121,18 +108,6 @@ void Hw8opengl::setPerspective(int on)
 {
    fov = on ? 55 : 0;
    Projection();
-   //  Request redisplay
-   updateGL();
-}
-
-//
-//  Set object
-//
-void Hw8opengl::setObject(int type)
-{
-   obj = objects[type];
-   //  Request redisplay
-   updateGL();
 }
 
 //
@@ -151,36 +126,11 @@ void Hw8opengl::initializeGL()
    Shader(shader[3],":/ex16.vert",":/ex16c.frag");
    Shader(shader[4],":/ex16.vert",":/ex16d.frag");
 
-   // Cube
-   Cube* cube = new Cube();
-   objects.push_back(cube);
-
-   // Teapot
-   Teapot* pot = new Teapot(8);
-   pot->scale(0.5);
-   objects.push_back(pot);
-
-   // Cruiser
-   WaveOBJ* bunny=0;
-   try
-   {
-      bunny = new WaveOBJ("bunny.obj",":/");
-   }
-   catch (QString err)
-   {
-      Fatal("Error loading object\n"+err);
-   }
-   if (bunny)
-   {
-      bunny->color(1,1,0);
-      objects.push_back(bunny);
-   }
-
-   //  Set initial object
-   obj = objects[0];
+   // Quad
+   obj = new Quad();
 
    //  Set noise texture
-   CreateNoise3D(gl, GL_TEXTURE1);
+   //CreateNoise3D(gl, GL_TEXTURE1);
 
    //  Start 100 fps timer connected to updateGL
    move = true;
@@ -248,7 +198,7 @@ void Hw8opengl::paintGL()
 
    //  Draw scene
    glPushMatrix();
-   if (obj) obj->display();
+   obj->display();
    glPopMatrix();
 
    //  Release shader

@@ -32,12 +32,6 @@ Hw8viewer::Hw8viewer()
    projection->addItem("Perspective");
    projection->setCurrentIndex(1);
 
-   //  Select object
-   QComboBox* object = new QComboBox();
-   object->addItem("Cube");
-   object->addItem("Teapot");
-   object->addItem("Bunny");
-
    //  Center position
    Lpos = new QSlider(Qt::Horizontal);
    Zpos = new QSlider(Qt::Horizontal);
@@ -62,8 +56,6 @@ Hw8viewer::Hw8viewer()
    layout->addWidget(shader,0,2);
    layout->addWidget(new QLabel("Projection"),1,1);
    layout->addWidget(projection,1,2);
-   layout->addWidget(new QLabel("Object"),2,1);
-   layout->addWidget(object,2,2);
    layout->addWidget(new QLabel("Light Position"),3,1);
    layout->addWidget(Lpos,3,2);
    layout->addWidget(new QLabel("Light"),4,1);
@@ -82,7 +74,6 @@ Hw8viewer::Hw8viewer()
 
    //  Connect valueChanged() signals to ogl
    connect(shader,SIGNAL(currentIndexChanged(int))     , ogl,SLOT(setShader(int)));
-   connect(object,SIGNAL(currentIndexChanged(int))     , ogl,SLOT(setObject(int)));
    connect(projection,SIGNAL(currentIndexChanged(int)) , ogl,SLOT(setPerspective(int)));
    connect(Lpos,SIGNAL(valueChanged(int)) , ogl,SLOT(setPos(int)));
    connect(Zpos,SIGNAL(valueChanged(int)) , ogl,SLOT(setElev(int)));
