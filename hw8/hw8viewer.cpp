@@ -13,7 +13,7 @@
 Hw8viewer::Hw8viewer()
 {
    //  Set window title
-   setWindowTitle(tr("Hw8:  Perlin Noise"));
+   setWindowTitle(tr("Josh Killinger: Hw8"));
 
    //  Create new OpenGL widget
    ogl = new Hw8opengl;
