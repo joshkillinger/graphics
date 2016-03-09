@@ -7,6 +7,7 @@ Homework 8
 I started by creating a quad object and applying a normal map to it.
 
 I found a sample normal map (hexes) here: https://www.filterforge.com/filters/6624-normal.jpg
+Perlin noise class is based on http://www.flipcode.com/archives/Perlin_Noise_Class.shtml
 
 I spent roughly _ hours on this assignment.
 
