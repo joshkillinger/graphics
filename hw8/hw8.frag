@@ -1,12 +1,11 @@
 //  Per-pixel Phong lighting
 //  Fragment shader
 
+uniform sampler2D tex;
+
 varying vec3 View;
 varying vec3 Light;
-varying vec3 Normal;
 varying vec4 Ambient;
-varying mat3 NormalMat;
-uniform sampler2D tex;
 
 vec4 phong(vec3 norm)
 {
@@ -16,8 +15,8 @@ vec4 phong(vec3 norm)
    vec3 L = normalize(Light);
 
    //  Emission and ambient color
-   //vec4 color = Ambient;
-   vec4 color = vec4(0);
+   vec4 color = Ambient;
+   //vec4 color = vec4(0);
 
    //  Diffuse light is cosine of light and normal vectors
    float Id = dot(L,N);
@@ -31,7 +30,7 @@ vec4 phong(vec3 norm)
       vec3 V = normalize(View);
       //  Specular is cosine of reflected and view vectors
       float Is = dot(R,V);
-      //if (Is>0.0) color += pow(Is,gl_FrontMaterial.shininess)*gl_FrontLightProduct[0].specular;
+      if (Is>0.0) color += pow(Is,gl_FrontMaterial.shininess)*gl_FrontLightProduct[0].specular;
    }
 
    //  Return sum of color components
@@ -40,11 +39,6 @@ vec4 phong(vec3 norm)
 
 void main()
 {
-    //vec3 norm = normalize(texture2D(tex,gl_TexCoord[0].xy).rgb - .5);
-    //norm *= vec3(1.0,1.0,-1.0);
-    //norm += normalize(Normal);
-    //norm = NormalMat * norm;
-    vec3 norm = normalize(Normal);
-    gl_FragColor = vec4(norm,1);
-    //gl_FragColor = phong(norm);// * texture2D(tex,gl_TexCoord[0].xy);
+    vec3 norm = normalize(texture2D(tex,gl_TexCoord[0].xy).rgb - .5);
+    gl_FragColor = phong(norm);// * texture2D(tex,gl_TexCoord[0].xy);
 }

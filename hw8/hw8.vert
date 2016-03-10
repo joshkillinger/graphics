@@ -1,27 +1,30 @@
-//  Per-pixel Phong lighting
+#version 120
+
+//  Per-pixel Phong lighting with normalmap
 //  Vertex shader
 
 varying vec3 View;
 varying vec3 Light;
-varying vec3 Normal;
 varying vec4 Ambient;
-varying mat3 NormalMat;
 
 void main()
 {
-   //
+   //  tangent space calculations
+   vec3 N = vec3(gl_ModelViewMatrix * vec4(gl_Normal,0.0));
+   vec3 T = vec3(gl_ModelViewMatrix * vec4(1.0,0.0,0.0,0.0));
+   vec3 B = vec3(gl_ModelViewMatrix * vec4(0.0,0.0,1.0,0.0));
+   mat3 TBN = transpose(mat3(T, B, N));
+   
    //  Lighting values needed by fragment shader
-   //
    //  Vertex location in modelview coordinates
    vec3 P = vec3(gl_ModelViewMatrix * gl_Vertex);
-   //  Light position
-   Light  = vec3(gl_LightSource[0].position) - P;
-   //  Normal
-   //Normal = gl_NormalMatrix * gl_Normal;
-   Normal = gl_Normal;
-   NormalMat = gl_NormalMatrix;
+   
+   //  Direction to Light in tangent space
+   Light  = TBN * (vec3(gl_LightSource[0].position) - P);
+   
    //  Eye position
-   View  = -P;
+   View  = TBN * (-P);
+   
    //  Ambient color
    Ambient = gl_FrontMaterial.emission + gl_FrontLightProduct[0].ambient + gl_LightModel.ambient*gl_FrontMaterial.ambient;
 
