@@ -22,7 +22,7 @@ Hw8viewer::Hw8viewer()
    QComboBox* shader = new QComboBox();
    shader->addItem("Flat");
    shader->addItem("Hex");
-   shader->addItem("Pool");
+   //shader->addItem("Pool");
 
    //  Select projection
    QComboBox* projection = new QComboBox();

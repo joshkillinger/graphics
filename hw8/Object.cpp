@@ -17,6 +17,18 @@ Object::Object()
    r0 = g0 = b0 = 1;
    //  Texture
    tex = 0;
+
+   sx = sy = sz = 1;
+}
+
+//
+//  Set scaling
+//
+void Object::scale(float dx,float dy,float dz)
+{
+   sx = dx;
+   sy = dy;
+   sz = dz;
 }
 
 //

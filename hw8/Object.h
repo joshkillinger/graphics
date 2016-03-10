@@ -18,6 +18,7 @@ protected:
    float x0,y0,z0;    //  Location
    float th,nx,ny,nz; //  Rotation (angle and axis)
    float r0,g0,b0;    //  Color
+   float sx,sy,sz;    //  Dimensions in X/Y/Z directions
    unsigned int tex;  //  Texture
    Object();          //  Constructor
 public:
@@ -25,6 +26,7 @@ public:
    void texture(QString file);                       //  Set default texture
    void rotate(float th,float dx,float dy,float dz); //  Set rotation
    void color(float r,float g,float b);              //  Set color
+   void scale(float dx,float dy,float dz);           //  Set scale
    virtual void display()=0;                         //  Render the object
    virtual ~Object() {};                             //  Do nothing destructor
 protected:

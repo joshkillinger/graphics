@@ -59,6 +59,8 @@ Hw8opengl::Hw8opengl(QWidget* parent)
    z0 = 1;
    zh = 0;
    pic = 0;
+
+   perlin = new Perlin(2,4,1,0);
 }
 
 //
@@ -174,10 +176,12 @@ void Hw8opengl::initializeGL()
 
     // Quad
     obj = new Quad();
-    obj->translate(0,-1,0);
+    obj->scale(5,5,5);
+    obj->translate(0,-2.1,0);
 
     //  Set noise texture
     //CreateNoise3D(gl, GL_TEXTURE1);
+
     LoadImage(0, ":/hex-normal.jpg");
 
     //  Start 100 fps timer connected to updateGL

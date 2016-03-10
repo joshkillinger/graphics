@@ -5,11 +5,8 @@
 
 class Quad: public Object
 {
-private:
-   float sx,sy,sz;  //  Dimensions in X/Y/Z directions
 public:
    Quad();                                  //  Constructor
-   void scale(float dx,float dy,float dz);  //  Set scale
    void display();                          //  Render the cube
 };
 

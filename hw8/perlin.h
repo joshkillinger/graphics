@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 
-#define SAMPLE_SIZE 1024
+#define SAMPLE_SIZE 128
 
 class Perlin
 {

@@ -12,16 +12,6 @@ Quad::Quad()
 }
 
 //
-//  Set scaling
-//
-void Quad::scale(float dx,float dy,float dz)
-{
-   sx = dx;
-   sy = dy;
-   sz = dz;
-}
-
-//
 //  Display the cube
 //
 void Quad::display()
