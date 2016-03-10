@@ -174,6 +174,7 @@ void Hw8opengl::initializeGL()
 
     // Quad
     obj = new Quad();
+    obj->translate(0,-1,0);
 
     //  Set noise texture
     //CreateNoise3D(gl, GL_TEXTURE1);
