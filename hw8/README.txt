@@ -4,7 +4,7 @@ joshua.killinger@colorado.edu
 CPSC 5239
 Homework 8
 
-I started by creating a quad object and applying a normal map to it.
+I started by creating a quad object and applying a normal map to it. I simplified this task by requiring that the quad be axis aligned with the normal (0,1,0) and tangent (1,0,0).
 
 I found a sample normal map (hexes) here: https://www.filterforge.com/filters/6624-normal.jpg
 Perlin noise class is based on http://www.flipcode.com/archives/Perlin_Noise_Class.shtml
