@@ -1,0 +1,24 @@
+Josh Killinger
+joshua.killinger@colorado.edu
+864-978-4794
+CPSC 5239
+Final Project Proposal
+
+I plan to implement the following features:
+
+There will be an object in the scene which has an invisible "shield." When struck, this shield will become visible at the struck point,
+and this will generate a ripple effect radiating outwards for a short time. This will be done in a shader by calculating the alpha value
+of a texture on a sphere around the object based on the hit point. This will require learning how to do alpha blending, which is something
+I have not done in OpenGL, and will require additional investigation.
+
+I will also have a method of providing input to determine whether the shield has been hit or not. This will likely involve a ray-trace based
+on a click input. I have also never done any raytracing with OpenGL, although I have done it in C++ before. The result of the ray-trace would
+be used as input to the shader for the shield. I may not use ray-tracing, I may use projectile collision detection. This is TBD.
+
+Then I will add a particle system that would follow the traced ray, giving visual indication of where the projectile or laser is being fired.
+Billboarding will likely be the implementation used, but it depends on the actual effect that I decide to create. The same goes for CPU or GPU
+calculations for the particles.
+
+Finally, if time allows, I will turn this into a mini-game. There would be a small arena, the player could move around the arena, and there would
+be a hitpoint system. When the shield is exhausted, the shield would not show up, and the enemy would be damaged instead. I believe this would be
+a significant endeavor, and I would likely only end up with a partial implementation of this.
