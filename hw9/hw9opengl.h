@@ -31,9 +31,11 @@ private:
    float*  Color;     //  Colors
    float*  Vel;       //  Velocities
    float*  Start;     //  Start time
+   float*  AmpFreq;   //  Amplitude and Frequency
+   float*  Lifetime;  //  Life of particle
 
    QPixmap particleSprites[2];
-   QGLShaderProgram shader[2]; //  Shaders
+   QGLShaderProgram shader[3]; //  Shaders
    QTimer           timer;     //  Timer for animations
    QElapsedTimer    time;      //  Track elapsed time
 public:

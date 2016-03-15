@@ -13,7 +13,7 @@
 Hw9viewer::Hw9viewer()
 {
    //  Set window title
-   setWindowTitle(tr("Hw9: Particle Shaders"));
+   setWindowTitle(tr("Josh Killinger: Hw9"));
 
    //  Create new OpenGL widget
    ogl = new Hw9opengl;
@@ -22,6 +22,7 @@ Hw9viewer::Hw9viewer()
    QComboBox* shader = new QComboBox();
    shader->addItem("Confetti Cannon");
    shader->addItem("Bambi Fire");
+   shader->addItem("Snowflakes");
 
    //  Select projection
    QComboBox* projection = new QComboBox();

@@ -5,5 +5,7 @@
         <file>ex19b.frag</file>
         <file>particle.png</file>
         <file>snowflake.png</file>
+        <file>snowflake.vert</file>
+        <file>snowflake.frag</file>
     </qresource>
 </RCC>

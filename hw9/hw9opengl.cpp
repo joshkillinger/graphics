@@ -10,7 +10,9 @@
 //  Set up array indexes for program
 #define VELOCITY_ARRAY 4
 #define START_ARRAY    5
-const char* Name[] = {"","","","","Vel","Start",NULL};
+#define AMPFREQ_ARRAY  6
+#define LIFETIME_ARRAY 7
+const char* Name[] = {"","","","","Vel","Start","AmpFreq","Lifetime",NULL};
 
 /*
  *  Random numbers with range and offset
@@ -25,33 +27,67 @@ static float frand(float rng,float off)
  */
 void Hw9opengl::InitPart(void)
 {
-   //  Array Pointers
-   float* vert  = Vert;
-   float* color = Color;
-   float* vel   = Vel;
-   float* start = Start;
-   //  Loop over NxN patch
-   n = mode ? 15 : N;
-   for (int i=0;i<n;i++)
-   {
-      for (int j=0;j<n;j++)
-      {
-         //  Location x,y,z
-         *vert++ = (i+0.5)/n-0.75;
-         *vert++ = 0;
-         *vert++ = (j+0.5)/n-0.75;
-         //  Color r,g,b (0.5-1.0)
-         *color++ = frand(0.5,0.5);
-         *color++ = frand(0.5,0.5);
-         *color++ = frand(0.5,0.5);
-         //  Velocity
-         *vel++ = frand( 1.0,3.0);
-         *vel++ = frand(10.0,0.0);
-         *vel++ = frand( 1.0,3.0);
-         //  Launch time
-         *start++ = frand(2.0,0.0);
-      }
-   }
+    //  Array Pointers
+    float* vert  = Vert;
+    float* color = Color;
+    float* vel   = Vel;
+    float* start = Start;
+    float* ampfreq = AmpFreq;
+    float* lifetime = Lifetime;
+
+    //  Loop over NxN patch
+    n = mode ? 15 : N;
+    for (int i=0;i<n;i++)
+    {
+        for (int j=0;j<n;j++)
+        {
+            if (mode < 2)
+            {
+                //  Location x,y,z
+                *vert++ = (i+0.5)/n-0.75;
+                *vert++ = 0;
+                *vert++ = (j+0.5)/n-0.75;
+                //  Color r,g,b (0.5-1.0)
+                *color++ = frand(0.5,0.5);
+                *color++ = frand(0.5,0.5);
+                *color++ = frand(0.5,0.5);
+                //  Velocity
+                *vel++ = frand( 1.0,3.0);
+                *vel++ = frand(10.0,0.0);
+                *vel++ = frand( 1.0,3.0);
+                *vel++ = 0.0;
+                //  Launch time
+                *start++ = frand(2.0,0.0);
+            }
+            else
+            {
+                //  Location x,y,z
+                *vert++ = ((i+0.5)/n-0.75) * 2;
+                *vert++ = 1.0;
+                *vert++ = ((j+0.5)/n-0.75) * 2;
+                //  Color r,g,b (0.5-1.0)
+                *color++ = 0.0;
+                *color++ = 0.0;
+                *color++ = 0.0;
+                //  Velocity
+                *vel++ = 0.0;
+                *vel++ = -.2;//frand( 0.5,-0.5);
+                *vel++ = 0.0;
+                *vel++ = frand(10.0,-5.0);
+                //  Launch time
+                *start++ = frand(10.0,0.0);
+                //  Lifetime
+                *lifetime++ = 10.0;
+                //  Amplitude
+                *ampfreq++ = frand(.5,-.25);
+                *ampfreq++ = frand(.5,-.25);
+                //  Frequency
+                *ampfreq++ = frand(2.0,0.0);
+                *ampfreq++ = frand(2.0,0.0);
+
+            }
+        }
+    }
 }
 
 /*
@@ -61,19 +97,32 @@ void Hw9opengl::DrawPart(void)
 {
    QGLFunctions glf(QGLContext::currentContext());
    //  Set particle size
-   glPointSize(mode?50:2);
+   int size = 2;
+   if (mode == 1)
+   {
+       size = 50;
+   }
+   else if (mode == 2)
+   {
+       size = 20;
+   }
+   glPointSize(size);
    //  Point vertex location to local array Vert
    glVertexPointer(3,GL_FLOAT,0,Vert);
    //  Point color array to local array Color
    glColorPointer(3,GL_FLOAT,0,Color);
    //  Point attribute arrays to local arrays
-   glf.glVertexAttribPointer(VELOCITY_ARRAY,3,GL_FLOAT,GL_FALSE,0,Vel);
+   glf.glVertexAttribPointer(VELOCITY_ARRAY,4,GL_FLOAT,GL_FALSE,0,Vel);
    glf.glVertexAttribPointer(START_ARRAY,1,GL_FLOAT,GL_FALSE,0,Start);
+   glf.glVertexAttribPointer(AMPFREQ_ARRAY,4,GL_FLOAT,GL_FALSE,0,AmpFreq);
+   glf.glVertexAttribPointer(LIFETIME_ARRAY,1,GL_FLOAT,GL_FALSE,0,Lifetime);
    //  Enable arrays used by DrawArrays
    glEnableClientState(GL_VERTEX_ARRAY);
    glEnableClientState(GL_COLOR_ARRAY);
    glf.glEnableVertexAttribArray(VELOCITY_ARRAY);
    glf.glEnableVertexAttribArray(START_ARRAY);
+   glf.glEnableVertexAttribArray(AMPFREQ_ARRAY);
+   glf.glEnableVertexAttribArray(LIFETIME_ARRAY);
    //  Set transparent large particles
    if (mode)
    {
@@ -118,8 +167,10 @@ Hw9opengl::Hw9opengl(QWidget* parent)
    N = 100;
    Vert  = new float[3*N*N];
    Color = new float[3*N*N];
-   Vel   = new float[3*N*N];
+   Vel   = new float[4*N*N];
    Start = new float[N*N];
+   AmpFreq = new float[4*N*N];
+   Lifetime = new float[N*N];
    InitPart();
 }
 
@@ -168,6 +219,7 @@ void Hw9opengl::initializeGL()
    //  Load shaders
    Shader(shader[0],":/ex19a.vert","");
    Shader(shader[1],":/ex19b.vert",":/ex19b.frag");
+   Shader(shader[2],":/snowflake.vert",":/snowflake.frag");
 
    //  Load random texture
    //CreateNoise3D(GL_TEXTURE1);

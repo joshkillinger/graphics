@@ -5,7 +5,7 @@
 
 uniform   float time;      //  Time
 attribute float Start;     //  Start time
-attribute vec3  Vel;       //  Initial velocity
+//attribute vec4  Vel;       //  Initial velocity
 uniform sampler3D Noise3D; //  Noise texture
 
 //  Perlin noise function

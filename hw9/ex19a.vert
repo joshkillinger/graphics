@@ -3,7 +3,7 @@
 
 uniform   float time;  //  Time
 attribute float Start; //  Start time
-attribute vec3  Vel;   //  Velocity
+attribute vec4  Vel;   //  Velocity
 
 void main(void)
 {
@@ -20,7 +20,7 @@ void main(void)
       //  Particle color
       gl_FrontColor = gl_Color;
       //  Particle trajectory
-      vert   += t*vec4(Vel,0);
+      vert   += t*vec4(Vel.xyz,0);
       //  Gravity
       vert.y -= 4.9*t*t;
    }
