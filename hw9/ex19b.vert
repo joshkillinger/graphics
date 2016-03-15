@@ -19,6 +19,7 @@ void main(void)
 {
    //  Particle life is mod Start time
    float t = mod(time,Start);
+   float alpha = min(clamp((Start - t) * 2.0, 0, 1), t * 4);
 
    //  Initial position
    vec4 vert = gl_Vertex;
@@ -31,7 +32,7 @@ void main(void)
    vert.x *= 1.0-0.5*vert.y;
    vert.z *= 1.0-0.5*vert.y;
    //  Noisy yellow trending to red
-   gl_FrontColor = vec4(1,gl_Color.r-0.2*vert.y,0,1);
+   gl_FrontColor = vec4(1,gl_Color.r-0.2*vert.y,0,alpha);
    //  Transform particle location
    gl_Position = gl_ModelViewProjectionMatrix*vert;
 }

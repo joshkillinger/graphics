@@ -33,6 +33,7 @@ void Hw9opengl::InitPart(void)
    //  Loop over NxN patch
    n = mode ? 15 : N;
    for (int i=0;i<n;i++)
+   {
       for (int j=0;j<n;j++)
       {
          //  Location x,y,z
@@ -50,6 +51,7 @@ void Hw9opengl::InitPart(void)
          //  Launch time
          *start++ = frand(2.0,0.0);
       }
+   }
 }
 
 /*
@@ -138,10 +140,12 @@ void Hw9opengl::reset()
 //
 void Hw9opengl::setShader(int sel)
 {
-   mode = sel;
-   InitPart();
-   //  Request redisplay
-   updateGL();
+    mode = sel;
+    if (mode)
+    {
+        bindTexture(particleSprites[mode - 1], GL_TEXTURE_2D);
+    }
+    InitPart();
 }
 
 //
@@ -151,8 +155,6 @@ void Hw9opengl::setPerspective(int on)
 {
    fov = on ? 55 : 0;
    Projection();
-   //  Request redisplay
-   updateGL();
 }
 
 //
@@ -170,8 +172,9 @@ void Hw9opengl::initializeGL()
    //  Load random texture
    //CreateNoise3D(GL_TEXTURE1);
    //  Load smoke particle
-   QPixmap smoke(":/particle.png");
-   bindTexture(smoke,GL_TEXTURE_2D);
+   particleSprites[0] = QPixmap(":/particle.png");
+   particleSprites[1] = QPixmap(":/snowflake.png");
+   //bindTexture(smoke,GL_TEXTURE_2D);
 
    //  Start 100 fps timer connected to updateGL
    move = true;

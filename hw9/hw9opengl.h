@@ -32,6 +32,7 @@ private:
    float*  Vel;       //  Velocities
    float*  Start;     //  Start time
 
+   QPixmap particleSprites[2];
    QGLShaderProgram shader[2]; //  Shaders
    QTimer           timer;     //  Timer for animations
    QElapsedTimer    time;      //  Track elapsed time
