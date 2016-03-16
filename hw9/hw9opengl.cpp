@@ -6,6 +6,9 @@
 #include <QMessageBox>
 #include <QGLFunctions>
 #include <math.h>
+#include <iostream>
+
+using namespace std;
 
 //  Set up array indexes for program
 #define VELOCITY_ARRAY 4
@@ -110,9 +113,9 @@ void Hw9opengl::DrawPart(void)
     else if (mode == 2)
     {
         //  Point vertex location to local array Vert
-        glVertexPointer(3,GL_FLOAT,3*sizeof(float),Vert);
+        glVertexPointer(3,GL_FLOAT,0,Vert);
         //  Point color array to local array Color
-        glColorPointer(3,GL_FLOAT,3*sizeof(float),Color);
+        glColorPointer(3,GL_FLOAT,0,Color);
     }
     //  Point attribute arrays to local arrays
     glf.glVertexAttribPointer(VELOCITY_ARRAY,4,GL_FLOAT,GL_FALSE,4*sizeof(float),Vel);
@@ -271,6 +274,9 @@ void Hw9opengl::paintGL()
    float t = 0.001*time.elapsed();
    if (move) zh = fmod(90*t,360);
 
+   int err;
+   //err = glGetError();
+
    //  Clear screen and Z-buffer
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glEnable(GL_DEPTH_TEST);
@@ -290,6 +296,7 @@ void Hw9opengl::paintGL()
 
    //  Draw scene
    DrawPart();
+   if (glGetError() != GL_NO_ERROR) cerr << "there was an error" << endl;
 
    //  Release shader
    shader[mode].release();
