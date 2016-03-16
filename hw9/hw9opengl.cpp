@@ -113,9 +113,9 @@ void Hw9opengl::DrawPart(void)
     else if (mode == 2)
     {
         //  Point vertex location to local array Vert
-        glVertexPointer(3,GL_FLOAT,0,Vert);
+        glVertexPointer(3,GL_FLOAT,3*sizeof(float),Vert);
         //  Point color array to local array Color
-        glColorPointer(3,GL_FLOAT,0,Color);
+        glColorPointer(3,GL_FLOAT,3*sizeof(float),Color);
     }
     //  Point attribute arrays to local arrays
     glf.glVertexAttribPointer(VELOCITY_ARRAY,4,GL_FLOAT,GL_FALSE,4*sizeof(float),Vel);
