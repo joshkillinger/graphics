@@ -7,5 +7,6 @@
         <file>snowflake.png</file>
         <file>snowflake.vert</file>
         <file>snowflake.frag</file>
+        <file>snowflake.geom</file>
     </qresource>
 </RCC>

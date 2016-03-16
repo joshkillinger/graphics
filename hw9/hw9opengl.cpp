@@ -95,57 +95,70 @@ void Hw9opengl::InitPart(void)
  */
 void Hw9opengl::DrawPart(void)
 {
-   QGLFunctions glf(QGLContext::currentContext());
-   //  Set particle size
-   int size = 2;
-   if (mode == 1)
-   {
-       size = 50;
-   }
-   else if (mode == 2)
-   {
-       size = 20;
-   }
-   glPointSize(size);
-   //  Point vertex location to local array Vert
-   glVertexPointer(3,GL_FLOAT,0,Vert);
-   //  Point color array to local array Color
-   glColorPointer(3,GL_FLOAT,0,Color);
-   //  Point attribute arrays to local arrays
-   glf.glVertexAttribPointer(VELOCITY_ARRAY,4,GL_FLOAT,GL_FALSE,0,Vel);
-   glf.glVertexAttribPointer(START_ARRAY,1,GL_FLOAT,GL_FALSE,0,Start);
-   glf.glVertexAttribPointer(AMPFREQ_ARRAY,4,GL_FLOAT,GL_FALSE,0,AmpFreq);
-   glf.glVertexAttribPointer(LIFETIME_ARRAY,1,GL_FLOAT,GL_FALSE,0,Lifetime);
-   //  Enable arrays used by DrawArrays
-   glEnableClientState(GL_VERTEX_ARRAY);
-   glEnableClientState(GL_COLOR_ARRAY);
-   glf.glEnableVertexAttribArray(VELOCITY_ARRAY);
-   glf.glEnableVertexAttribArray(START_ARRAY);
-   glf.glEnableVertexAttribArray(AMPFREQ_ARRAY);
-   glf.glEnableVertexAttribArray(LIFETIME_ARRAY);
-   //  Set transparent large particles
-   if (mode)
-   {
-      glEnable(GL_POINT_SPRITE);
-      glTexEnvi(GL_POINT_SPRITE,GL_COORD_REPLACE,GL_TRUE);
-      glEnable(GL_BLEND);
-      glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-      glDepthMask(0);
-   }
-   //  Draw arrays
-   glDrawArrays(GL_POINTS,0,n*n);
-   //  Reset
-   if (mode)
-   {
-      glDisable(GL_POINT_SPRITE);
-      glDisable(GL_BLEND);
-      glDepthMask(1);
-   }
-   //  Disable arrays
-   glDisableClientState(GL_VERTEX_ARRAY);
-   glDisableClientState(GL_COLOR_ARRAY);
-   glf.glDisableVertexAttribArray(VELOCITY_ARRAY);
-   glf.glDisableVertexAttribArray(START_ARRAY);
+    QGLFunctions glf(QGLContext::currentContext());
+    //  Set particle size
+    if (mode < 2)
+    {
+        int size = 2;
+        if (mode == 1) size = 50;
+        glPointSize(size);
+        //  Point vertex location to local array Vert
+        glVertexPointer(3,GL_FLOAT,0,Vert);
+        //  Point color array to local array Color
+        glColorPointer(3,GL_FLOAT,0,Color);
+    }
+    else if (mode == 2)
+    {
+        //  Point vertex location to local array Vert
+        glVertexPointer(3,GL_FLOAT,3*sizeof(float),Vert);
+        //  Point color array to local array Color
+        glColorPointer(3,GL_FLOAT,3*sizeof(float),Color);
+    }
+    //  Point attribute arrays to local arrays
+    glf.glVertexAttribPointer(VELOCITY_ARRAY,4,GL_FLOAT,GL_FALSE,4*sizeof(float),Vel);
+    glf.glVertexAttribPointer(START_ARRAY,1,GL_FLOAT,GL_FALSE,sizeof(float),Start);
+    glf.glVertexAttribPointer(AMPFREQ_ARRAY,4,GL_FLOAT,GL_FALSE,4*sizeof(float),AmpFreq);
+    glf.glVertexAttribPointer(LIFETIME_ARRAY,1,GL_FLOAT,GL_FALSE,sizeof(float),Lifetime);
+    //  Enable arrays used by DrawArrays
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glf.glEnableVertexAttribArray(VELOCITY_ARRAY);
+    glf.glEnableVertexAttribArray(START_ARRAY);
+    glf.glEnableVertexAttribArray(AMPFREQ_ARRAY);
+    glf.glEnableVertexAttribArray(LIFETIME_ARRAY);
+    //  Set transparent large particles
+    if (mode == 1)
+    {
+        glEnable(GL_POINT_SPRITE);
+        glTexEnvi(GL_POINT_SPRITE,GL_COORD_REPLACE,GL_TRUE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+        glDepthMask(0);
+    }
+    else if (mode == 2)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+    }
+
+    //  Draw arrays
+    glDrawArrays(GL_POINTS,0,n*n);
+    //  Reset
+    if (mode == 1)
+    {
+        glDisable(GL_POINT_SPRITE);
+        glDisable(GL_BLEND);
+        glDepthMask(1);
+    }
+    else if (mode == 2)
+    {
+        glDisable(GL_BLEND);
+    }
+    //  Disable arrays
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glf.glDisableVertexAttribArray(VELOCITY_ARRAY);
+    glf.glDisableVertexAttribArray(START_ARRAY);
 }
 
 //
@@ -217,9 +230,9 @@ void Hw9opengl::initializeGL()
    init = true;
 
    //  Load shaders
-   Shader(shader[0],":/ex19a.vert","");
-   Shader(shader[1],":/ex19b.vert",":/ex19b.frag");
-   Shader(shader[2],":/snowflake.vert",":/snowflake.frag");
+   Shader(shader[0],":/ex19a.vert","","");
+   Shader(shader[1],":/ex19b.vert","",":/ex19b.frag");
+   Shader(shader[2],":/snowflake.vert",":/snowflake.geom",":/snowflake.frag");
 
    //  Load random texture
    //CreateNoise3D(GL_TEXTURE1);
@@ -273,6 +286,7 @@ void Hw9opengl::paintGL()
    shader[mode].setUniformValue("time",t);
    shader[mode].setUniformValue("img",0);
    shader[mode].setUniformValue("Noise3D",1);
+   shader[mode].setUniformValue("size",0.3f);
 
    //  Draw scene
    DrawPart();
@@ -384,12 +398,15 @@ void Hw9opengl::wheelEvent(QWheelEvent* e)
 //
 //  Load shader
 //
-void Hw9opengl::Shader(QGLShaderProgram& shader,QString vert,QString frag)
+void Hw9opengl::Shader(QGLShaderProgram& shader, QString vert, QString geom, QString frag)
 {
    QGLFunctions glf(QGLContext::currentContext());
    //  Vertex shader
    if (vert.length() && !shader.addShaderFromSourceFile(QGLShader::Vertex,vert))
       Fatal("Error compiling "+vert+"\n"+shader.log());
+   //  Geometry shader
+   if (geom.length() && !shader.addShaderFromSourceFile(QGLShader::Geometry,geom))
+      Fatal("Error compiling "+geom+"\n"+shader.log());
    //  Fragment shader
    if (frag.length() && !shader.addShaderFromSourceFile(QGLShader::Fragment,frag))
       Fatal("Error compiling "+frag+"\n"+shader.log());

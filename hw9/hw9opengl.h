@@ -58,7 +58,7 @@ protected:
 private:
    void Fatal(QString message);            //  Error handler
    void Projection();                      //  Update projection
-   void Shader(QGLShaderProgram& shader,QString vert,QString frag);  //  Create shader
+   void Shader(QGLShaderProgram& shader, QString vert, QString geom, QString frag);  //  Create shader
    void InitPart();
    void DrawPart();
 };

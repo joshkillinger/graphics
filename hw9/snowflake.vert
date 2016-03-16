@@ -21,11 +21,10 @@ void main(void)
    
    //  wavy movement
    vert += vec4(AmpFreq.x * sin(AmpFreq.z * t), Vel.y * t, AmpFreq.y * sin(AmpFreq.w * t), 0);
-   //vert += vec4(sin(AmpFreq.z * t), Vel.y * t, sin(AmpFreq.w * t), 0);
    
-   //  blue
+   //  blueish color
    gl_FrontColor = vec4(0.5,0.5,1,alpha);
-   //gl_FrontColor = abs(AmpFreq+1.0);
+   
    //  Transform particle location
    gl_Position = gl_ModelViewProjectionMatrix*vert;
 }
