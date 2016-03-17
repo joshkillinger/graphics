@@ -279,7 +279,7 @@ void Hw9opengl::paintGL()
 
    //  Clear screen and Z-buffer
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   glEnable(GL_DEPTH_TEST);
+   //glEnable(GL_DEPTH_TEST);
 
    //  Set view
    glLoadIdentity();
@@ -301,7 +301,7 @@ void Hw9opengl::paintGL()
    //  Release shader
    shader[mode].release();
    glDisable(GL_LIGHTING);
-   glDisable(GL_DEPTH_TEST);
+   //glDisable(GL_DEPTH_TEST);
 
    //  Draw axes
    glBegin(GL_LINES);

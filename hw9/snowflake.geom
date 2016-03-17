@@ -25,7 +25,7 @@ void billboard(float x,float y,int s,int t)
    p.x += dot(delta,gl_ModelViewMatrix[0].xy);
    p.y += dot(delta,gl_ModelViewMatrix[1].xy);
    p.z += dot(delta,gl_ModelViewMatrix[2].xy);
-   gl_Position = gl_ModelViewProjectionMatrix*p;
+   gl_Position = gl_ModelViewProjectionMatrix*p; // p / p.w;
    //  Emit new vertex
    EmitVertex();
 }
