@@ -12,8 +12,6 @@ varying in float rotation[1];
 layout(triangle_strip,max_vertices=4) out;
 uniform float size;
 
-//in float rotation;
-
 void billboard(float x,float y,int s,int t)
 {
    //  Copy Color
@@ -26,7 +24,7 @@ void billboard(float x,float y,int s,int t)
    p.x += dot(delta,gl_ModelViewMatrix[0].xy);
    p.y += dot(delta,gl_ModelViewMatrix[1].xy);
    p.z += dot(delta,gl_ModelViewMatrix[2].xy);
-   gl_Position = gl_ModelViewProjectionMatrix*p; // p / p.w;
+   gl_Position = gl_ModelViewProjectionMatrix*p;
    //  Emit new vertex
    EmitVertex();
 }
