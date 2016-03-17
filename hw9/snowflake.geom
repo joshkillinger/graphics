@@ -8,6 +8,7 @@
 
 //  Requires OpenGL 3.2 in compatibility mode
 layout(points) in;
+varying in float rotation[1];
 layout(triangle_strip,max_vertices=4) out;
 uniform float size;
 
@@ -32,9 +33,17 @@ void billboard(float x,float y,int s,int t)
 
 void main()
 {
-   billboard(-size,-size , 0,0);
-   billboard(+size,-size , 1,0);
-   billboard(-size,+size , 0,1);
-   billboard(+size,+size , 1,1);
+   float theta = rotation[0];
+   float x0 = size * cos(theta);
+   float y0 = size * sin(theta);
+   
+   theta += 1.57079632679489661923;
+   float x1 = size * cos(theta);
+   float y1 = size * sin(theta);
+
+   billboard(x0,y0 , 0,0);
+   billboard(x1,y1 , 1,0);
+   billboard(-x1,-y1 , 0,1);
+   billboard(-x0,-y0 , 1,1);
    EndPrimitive();
 }

@@ -76,7 +76,7 @@ void Hw9opengl::InitPart(void)
                 *vel++ = 0.0;
                 *vel++ = -.2;//frand( 0.5,-0.5);
                 *vel++ = 0.0;
-                *vel++ = frand(10.0,-5.0);
+                *vel++ = frand(3.0,-1.5);
                 //  Launch time
                 *start++ = frand(10.0,0.0);
                 //  Lifetime

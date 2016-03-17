@@ -8,6 +8,7 @@ attribute float Start;     //  Start time
 attribute vec4  Vel;       //  Initial velocity, w = spin
 attribute vec4  AmpFreq;   //  amplitude x/z = x/y, frequency x/z = z/w
 attribute float Lifetime;
+varying float rotation;
 
 void main(void)
 {
@@ -27,4 +28,7 @@ void main(void)
    
    //  Transform particle location
    gl_Position = vert; //gl_ModelViewProjectionMatrix*vert;
+   
+   //calculate the rotation
+   rotation = Vel.w * t;
 }
