@@ -24,4 +24,10 @@ OpenGL ES for Android
 Screenspace Shaders (Posterization Shader)
 
 ####Homework 8
-Textures for data storage
+Textures for Data Storage (Normal Mapping)
+
+####Homework 9
+Particles and Geometry shaders
+
+####Homework 10
+Compute Shaders
