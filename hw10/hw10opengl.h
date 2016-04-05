@@ -8,6 +8,8 @@
 #include <QtOpenGL>
 #include <QString>
 #include <QVector>
+#include <QGLFunctions>
+#include <QOpenGLBuffer>
 
 class Hw10opengl : public QGLWidget
 {
@@ -34,6 +36,9 @@ private:
    QOpenGLShaderProgram shader[2]; //  Shaders
    QTimer           timer;     //  Timer for animations
    QElapsedTimer    time;      //  Track elapsed time
+
+   QOpenGLBuffer buffers[2];
+
 public:
    Hw10opengl(QWidget* parent=0);                  //  Constructor
    QSize sizeHint() const {return QSize(400,400);} //  Default size of widget

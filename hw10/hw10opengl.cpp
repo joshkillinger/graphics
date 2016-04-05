@@ -4,7 +4,6 @@
 #include "Hw10opengl.h"
 #include <QtOpenGL>
 #include <QMessageBox>
-#include <QGLFunctions>
 #include <math.h>
 #include <iostream>
 
@@ -66,6 +65,13 @@ void Hw10opengl::initializeGL()
    Shader(shader[0],":/cgol.cs","","","");
    //Shader(shader[1],"",":/ex19b.vert","",":/ex19b.frag");
 
+   buffers[0].create();
+   buffers[0].bind();
+   buffers[0].allocate(size*size);
+   buffers[1].create();
+   buffers[1].bind();
+   buffers[1].allocate(size*size);
+
    //  Start 100 fps timer connected to updateGL
    move = true;
    timer.setInterval(10);
@@ -104,11 +110,11 @@ void Hw10opengl::paintGL()
    glRotated(ph,1,0,0);
    glRotated(th,0,1,0);
 
-   //  Apply shader
+   //  Compute shader
    int next = (last + 1) % 2;
    shader[0].bind();
    shader[0].setUniformValue("size",size);
-   shader[0].enableAttributeArray();
+   //shader[0].enableAttributeArray();
    //  Release shader
    shader[mode].release();
 }

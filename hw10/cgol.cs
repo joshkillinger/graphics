@@ -5,8 +5,8 @@
 
 layout(local_size_x=32, local_size_y=32) in;
 
-layout(binding=4) old {char pos[]};
-layout(binding=5) next {char pos[]};
+layout(binding=4) buffer old {char pos[]};
+layout(binding=5) buffer next {char pos[]};
 
 uniform uint size;
 
