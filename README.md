@@ -30,4 +30,4 @@ Textures for Data Storage (Normal Mapping)
 Particles and Geometry shaders
 
 ####Homework 10
-Compute Shaders
+Compute Shaders (Conway's Game of Life)

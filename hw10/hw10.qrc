@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>cgol.cs</file>
+    </qresource>
+</RCC>
