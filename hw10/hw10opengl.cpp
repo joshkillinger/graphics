@@ -67,10 +67,10 @@ void Hw10opengl::initializeGL()
 
    buffers[0].create();
    buffers[0].bind();
-   buffers[0].allocate(size*size);
+   buffers[0].allocate(size*size*sizeof(unsigned int));
    buffers[1].create();
    buffers[1].bind();
-   buffers[1].allocate(size*size);
+   buffers[1].allocate(size*size*sizeof(unsigned int));
 
    //  Start 100 fps timer connected to updateGL
    move = true;

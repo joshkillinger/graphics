@@ -30,7 +30,7 @@ private:
    double  dim;       //  Display size
    double  asp;       //  Sceen aspect ratio
    static const int size = 1024;
-   char    board[2][size*size];
+   unsigned int board[2][size*size];
    int     last;
 
    QOpenGLShaderProgram shader[2]; //  Shaders

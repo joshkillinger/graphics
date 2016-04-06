@@ -1,16 +1,18 @@
-//
-//  Particle compute shader
-//
 #version 430 core
+#extension GL_ARB_shader_storage_buffer_object : enable
+
+//
+//  compute shader for Conway's Game of Life
+//
 
 layout(local_size_x=32, local_size_y=32) in;
 
-layout(binding=4) buffer old {char pos[]};
-layout(binding=5) buffer next {char pos[]};
+layout(binding=4) buffer old {uint a[]};
+layout(binding=5) buffer next {uint b[]};
 
 uniform uint size;
 
-const char rules[][] = {{0,0,0,1,0,0,0,0,0},
+const uint rules[][] = {{0,0,0,1,0,0,0,0,0},
                         {0,0,1,1,0,0,0,0,0}};
 
 uint index(uint x, uint y)
