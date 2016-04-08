@@ -101,181 +101,37 @@ int InitGPU(int verbose)
 }
 
 /*
- * C = A * B -- host
- */
-void AxBh(float C[], const float A[], const float B[], unsigned int n)
-{
-   for (unsigned int i=0;i<n;i++)
-      for (unsigned int j=0;j<n;j++)
-      {
-         double sum=0;
-         for (unsigned int k=0;k<n;k++)
-            sum += (double)A[i*n+k] * (double)B[k*n+j];
-         C[i*n+j] = (float)sum;
-      }
-}
-
-
-
-/*
- * Compute one element of A * B
- */
-__global__ void AxB(float C[],const float A[],const float B[],const unsigned int n)
-{
-   unsigned int j = blockIdx.x*blockDim.x+threadIdx.x;
-   unsigned int i = blockIdx.y*blockDim.y+threadIdx.y;
-   float sum =0;
-   for (int k=0;k<n;k++)
-      sum += A[i*n+k] * B[k*n+j];
-   C[i*n+j] = sum;
-}
-
-/*
- * C = A * B -- device
- */
-void AxBd(float Ch[],const float Ah[],const float Bh[],const unsigned int Bw,const unsigned int Bn)
-{
-    //  Calculate matrix dimensions
-    int n = Bw*Bn;
-    int N = n*n*sizeof(float);
-
-    // Allocate device memory
-    float* Ad;
-    float* Bd;
-    float* Cd;
-    if (cudaMalloc((void**)&Ad,N))
-    {
-        cerr << "Cannot allocate device memory Ad" << endl;
-        exit(1);
-    }
-    if (cudaMalloc((void**)&Bd,N))
-    {
-        cerr << "Cannot allocate device memory Bd" << endl;
-        exit(1);
-    }
-    if (cudaMalloc((void**)&Cd,N))
-    {
-        cerr << "Cannot allocate device memory Cd" << endl;
-        exit(1);
-    }
-    // Copy A and B from host to device
-    if (cudaMemcpy(Ad,Ah,N,cudaMemcpyHostToDevice))
-    {
-        cerr << "Cannot copy A from host to device" << endl;
-        exit(1);
-    }
-    if (cudaMemcpy(Bd,Bh,N,cudaMemcpyHostToDevice))
-    {
-        cerr << "Cannot copy B from host to device" << endl;
-        exit(1);
-    }
-
-    // Set size of block to Bw x Bw, and Bn x Bn blocks
-    dim3 threads(Bw,Bw);
-    dim3 grid(Bn,Bn);
-    // Execute the kernel
-    AxB<<<grid,threads>>>(Cd,Ad,Bd,n);
-    if (cudaGetLastError())
-    {
-        cerr << "AxB failed" << endl;
-        exit(1);
-    }
-
-    // Copy C from device to host
-    if (cudaMemcpy(Ch,Cd,N,cudaMemcpyDeviceToHost))
-    {
-        cerr << "Cannot copy C from device to host" << endl;
-        exit(1);
-    }
-
-    //  Free device memory
-    cudaFree(Ad);
-    cudaFree(Bd);
-    cudaFree(Cd);
-}
-
-void MatMul(int maxThreadsPerBlock)
-{
-    //  Total width is block times number of blocks
-    int Bw = 32;
-    int Bn = 32;
-    int n = Bw*Bn;
-    int N = n*n*sizeof(float);
-    cout << "Bw=" << Bw << " Bn=" << Bn << " n=" << n << endl;
-
-    // Allocate host matrices A/B/C/R
-    float* Ah = (float*)malloc(N);
-    float* Bh = (float*)malloc(N);
-    float* Ch = (float*)malloc(N);
-    float* Rh = (float*)malloc(N);
-    if (!Ah || !Bh || !Ch || !Rh)
-    {
-        cerr << "Cannot allocate host memory" << endl;
-        exit(1);
-    }
-
-    // Initialize A & B
-    srand(9999);
-    RandomInit(Ah,n*n);
-    RandomInit(Bh,n*n);
-
-    //  Compute R = AB on host
-    Elapsed();
-    AxBh(Rh,Ah,Bh,n);
-    double Th = Elapsed();
-
-    //  Compute C = AB on device
-    Elapsed();
-    AxBd(Ch,Ah,Bh,Bw,Bn);
-    double Td = Elapsed();
-
-    //  Compute difference between R and C
-    double r2=0;
-    for (int i=0;i<n*n;i++)
-        r2 += fabs(Ch[i]-Rh[i]);
-    r2 /= n*n;
-
-    //  Free host memory
-    free(Ah);
-    free(Bh);
-    free(Ch);
-    free(Rh);
-
-    //  Print results
-    cout << "Host   Time = " << Th << " s" << endl;
-    cout << "Device Time = " << Td << " s" << endl;
-    cout << "Speedup = " << Th/Td << endl;
-    cout << "Difference = " << r2 << endl;
-}
-
-/*
  * c = a dot B -- host
  */
 void Doth(float c[], const float a[], const float B[], unsigned int n)
 {
     for (unsigned int i = 0; i < n; i++)
     {
-        //double sum = 0;
-        //for (unsigned int j = 0; j < n; j++)
-        //{
-        //    sum += (double)a[j] * (double)B[(i * n) + j];
-        //}
-        //c[i] = (float)sum;
-        c[i] = i;
+        double sum = 0;
+        for (unsigned int j = 0; j < n; j++)
+        {
+            sum += (double)a[j] * (double)B[(i * n) + j];
+        }
+        c[i] = (float)sum;
     }
 }
 
 /*
- * Compute a dot B[i]
+ * Compute c[i] = a dot B[i]
  */
-__global__ void Dot(float c[], const float a[], const float B[], const unsigned int n)
+__global__ void Dot(float c[], const float a[], const float B[], const unsigned int n, const unsigned totalThreads)
 {
-   unsigned int i = blockIdx.x*blockDim.x+threadIdx.x;
-   //float sum =0;
-   //for (int j = 0; j < n; j++)
-   //   sum += a[j] * B[(i*n)+j];
-   //c[i] = sum;
-   c[i] = i;
+    int vectorsPerThread = n / totalThreads;
+    unsigned int i = (blockIdx.x*blockDim.x+threadIdx.x) * vectorsPerThread;
+    for (int v = 0; v < vectorsPerThread; v++)
+    {
+        float sum = 0;
+        for (int j = 0; j < n; j++)
+        {
+            sum += a[j] * B[((i + v) * n) + j];
+        }
+        c[i + v] = sum;
+    }
 }
 
 void Dotd(float ch[],const float ah[],const float Bh[],const unsigned int n)
@@ -289,7 +145,7 @@ void Dotd(float ch[],const float ah[],const float Bh[],const unsigned int n)
     float* cd;
     if (cudaMalloc((void**)&ad, n * sizeof(float)))
     {
-        cerr << "Cannot allocate device memory Ad" << endl;
+        cerr << "Cannot allocate device memory ad" << endl;
         exit(1);
     }
     if (cudaMalloc((void**)&Bd, N))
@@ -299,13 +155,13 @@ void Dotd(float ch[],const float ah[],const float Bh[],const unsigned int n)
     }
     if (cudaMalloc((void**)&cd, n * sizeof(float)))
     {
-        cerr << "Cannot allocate device memory Cd" << endl;
+        cerr << "Cannot allocate device memory cd" << endl;
         exit(1);
     }
     // Copy A and B from host to device
     if (cudaMemcpy(ad, ah, n * sizeof(float), cudaMemcpyHostToDevice))
     {
-        cerr << "Cannot copy A from host to device" << endl;
+        cerr << "Cannot copy a from host to device" << endl;
         exit(1);
     }
     if (cudaMemcpy(Bd, Bh, N, cudaMemcpyHostToDevice))
@@ -315,10 +171,11 @@ void Dotd(float ch[],const float ah[],const float Bh[],const unsigned int n)
     }
 
     // Set size of block to 32, and 32 blocks
+    int totalthreads = 32*32;
     dim3 threads(32);
     dim3 grid(32);
     // Execute the kernel
-    AxB<<<grid,threads>>>(cd, ad, Bd, n);
+    Dot<<<grid,threads>>>(cd, ad, Bd, n, totalthreads);
     if (cudaGetLastError())
     {
         cerr << "Dot failed" << endl;
@@ -338,9 +195,9 @@ void Dotd(float ch[],const float ah[],const float Bh[],const unsigned int n)
     cudaFree(cd);
 }
 
-void MegaDot(int maxThreadsPerBlock)
+void DotMul(int maxThreadsPerBlock)
 {
-    int n = 1024;
+    int n = 1024 * 10;
     int N = n * n * sizeof(float);
 
     cout << n << " vectors of " << n << " length = " << N << " bytes" << endl;
@@ -410,16 +267,16 @@ void MegaDot(int maxThreadsPerBlock)
 int main(int argc, char** argv)
 {
     cout << "Josh Killinger: HW10" << endl;
-    cout << setw(7) << setprecision(4);
+    cout << setw(8) << setprecision(4);
 
 	int maxThreadsPerBlock = InitGPU(1);
 
-    //MatMul(maxThreadsPerBlock);
+    DotMul(maxThreadsPerBlock);
 
-    MegaDot(maxThreadsPerBlock);
-
+#ifdef _WIN32
     char c;
     cin >> c;
+#endif
 
     return 0;
 }
