@@ -1,0 +1,16 @@
+Josh Killinger
+joshua.killinger@colorado.edu
+864-978-4794
+CPSC 5239
+Presentation Review
+
+I reveiwed my presentation (Lecture 4, 1st presenter) and here is my critique.
+
+What I liked:
+I feel that my approach to the problem of performance measurement was in the right direction. With a few more hours of work I would have had accurate results and likely would have had some graphs to show. I also feel that I fielded questions fairly well and was able to walk through my code in a clear manner. The presentation sparked plenty of good discussions among the class.
+
+What I didn't like:
+The most obvious is that I fell short on my actual goal. This resulted in a lack of slides, which I feel would have aided in the presentation greatly. I also felt that my introduction was weak, and that I had entirely too many "ums".
+
+What should I address to do better next time:
+Slides would definitely help the flow, and a practice run would help with the "ums". I find that the more familiar I am with a particular subject, the easier it is to give a clean, unbroken presentation. Since I only had a few days to do the homework, I was still refreshing myself on OpenGL, and had very little time to prepare the presentation itself, I feel it was a bit weak overall. I think I will fare much better in the final presentation because I will have had several weeks of development on the subject matter, and more time to prepare a nice presentation.
