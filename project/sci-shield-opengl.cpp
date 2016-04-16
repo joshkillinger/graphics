@@ -6,6 +6,8 @@
 #include <QMessageBox>
 #include <math.h>
 #include <iostream>
+#include "WaveOBJ.h"
+
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
 
@@ -194,8 +196,26 @@ void SciShieldOpengl::initializeGL()
    cube_buffer.setUsagePattern(QGLBuffer::StaticDraw);
    cube_buffer.allocate(sizeof(cube_data));
    cube_buffer.write(0,cube_data,sizeof(cube_data));
+
    //  Unbind this buffer
    cube_buffer.release();
+
+   // Cruiser
+   WaveOBJ* cruiser=0;
+   try
+   {
+      cruiser = new WaveOBJ("cruiser.obj",":/models/cruiser/");
+   }
+   catch (QString err)
+   {
+      Fatal("Error loading object\n"+err);
+   }
+   if (cruiser)
+   {
+      cruiser->color(1,1,0);
+      ship1 = cruiser;
+   }
+
 }
 
 static void PrintQMatrix(const float *f, int size, QString label)

@@ -9,6 +9,7 @@
 #include <QString>
 #include <QVector>
 #include <QMatrix4x4>
+#include "Object.h"
 
 struct light
 {
@@ -36,6 +37,9 @@ private:
    double  dim;       //  Display size
    double  asp;       //  Sceen aspect ratio
    unsigned int tex;  //  Textures
+
+   Object *ship1;
+
    QGLBuffer cube_buffer;     //  Vertex buffer
    QMatrix4x4       proj;     //  Projection matrix
    QGLShaderProgram shader;   //  Shader

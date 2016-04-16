@@ -1,9 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>ex06.vert</file>
-        <file>ex06.frag</file>
         <file>crate.png</file>
-        <file>hw4.frag</file>
-        <file>hw4.vert</file>
+        <file>models/cruiser/cruiser.bmp</file>
+        <file>models/cruiser/cruiser.mtl</file>
+        <file>models/cruiser/cruiser.obj</file>
     </qresource>
 </RCC>
