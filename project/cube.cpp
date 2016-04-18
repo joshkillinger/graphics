@@ -48,6 +48,53 @@ const float uvs[] =
            //  Bottom
            0,0,     1,0,    0,1,    1,0,    0,1,    1,1};
 
+const float cube_data[] =  // Vertex data
+{
+//  X  Y  Z  W   Nx Ny Nz    R G B   s t
+   //  Front
+   +1,+1,+1,+1,   0, 0,+1,  1,1,
+   -1,+1,+1,+1,   0, 0,+1,  0,1,
+   +1,-1,+1,+1,   0, 0,+1,  1,0,
+   -1,+1,+1,+1,   0, 0,+1,  0,1,
+   +1,-1,+1,+1,   0, 0,+1,  1,0,
+   -1,-1,+1,+1,   0, 0,+1,  0,0,
+   //  Back
+   -1,-1,-1,+1,   0, 0,-1,  1,0,
+   +1,-1,-1,+1,   0, 0,-1,  0,0,
+   -1,+1,-1,+1,   0, 0,-1,  1,1,
+   +1,-1,-1,+1,   0, 0,-1,  0,0,
+   -1,+1,-1,+1,   0, 0,-1,  1,1,
+   +1,+1,-1,+1,   0, 0,-1,  0,1,
+   //  Right
+   +1,+1,+1,+1,  +1, 0, 0,  0,1,
+   +1,-1,+1,+1,  +1, 0, 0,  0,0,
+   +1,+1,-1,+1,  +1, 0, 0,  1,1,
+   +1,-1,+1,+1,  +1, 0, 0,  0,0,
+   +1,+1,-1,+1,  +1, 0, 0,  1,1,
+   +1,-1,-1,+1,  +1, 0, 0,  1,0,
+   //  Left
+   -1,+1,+1,+1,  -1, 0, 0,  1,1,
+   -1,+1,-1,+1,  -1, 0, 0,  0,1,
+   -1,-1,+1,+1,  -1, 0, 0,  1,0,
+   -1,+1,-1,+1,  -1, 0, 0,  0,1,
+   -1,-1,+1,+1,  -1, 0, 0,  1,0,
+   -1,-1,-1,+1,  -1, 0, 0,  0,0,
+   //  Top
+   +1,+1,+1,+1,   0,+1, 0,  1,0,
+   +1,+1,-1,+1,   0,+1, 0,  1,1,
+   -1,+1,+1,+1,   0,+1, 0,  0,0,
+   +1,+1,-1,+1,   0,+1, 0,  1,1,
+   -1,+1,+1,+1,   0,+1, 0,  0,0,
+   -1,+1,-1,+1,   0,+1, 0,  0,1,
+   //  Bottom
+   -1,-1,-1,+1,   0,-1, 0,  0,0,
+   +1,-1,-1,+1,   0,-1, 0,  1,0,
+   -1,-1,+1,+1,   0,-1, 0,  0,1,
+   +1,-1,-1,+1,   0,-1, 0,  1,0,
+   -1,-1,+1,+1,   0,-1, 0,  0,1,
+   +1,-1,+1,+1,   0,-1, 0,  1,1,
+   };
+
 Cube::Cube(SciShieldOpengl *context) : Object(context)
 {
     //
@@ -66,35 +113,45 @@ Cube::Cube(SciShieldOpengl *context) : Object(context)
     qtex = QPixmap(":/crate.png");
     tex = glContext->bindTexture(qtex,GL_TEXTURE_2D);
 
+//    //  Cube vertex buffer object
+//    //  Copy data to vertex buffer object
+//    vertexBuffer.create();
+//    vertexBuffer.bind();
+//    vertexBuffer.setUsagePattern(QGLBuffer::StaticDraw);
+//    vertexBuffer.allocate(sizeof(float) * vertexCount * 3);
+//    vertexBuffer.write(0,vertices, sizeof(float) * vertexCount * 3);
+//    //  Unbind this buffer
+//    vertexBuffer.release();
+
+//    //  Cube vertex buffer object
+//    //  Copy data to vertex buffer object
+//    normalBuffer.create();
+//    normalBuffer.bind();
+//    normalBuffer.setUsagePattern(QGLBuffer::StaticDraw);
+//    normalBuffer.allocate(sizeof(float) * vertexCount * 3);
+//    normalBuffer.write(0,normals, sizeof(float) * vertexCount * 3);
+//    //  Unbind this buffer
+//    normalBuffer.release();
+
+//    //  Cube vertex buffer object
+//    //  Copy data to vertex buffer object
+//    texCoordBuffer.create();
+//    texCoordBuffer.bind();
+//    texCoordBuffer.setUsagePattern(QGLBuffer::StaticDraw);
+//    texCoordBuffer.allocate(sizeof(float) * vertexCount * 3);
+//    texCoordBuffer.write(0,texcoords, sizeof(float) * vertexCount * 3);
+//    //  Unbind this buffer
+//    texCoordBuffer.release();
     //  Cube vertex buffer object
     //  Copy data to vertex buffer object
     vertexBuffer.create();
     vertexBuffer.bind();
     vertexBuffer.setUsagePattern(QGLBuffer::StaticDraw);
-    vertexBuffer.allocate(sizeof(float) * vertexCount * 3);
-    vertexBuffer.write(0,vertices,sizeof(vertices));
+    vertexBuffer.allocate(sizeof(cube_data));
+    vertexBuffer.write(0,vertices, sizeof(cube_data));
     //  Unbind this buffer
     vertexBuffer.release();
 
-    //  Cube vertex buffer object
-    //  Copy data to vertex buffer object
-    normalBuffer.create();
-    normalBuffer.bind();
-    normalBuffer.setUsagePattern(QGLBuffer::StaticDraw);
-    normalBuffer.allocate(sizeof(normals));
-    normalBuffer.write(0,normals,sizeof(normals));
-    //  Unbind this buffer
-    normalBuffer.release();
-
-    //  Cube vertex buffer object
-    //  Copy data to vertex buffer object
-    texCoordBuffer.create();
-    texCoordBuffer.bind();
-    texCoordBuffer.setUsagePattern(QGLBuffer::StaticDraw);
-    texCoordBuffer.allocate(sizeof(texcoords));
-    texCoordBuffer.write(0,texcoords,sizeof(texcoords));
-    //  Unbind this buffer
-    texCoordBuffer.release();
 }
 
 void Cube::display()
@@ -119,23 +176,34 @@ void Cube::display()
     tex = glContext->bindTexture(qtex,GL_TEXTURE_2D);
     shader.setUniformValue("Texture",0);
 
+//    //   Attribute 0: vertex coordinate (vec3) at offset 0
+//    vertexBuffer.bind();
+//    shader.enableAttributeArray(0);
+//    shader.setAttributeBuffer(0,GL_FLOAT,0,3);
+//    vertexBuffer.release();
+
+//    //   Attribute 1:  vertex norm (vec3) offset 0 floats
+//    normalBuffer.bind();
+//    shader.enableAttributeArray(1);
+//    shader.setAttributeBuffer(1,GL_FLOAT,0,3);
+//    normalBuffer.release();
+
+//    //   Attribute 2:  tex coord (vec2) offset 0 floats
+//    texCoordBuffer.bind();
+//    shader.enableAttributeArray(2);
+//    shader.setAttributeBuffer(2,GL_FLOAT,0,2);
+//    texCoordBuffer.release();
+
     //   Attribute 0: vertex coordinate (vec3) at offset 0
     vertexBuffer.bind();
     shader.enableAttributeArray(0);
-    shader.setAttributeBuffer(0,GL_FLOAT,0,3);
-    vertexBuffer.release();
+    shader.setAttributeBuffer(0,GL_FLOAT,0,3,sizeof(float)*8);
 
-    //   Attribute 1:  vertex norm (vec3) offset 0 floats
-    normalBuffer.bind();
     shader.enableAttributeArray(1);
-    shader.setAttributeBuffer(1,GL_FLOAT,0,3);
-    normalBuffer.release();
+    shader.setAttributeBuffer(1,GL_FLOAT,3,3,sizeof(float)*8);
 
-    //   Attribute 2:  tex coord (vec2) offset 0 floats
-    texCoordBuffer.bind();
     shader.enableAttributeArray(2);
-    shader.setAttributeBuffer(2,GL_FLOAT,0,2);
-    texCoordBuffer.release();
+    shader.setAttributeBuffer(2,GL_FLOAT,6,2,sizeof(float)*8);
 
     // Draw the cube
     glDrawArrays(GL_TRIANGLES,0,vertexCount);
@@ -144,7 +212,8 @@ void Cube::display()
     shader.disableAttributeArray(0);
     shader.disableAttributeArray(1);
     shader.disableAttributeArray(2);
-    shader.disableAttributeArray(3);
+
+    vertexBuffer.release();
 
     // Back to fixed pipeline
     shader.release();

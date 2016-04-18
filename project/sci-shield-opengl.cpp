@@ -8,6 +8,7 @@
 #include <iostream>
 #include "WaveOBJ.h"
 #include "cube.h"
+#include "triangle.h"
 
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
@@ -53,17 +54,16 @@ static void ball(double x,double y,double z,double r)
 SciShieldOpengl::SciShieldOpengl(QWidget* parent)
     : QGLWidget(parent)
 {
-   mode = 0;
-   obj  = 0;
-   init  = false;
-   mouse = false;
-   asp = 1;
-   dim = 3;
-   fov = 55;
-   th = ph = 0;
-   x0 = y0 = 0;
-   z0 = 1;
-   zh = 0;
+    mode = 0;
+    init  = false;
+    mouse = false;
+    asp = 1;
+    dim = 3;
+    fov = 55;
+    th = ph = 0;
+    x0 = y0 = 0;
+    z0 = 1;
+    zh = 0;
 }
 
 //
@@ -71,9 +71,14 @@ SciShieldOpengl::SciShieldOpengl(QWidget* parent)
 //
 void SciShieldOpengl::reset()
 {
-   th = ph = 0;
-   dim = 3;
-   Projection();
+    cout << "resetting" << endl;
+
+    th = ph = 0;
+    dim = 3;
+    Projection();
+
+    cout << "reset done" << endl;
+
 }
 
 //
@@ -81,7 +86,9 @@ void SciShieldOpengl::reset()
 //
 void SciShieldOpengl::setLightMove(bool on)
 {
-   move = on;
+    cout << "light move " << on << endl;
+
+    move = on;
 }
 
 //
@@ -89,7 +96,7 @@ void SciShieldOpengl::setLightMove(bool on)
 //
 void SciShieldOpengl::setPos(int Zh)
 {
-   zh = Zh;
+    zh = Zh;
 }
 
 //
@@ -97,24 +104,7 @@ void SciShieldOpengl::setPos(int Zh)
 //
 void SciShieldOpengl::setElev(int Z)
 {
-   z0 = 0.02*Z;
-}
-
-//
-//  Set projection
-//
-void SciShieldOpengl::setPerspective(int on)
-{
-   fov = on ? 55 : 0;
-   Projection();
-}
-
-//
-//  Set object
-//
-void SciShieldOpengl::setObject(int type)
-{
-   obj = type;
+    z0 = 0.02*Z;
 }
 
 //
@@ -125,8 +115,14 @@ void SciShieldOpengl::initializeGL()
     if (init) return;
     init = true;
 
-    cube = new Cube(this);
+    cout << "instantiating triangle" << endl;
+
+    cube = new Triangle(this);
+    cout << "triangle instantiated" << endl;
+
     cube->SetShader(":/object.vert",":/object.frag");
+    cout << "shader created" << endl;
+
 
     //  Start 100 fps timer connected to updateGL
     move = true;
@@ -134,6 +130,7 @@ void SciShieldOpengl::initializeGL()
     connect(&timer,SIGNAL(timeout()),this,SLOT(updateGL()));
     timer.start();
     time.start();
+    cout << "timers set" << endl;
 
 
     // Cruiser
@@ -186,6 +183,8 @@ void SciShieldOpengl::resizeGL(int width, int height)
 //
 void SciShieldOpengl::paintGL()
 {
+    //cout << "painting" << endl;
+
     //  Wall time (seconds)
     float t = 0.001*time.elapsed();
     if (move) zh = fmod(90*t,360);
@@ -206,13 +205,13 @@ void SciShieldOpengl::paintGL()
 
     //  Set view
     glLoadIdentity();
-    if (fov) glTranslated(0,0,-2*dim);
+    glTranslated(0,0,-2*dim);
     glRotated(ph,1,0,0);
     glRotated(th,0,1,0);
 
     //  Create view matrix
     view.setToIdentity();
-    if (fov) view.translate(0,0,-2*dim);
+    view.translate(0,0,-2*dim);
     view.rotate(ph,1,0,0);
     view.rotate(th,0,1,0);
 
@@ -261,27 +260,19 @@ void SciShieldOpengl::Fatal(QString message, QString caller)
 //
 void SciShieldOpengl::Projection()
 {
-   //  Set fixed pipeline transformation
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   if (fov)
-   {
-      float zmin = dim/4;
-      float zmax = 4*dim;
-      float ydim = zmin*tan(fov*M_PI/360);
-      float xdim = ydim*asp;
-      glFrustum(-xdim,+xdim,-ydim,+ydim,zmin,zmax);
-   }
-   else
-      glOrtho(-dim*asp, +dim*asp, -dim, +dim, -dim, +dim);
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-   //  Set GL4 transformation
-   proj.setToIdentity();
-   if (fov)
-      proj.perspective(fov,asp,dim/4,4*dim);
-   else
-      proj.ortho(-dim*asp, +dim*asp, -dim, +dim, -dim, +dim);
+    //  Set fixed pipeline transformation
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    float zmin = dim/4;
+    float zmax = 4*dim;
+    float ydim = zmin*tan(fov*M_PI/360);
+    float xdim = ydim*asp;
+    glFrustum(-xdim,+xdim,-ydim,+ydim,zmin,zmax);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    //  Set GL4 transformation
+    proj.setToIdentity();
+    proj.perspective(fov,asp,dim/4,4*dim);
 }
 
 /******************************************************************/

@@ -26,15 +26,14 @@ Q_OBJECT
 private:
     bool    init;      //  Initialized
     bool    move;      //  Light animation
-    int     obj;       //  Object
     float   zh;        //  Light position
+    int     fov;
     float   x0,y0;     //  Object center
     float   z0;        //  Zoom
     int     mode;      //  Display mode
     int     th,ph;     //  Display angles
     bool    mouse;     //  Mouse pressed
     QPoint  pos;       //  Mouse position
-    int     fov;       //  Field of view
     double  dim;       //  Display size
     double  asp;       //  Sceen aspect ratio
     unsigned int tex;  //  Textures
@@ -57,8 +56,6 @@ public:
 
     void Fatal(QString message, QString caller = "SciShieldOpengl");            //  Error handler
 public slots:
-    void setPerspective(int on);           //  Slot to set projection type
-    void setObject(int type);              //  Slot to set displayed object
     void setPos(int ang);                  //  Slot to light position
     void setElev(int z);                   //  Slot to light elevation (%)
     void setLightMove(bool on);            //  Slot to set light movement

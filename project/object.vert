@@ -41,7 +41,8 @@ void main()
    
    
    //  Ambient color
-   Color = Light.Ambient;
+   //Color = Light.Ambient;
+   Color = vec4(normalize(vpos.xyz),1);
 
    //  Set transformed vertex location
    gl_Position =  ProjectionMatrix * ModelViewMatrix * vpos;
