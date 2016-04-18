@@ -4,5 +4,7 @@
         <file>models/cruiser/cruiser.bmp</file>
         <file>models/cruiser/cruiser.mtl</file>
         <file>models/cruiser/cruiser.obj</file>
+        <file>object.frag</file>
+        <file>object.vert</file>
     </qresource>
 </RCC>
