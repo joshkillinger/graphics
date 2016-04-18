@@ -42,11 +42,11 @@ void Object::SetShader(QString vert, QString frag)
 {
     //  Vertex shader
     if (vert.length() && !shader.addShaderFromSourceFile(QGLShader::Vertex,vert))
-        SciShieldOpengl::Fatal("Error compiling "+vert+"\n"+shader.log(),"Object");
+        glContext->Fatal("Error compiling "+vert+"\n"+shader.log(),"Object");
     //  Fragment shader
     if (frag.length() && !shader.addShaderFromSourceFile(QGLShader::Fragment,frag))
-        SciShieldOpengl::Fatal("Error compiling "+frag+"\n"+shader.log(),"Object");
+        glContext->Fatal("Error compiling "+frag+"\n"+shader.log(),"Object");
     //  Link
     if (!shader.link())
-        SciShieldOpengl::Fatal("Error linking shader\n"+shader.log(),"Object");
+        glContext->Fatal("Error linking shader\n"+shader.log(),"Object");
 }

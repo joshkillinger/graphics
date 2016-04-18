@@ -55,8 +55,7 @@ public:
     SciShieldOpengl(QWidget* parent=0);                  //  Constructor
     QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
 
-    static QWidget *widgetParent;
-    static void Fatal(QString message, QString caller = "SciShieldOpengl");            //  Error handler
+    void Fatal(QString message, QString caller = "SciShieldOpengl");            //  Error handler
 public slots:
     void setPerspective(int on);           //  Slot to set projection type
     void setObject(int type);              //  Slot to set displayed object

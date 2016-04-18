@@ -64,8 +64,6 @@ SciShieldOpengl::SciShieldOpengl(QWidget* parent)
    x0 = y0 = 0;
    z0 = 1;
    zh = 0;
-
-   widgetParent = this;
 }
 
 //
@@ -226,6 +224,7 @@ void SciShieldOpengl::paintGL()
     //move the light by the view matrix (model matrix is the identity matrix in this case)
     Light.Position = view * Light.Position;
 
+    cube->display();
 
     //  Axes for reference
     glColor3f(1,1,1);
@@ -253,7 +252,7 @@ void SciShieldOpengl::paintGL()
 //
 void SciShieldOpengl::Fatal(QString message, QString caller)
 {
-   QMessageBox::critical(widgetParent,caller,message);
+   QMessageBox::critical(this,caller,message);
    QApplication::quit();
 }
 
