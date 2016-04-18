@@ -205,10 +205,10 @@ void SciShieldOpengl::paintGL()
     ball(Position[0],Position[1],Position[2] , 0.1);
 
     //  Set view
-//    glLoadIdentity();
-//    if (fov) glTranslated(0,0,-2*dim);
-//    glRotated(ph,1,0,0);
-//    glRotated(th,0,1,0);
+    glLoadIdentity();
+    if (fov) glTranslated(0,0,-2*dim);
+    glRotated(ph,1,0,0);
+    glRotated(th,0,1,0);
 
     //  Create view matrix
     view.setToIdentity();
