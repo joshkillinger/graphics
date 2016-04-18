@@ -7,6 +7,7 @@
 #include <math.h>
 #include <iostream>
 #include "WaveOBJ.h"
+#include "cube.h"
 
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
@@ -63,6 +64,8 @@ SciShieldOpengl::SciShieldOpengl(QWidget* parent)
    x0 = y0 = 0;
    z0 = 1;
    zh = 0;
+
+   widgetParent = this;
 }
 
 //
@@ -117,104 +120,39 @@ void SciShieldOpengl::setObject(int type)
 }
 
 //
-//  Cube Vertexes
-//
-const int cube_size=36;
-const float cube_data[] =  // Vertex data
-{
-//  X  Y  Z  W   Nx Ny Nz    R G B   s t
-   //  Front
-   +1,+1,+1,+1,   0, 0,+1,   1,0,0,  1,1,
-   -1,+1,+1,+1,   0, 0,+1,   1,0,0,  0,1,
-   +1,-1,+1,+1,   0, 0,+1,   1,0,0,  1,0,
-   -1,+1,+1,+1,   0, 0,+1,   1,0,0,  0,1,
-   +1,-1,+1,+1,   0, 0,+1,   1,0,0,  1,0,
-   -1,-1,+1,+1,   0, 0,+1,   1,0,0,  0,0,
-   //  Back
-   -1,-1,-1,+1,   0, 0,-1,   0,0,1,  1,0,
-   +1,-1,-1,+1,   0, 0,-1,   0,0,1,  0,0,
-   -1,+1,-1,+1,   0, 0,-1,   0,0,1,  1,1,
-   +1,-1,-1,+1,   0, 0,-1,   0,0,1,  0,0,
-   -1,+1,-1,+1,   0, 0,-1,   0,0,1,  1,1,
-   +1,+1,-1,+1,   0, 0,-1,   0,0,1,  0,1,
-   //  Right
-   +1,+1,+1,+1,  +1, 0, 0,   1,1,0,  0,1,
-   +1,-1,+1,+1,  +1, 0, 0,   1,1,0,  0,0,
-   +1,+1,-1,+1,  +1, 0, 0,   1,1,0,  1,1,
-   +1,-1,+1,+1,  +1, 0, 0,   1,1,0,  0,0,
-   +1,+1,-1,+1,  +1, 0, 0,   1,1,0,  1,1,
-   +1,-1,-1,+1,  +1, 0, 0,   1,1,0,  1,0,
-   //  Left
-   -1,+1,+1,+1,  -1, 0, 0,   0,1,0,  1,1,
-   -1,+1,-1,+1,  -1, 0, 0,   0,1,0,  0,1,
-   -1,-1,+1,+1,  -1, 0, 0,   0,1,0,  1,0,
-   -1,+1,-1,+1,  -1, 0, 0,   0,1,0,  0,1,
-   -1,-1,+1,+1,  -1, 0, 0,   0,1,0,  1,0,
-   -1,-1,-1,+1,  -1, 0, 0,   0,1,0,  0,0,
-   //  Top
-   +1,+1,+1,+1,   0,+1, 0,   0,1,1,  1,0,
-   +1,+1,-1,+1,   0,+1, 0,   0,1,1,  1,1,
-   -1,+1,+1,+1,   0,+1, 0,   0,1,1,  0,0,
-   +1,+1,-1,+1,   0,+1, 0,   0,1,1,  1,1,
-   -1,+1,+1,+1,   0,+1, 0,   0,1,1,  0,0,
-   -1,+1,-1,+1,   0,+1, 0,   0,1,1,  0,1,
-   //  Bottom
-   -1,-1,-1,+1,   0,-1, 0,   1,0,1,  0,0,
-   +1,-1,-1,+1,   0,-1, 0,   1,0,1,  1,0,
-   -1,-1,+1,+1,   0,-1, 0,   1,0,1,  0,1,
-   +1,-1,-1,+1,   0,-1, 0,   1,0,1,  1,0,
-   -1,-1,+1,+1,   0,-1, 0,   1,0,1,  0,1,
-   +1,-1,+1,+1,   0,-1, 0,   1,0,1,  1,1,
-   };
-
-//
 //  Initialize
 //
 void SciShieldOpengl::initializeGL()
 {
-   if (init) return;
-   init = true;
+    if (init) return;
+    init = true;
 
-   // Texture
-   qtex = QPixmap(":/crate.png");
-   tex = bindTexture(qtex,GL_TEXTURE_2D);
+    cube = new Cube(this);
+    cube->SetShader(":/object.vert",":/object.frag");
 
-   //  Load shaders
-   Shader(":/object.vert",":/object.frag");
+    //  Start 100 fps timer connected to updateGL
+    move = true;
+    timer.setInterval(10);
+    connect(&timer,SIGNAL(timeout()),this,SLOT(updateGL()));
+    timer.start();
+    time.start();
 
-   //  Start 100 fps timer connected to updateGL
-   move = true;
-   timer.setInterval(10);
-   connect(&timer,SIGNAL(timeout()),this,SLOT(updateGL()));
-   timer.start();
-   time.start();
 
-   //  Cube vertex buffer object
-   //  Copy data to vertex buffer object
-   cube_buffer.create();
-   cube_buffer.bind();
-   cube_buffer.setUsagePattern(QGLBuffer::StaticDraw);
-   cube_buffer.allocate(sizeof(cube_data));
-   cube_buffer.write(0,cube_data,sizeof(cube_data));
-
-   //  Unbind this buffer
-   cube_buffer.release();
-
-   // Cruiser
-   WaveOBJ* cruiser=0;
-   try
-   {
-      cruiser = new WaveOBJ("cruiser.obj",":/models/cruiser/");
-   }
-   catch (QString err)
-   {
-      Fatal("Error loading object\n"+err);
-   }
-   if (cruiser)
-   {
-      cruiser->color(1,1,0);
-      ship1 = cruiser;
-   }
+    // Cruiser
+//    WaveOBJ* fighter=0;
+//    try
+//    {
+//        fighter = new WaveOBJ("dark_fighter_6.obj",":/models/fighter/");
+//    }
+//    catch (QString err)
+//    {
+//        Fatal("Error loading object\n"+err);
+//    }
+//    if (fighter)
+//    {
+//        //cruiser->color(1,1,0);
+//        ship1 = fighter;
+//    }
 
 }
 
@@ -269,74 +207,25 @@ void SciShieldOpengl::paintGL()
     ball(Position[0],Position[1],Position[2] , 0.1);
 
     //  Set view
-    glLoadIdentity();
-    if (fov) glTranslated(0,0,-2*dim);
-    glRotated(ph,1,0,0);
-    glRotated(th,0,1,0);
+//    glLoadIdentity();
+//    if (fov) glTranslated(0,0,-2*dim);
+//    glRotated(ph,1,0,0);
+//    glRotated(th,0,1,0);
 
-    //  Create Modelview matrix
-    QMatrix4x4 mv;
-    if (fov) mv.translate(0,0,-2*dim);
-    mv.rotate(ph,1,0,0);
-    mv.rotate(th,0,1,0);
+    //  Create view matrix
+    view.setToIdentity();
+    if (fov) view.translate(0,0,-2*dim);
+    view.rotate(ph,1,0,0);
+    view.rotate(th,0,1,0);
 
-    QMatrix3x3 norm = mv.normalMatrix();
-
-    // Enable shader
-    shader.bind();
-    //  Set Modelview and Projection Matrix
-    shader.setUniformValue("ProjectionMatrix",proj);
-    shader.setUniformValue("ModelViewMatrix",mv);
-    shader.setUniformValue("NormalMatrix",norm);
-
-    struct light Light;
     Light.Position = QVector4D(Position[0], Position[1], Position[2], Position[3]);
     Light.Ambient = QVector4D(Ambient[0], Ambient[1], Ambient[2], Ambient[3]);
     Light.Diffuse = QVector4D(Diffuse[0], Diffuse[1], Diffuse[2], Diffuse[3]);
     Light.Specular = QVector4D(Specular[0], Specular[1], Specular[2], Specular[3]);
 
     //move the light by the view matrix (model matrix is the identity matrix in this case)
-    Light.Position = mv * Light.Position;
+    Light.Position = view * Light.Position;
 
-    shader.setUniformValue("Light.Position",Light.Position);
-    shader.setUniformValue("Light.Ambient",Light.Ambient);
-    shader.setUniformValue("Light.Diffuse",Light.Diffuse);
-    shader.setUniformValue("Light.Specular",Light.Specular);
-
-    shader.setUniformValue("shininess",32.0f);
-
-    tex = bindTexture(qtex,GL_TEXTURE_2D);
-    shader.setUniformValue("Texture",0);
-
-    //  Select cube buffer
-    cube_buffer.bind();
-    //   Attribute 0: vertex coordinate (vec4) at offset 0
-    shader.enableAttributeArray(0);
-    shader.setAttributeBuffer(0,GL_FLOAT,0,4,12*sizeof(float));
-    //   Attribute 1:  vertex norm (vec3) offset 4 floats
-    shader.enableAttributeArray(1);
-    shader.setAttributeBuffer(1,GL_FLOAT,4*sizeof(float),3,12*sizeof(float));
-    //   Attribute 2:  vertex color (vec3) offset 7 floats
-    shader.enableAttributeArray(2);
-    shader.setAttributeBuffer(2,GL_FLOAT,7*sizeof(float),3,12*sizeof(float));
-    //   Attribute 3:  tex coord (vec2) offset 10 floats
-    shader.enableAttributeArray(3);
-    shader.setAttributeBuffer(3,GL_FLOAT,10*sizeof(float),2,12*sizeof(float));
-
-    // Draw the cube
-    glDrawArrays(GL_TRIANGLES,0,cube_size);
-
-    //  Disable vertex arrays
-    shader.disableAttributeArray(0);
-    shader.disableAttributeArray(1);
-    shader.disableAttributeArray(2);
-    shader.disableAttributeArray(3);
-
-    //  Unbind this buffer
-    cube_buffer.release();
-
-    // Back to fixed pipeline
-    shader.release();
 
     //  Axes for reference
     glColor3f(1,1,1);
@@ -362,9 +251,9 @@ void SciShieldOpengl::paintGL()
 //
 //  Throw a fatal error and die
 //
-void SciShieldOpengl::Fatal(QString message)
+void SciShieldOpengl::Fatal(QString message, QString caller)
 {
-   QMessageBox::critical(this,"SciShieldOpengl",message);
+   QMessageBox::critical(widgetParent,caller,message);
    QApplication::quit();
 }
 
@@ -447,18 +336,3 @@ void SciShieldOpengl::wheelEvent(QWheelEvent* e)
    //updateGL();
 }
 
-//
-//  Load shader
-//
-void SciShieldOpengl::Shader(QString vert,QString frag)
-{
-   //  Vertex shader
-   if (vert.length() && !shader.addShaderFromSourceFile(QGLShader::Vertex,vert))
-      Fatal("Error compiling "+vert+"\n"+shader.log());
-   //  Fragment shader
-   if (frag.length() && !shader.addShaderFromSourceFile(QGLShader::Fragment,frag))
-      Fatal("Error compiling "+frag+"\n"+shader.log());
-   //  Link
-   if (!shader.link())
-      Fatal("Error linking shader\n"+shader.log());
-}

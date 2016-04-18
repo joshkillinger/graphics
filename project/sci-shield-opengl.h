@@ -5,11 +5,12 @@
 #ifndef SCISHIELDOPENGL_H
 #define SCISHIELDOPENGL_H
 
+class Object;
+
 #include <QtOpenGL>
 #include <QString>
 #include <QVector>
 #include <QMatrix4x4>
-#include "Object.h"
 
 struct light
 {
@@ -23,32 +24,39 @@ class SciShieldOpengl : public QGLWidget
 {
 Q_OBJECT
 private:
-   bool    init;      //  Initialized
-   bool    move;      //  Light animation
-   int     obj;       //  Object
-   float   zh;        //  Light position
-   float   x0,y0;     //  Object center
-   float   z0;        //  Zoom
-   int     mode;      //  Display mode
-   int     th,ph;     //  Display angles
-   bool    mouse;     //  Mouse pressed
-   QPoint  pos;       //  Mouse position
-   int     fov;       //  Field of view
-   double  dim;       //  Display size
-   double  asp;       //  Sceen aspect ratio
-   unsigned int tex;  //  Textures
+    bool    init;      //  Initialized
+    bool    move;      //  Light animation
+    int     obj;       //  Object
+    float   zh;        //  Light position
+    float   x0,y0;     //  Object center
+    float   z0;        //  Zoom
+    int     mode;      //  Display mode
+    int     th,ph;     //  Display angles
+    bool    mouse;     //  Mouse pressed
+    QPoint  pos;       //  Mouse position
+    int     fov;       //  Field of view
+    double  dim;       //  Display size
+    double  asp;       //  Sceen aspect ratio
+    unsigned int tex;  //  Textures
 
-   Object *ship1;
+    Object *cube;
+    Object *ship1;
 
-   QGLBuffer cube_buffer;     //  Vertex buffer
-   QMatrix4x4       proj;     //  Projection matrix
-   QGLShaderProgram shader;   //  Shader
-   QTimer           timer;    //  Timer for animations
-   QElapsedTimer    time;     //  Track elapsed time
-   QPixmap   qtex;
+    QTimer           timer;    //  Timer for animations
+    QElapsedTimer    time;     //  Track elapsed time
+    QPixmap   qtex;
+
 public:
-   SciShieldOpengl(QWidget* parent=0);                  //  Constructor
-   QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
+    struct light Light;
+
+    QMatrix4x4       proj;     //  Projection matrix
+    QMatrix4x4       view;
+
+    SciShieldOpengl(QWidget* parent=0);                  //  Constructor
+    QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
+
+    static QWidget *widgetParent;
+    static void Fatal(QString message, QString caller = "SciShieldOpengl");            //  Error handler
 public slots:
     void setPerspective(int on);           //  Slot to set projection type
     void setObject(int type);              //  Slot to set displayed object
@@ -68,9 +76,8 @@ protected:
     void mouseMoveEvent(QMouseEvent*);     //  Mouse moved
     void wheelEvent(QWheelEvent*);         //  Mouse wheel
 private:
-   void Fatal(QString message);            //  Error handler
-   void Projection();                      //  Update projection
-   void Shader(QString vert,QString frag);  //  Create shader
+    void Projection();                      //  Update projection
+    void Shader(QString vert,QString frag);  //  Create shader
 };
 
 #endif

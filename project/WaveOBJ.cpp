@@ -66,7 +66,7 @@ void WaveOBJ::LoadMaterial(const QString& file,const QString& path)
       if (words.size()==2 && words[0]=="newmtl")
       {
          name  = words[1];
-         Material m;
+         Mat m;
          m.Ns  = 0;
          m.d   = 0;
          m.map = 0;
@@ -117,22 +117,22 @@ void WaveOBJ::SetMaterial(const QString& name)
    if (!mat.contains(name)) throw "Unknown material "+name;
 
    //  Set material colors
-   setColor(mat[name].Ka,mat[name].Kd,mat[name].Ks,mat[name].Ke,mat[name].Ns);
+   //setColor(mat[name].Ka,mat[name].Kd,mat[name].Ks,mat[name].Ke,mat[name].Ns);
 
    //  Bind texture if specified
-   if (mat[name].map)
-   {
-      glEnable(GL_TEXTURE_2D);
-      glBindTexture(GL_TEXTURE_2D,mat[name].map);
-   }
-   else
-      glDisable(GL_TEXTURE_2D);
+   //   if (mat[name].map)
+   //   {
+   //      glEnable(GL_TEXTURE_2D);
+   //      glBindTexture(GL_TEXTURE_2D,mat[name].map);
+   //   }
+   //   else
+   //      glDisable(GL_TEXTURE_2D);
 }
 
 //
 //  Constructor
 //
-WaveOBJ::WaveOBJ(const char* file,const QString& path)
+WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path) : Object(context)
 {
    //  Initialize scale
    sr = 1;
@@ -142,16 +142,12 @@ WaveOBJ::WaveOBJ(const char* file,const QString& path)
    if (!f.open(QFile::ReadOnly|QFile::Text)) throw QString("Cannot open file ")+file;
    QTextStream in(&f);
 
-   //  Start new displaylist
-   list = glGenLists(1);
-   glNewList(list,GL_COMPILE);
-   //  Push attributes for textures
-   glPushAttrib(GL_TEXTURE_BIT);
-
    //  Process file
    mat.clear();
    QVector<Vec3> V,N;
    QVector<Vec2> T;
+   QVector<QString> F;
+
    //  Read file line by line
    QString line;
    while (line = in.readLine(),!line.isNull())
@@ -164,36 +160,13 @@ WaveOBJ::WaveOBJ(const char* file,const QString& path)
       //  Normal coordinates (always 3)
       else if (words.size()==4 && words[0]=="vn")
          N.push_back(Read3(words));
-      //  Texture coordinates (always 2)
-      else if (words.size()==3 && words[0]=="vt")
+      //  Texture coordinates (2 or 3)
+      else if (words.size()>=3 && words[0]=="vt")
          T.push_back(Read2(words));
       //  Read and draw facets
       else if (words.size()>3 && words[0]=="f")
       {
-         //  Read Vertex/Texture/Normal triplets
-         glBegin(GL_POLYGON);
-         for (int k=1;k<words.size();k++)
-         {
-            int Kv=0,Kt=0,Kn=0;
-            QStringList parts = words[k].split('/');
-            Kv = parts[0].toInt();
-            Kt = parts[1].toInt();
-            Kn = parts[2].toInt();
-            // throw QString("Invalid facet ")+words[k].c_str();
-            //  Check index
-            if (Kv<-(int)V.count() || Kv>(int)V.count()) throw "Vertex "+QString::number(Kv)+" out of range 1-"+QString::number(V.count());
-            if (Kn<-(int)N.count() || Kn>(int)N.count()) throw "Normal "+QString::number(Kn)+" out of range 1-"+QString::number(N.count());
-            if (Kt<-(int)T.count() || Kt>(int)T.count()) throw "Texture "+QString::number(Kt)+" out of range 1-"+QString::number(T.count());
-            //  Adjust "from end" references
-            if (Kv<0) Kv = V.count()+Kv+1;
-            if (Kn<0) Kn = N.count()+Kn+1;
-            if (Kt<0) Kt = T.count()+Kt+1;
-            //  Draw vertex
-            if (Kt) glTexCoord2f(T[Kt-1].x,T[Kt-1].y);
-            if (Kn) glNormal3f(N[Kn-1].x,N[Kn-1].y,N[Kn-1].z);
-            if (Kv) glVertex3f(V[Kv-1].x,V[Kv-1].y,V[Kv-1].z);
-         }
-         glEnd();
+          F.push_back(line);
       }
       //  Use material
       else if (words.size()==2 && words[0]=="usemtl")
@@ -202,12 +175,49 @@ WaveOBJ::WaveOBJ(const char* file,const QString& path)
       else if (words.size()==2 && words[0]=="mtllib")
          LoadMaterial(words[1],path);
       //  Skip this line
-   }
-   f.close();
-   //  Pop attributes (textures)
-   glPopAttrib();
-   glEndList();
+    }
+    f.close();
 
+    vertices = (float *)malloc(F.count() * 3 * 3 * sizeof(float));
+    normals = (float *)malloc(F.count() * 3 * 3 * sizeof(float));
+    texcoords = (float *)malloc(F.count() * 3 * 2 * sizeof(float));
+
+    //  parse faces
+    //  Read Vertex/Texture/Normal triplets
+    for (int i = 0; i < F.count(); i++)
+    {
+        QStringList words = F[i].simplified().split(" ");
+        for (int k=1;k<words.size();k++)
+        {
+            int Kv=0,Kt=0,Kn=0;
+            QStringList parts = words[k].split('/');
+            Kv = parts[0].toInt();
+            Kt = parts[1].toInt();
+            Kn = parts[2].toInt();
+            //  Check index
+            if (Kv<-(int)V.count() || Kv>(int)V.count()) throw "Vertex "+QString::number(Kv)+" out of range 1-"+QString::number(V.count());
+            if (Kn<-(int)N.count() || Kn>(int)N.count()) throw "Normal "+QString::number(Kn)+" out of range 1-"+QString::number(N.count());
+            if (Kt<-(int)T.count() || Kt>(int)T.count()) throw "Texture "+QString::number(Kt)+" out of range 1-"+QString::number(T.count());
+            //  Adjust "from end" references
+            if (Kv<0) Kv = V.count()+Kv+1;
+            if (Kn<0) Kn = N.count()+Kn+1;
+            if (Kt<0) Kt = T.count()+Kt+1;
+
+            //  Draw vertex
+            int index = (i*9)+((k-1)*3);
+            vertices[index+0] = V[Kv-1].x;
+            vertices[index+1] = V[Kv-1].y;
+            vertices[index+2] = V[Kv-1].z;
+
+            normals[index+0] = N[Kn-1].x;
+            normals[index+1] = N[Kn-1].y;
+            normals[index+2] = N[Kn-1].z;
+
+            index = (i*6)+((k-1)*2);
+            texcoords[index+0] = T[Kt-1].x;
+            texcoords[index+0] = T[Kt-1].y;
+        }
+    }
 }
 
 //
@@ -216,9 +226,10 @@ WaveOBJ::WaveOBJ(const char* file,const QString& path)
 void WaveOBJ::display()
 {
    glPushMatrix();
-   setTransform(sr,sr,sr);
-   setColor();
-   glCallList(list);
+   //setColor();
+
+   //draw stuff here
+
    glPopMatrix();
 }
 
@@ -229,3 +240,4 @@ void WaveOBJ::scale(float S)
 {
    sr = S;
 }
+

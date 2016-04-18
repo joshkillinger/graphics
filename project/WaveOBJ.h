@@ -7,6 +7,7 @@
 #define WAVEOBJ_H
 
 #include "Object.h"
+#include "Type.h"
 #include <QString>
 #include <QHash>
 
@@ -17,18 +18,18 @@ typedef struct
    float Ns;          //  Shininess
    float d;           //  Transparency
    unsigned int map;  //  Texture
-} Material;
+} Mat;
 
 class WaveOBJ: public Object
 {
 private:
    float sr;              // Scale
-   int   list;            // Display list
-   QHash<QString,Material> mat;
+   //int   list;            // Display list
+   QHash<QString,Mat> mat;
    void SetMaterial(const QString& name);
    void LoadMaterial(const QString& name,const QString& path="");
 public:
-   WaveOBJ(const char* file,const QString& path);     //  Constructor
+   WaveOBJ(SciShieldOpengl *context, const char* file,const QString& path);     //  Constructor
    void scale(float s);                               //  Set scale
    void display();                                    //  Render the object
 };
