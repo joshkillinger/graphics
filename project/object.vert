@@ -30,7 +30,7 @@ out vec2 vs_tex_coord;
 
 void main()
 {
-   vec4 vpos = vec4(Vertex,0);
+   vec4 vpos = vec4(Vertex,1);
    vec3 P = vec3(ModelViewMatrix * vpos);
    //  Light position
    DirToLight  = vec3(Light.Position) - P;
@@ -41,8 +41,8 @@ void main()
    
    
    //  Ambient color
-   //Color = Light.Ambient;
-   Color = vec4(normalize(vpos.xyz),1);
+   Color = Light.Ambient;
+   //Color = vec4(normalize(VNormal),1);
 
    //  Set transformed vertex location
    gl_Position =  ProjectionMatrix * ModelViewMatrix * vpos;

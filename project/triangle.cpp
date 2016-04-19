@@ -6,11 +6,11 @@ using namespace std;
 
 const float triangle_data[] =  // Vertex data
 {
-//  X  Y  Z  W   Nx Ny Nz    s t
+//  X  Y  Z   Nx Ny Nz    s  t
    //  Front
-   +1,+1,+1,+1,   0, 0,+1,  1,1,
-   -1,+1,+1,+1,   0, 0,+1,  0,1,
-   +1,-1,+1,+1,   0, 0,+1,  1,0,
+   +1,+1,+1,   0, 0,+1,   1, 1,
+   -1,+1,+1,   0, 0,+1,   0, 1,
+   +1,-1,+1,   0, 0,+1,   1, 0,
    };
 
 Triangle::Triangle(SciShieldOpengl *context) : Object(context)
@@ -31,6 +31,9 @@ Triangle::Triangle(SciShieldOpengl *context) : Object(context)
 
     vertexBuffer.allocate(sizeof(triangle_data));
     vertexBuffer.write(0,triangle_data, sizeof(triangle_data));
+
+    cout << "triangle vertex buffer is size " << vertexBuffer.size() << endl;
+
     //  Unbind this buffer
     vertexBuffer.release();
 
@@ -64,10 +67,10 @@ void Triangle::display()
     shader.setAttributeBuffer(0,GL_FLOAT,0,3,sizeof(float)*8);
 
     shader.enableAttributeArray(1);
-    shader.setAttributeBuffer(1,GL_FLOAT,3,3,sizeof(float)*8);
+    shader.setAttributeBuffer(1,GL_FLOAT,3*sizeof(float),3,sizeof(float)*8);
 
     shader.enableAttributeArray(2);
-    shader.setAttributeBuffer(2,GL_FLOAT,6,2,sizeof(float)*8);
+    shader.setAttributeBuffer(2,GL_FLOAT,6*sizeof(float),2,sizeof(float)*8);
 
     // Draw the cube
     glDrawArrays(GL_TRIANGLES,0,vertexCount);
@@ -85,6 +88,6 @@ void Triangle::display()
     GLenum error = glGetError();
     if (error)
     {
-        cerr << "error rendering: " << error << endl;
+        cerr << "error rendering triangle: " << error << endl;
     }
 }
