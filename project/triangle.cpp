@@ -6,7 +6,7 @@ using namespace std;
 
 const float triangle_data[] =  // Vertex data
 {
-//  X  Y  Z  W   Nx Ny Nz    R G B   s t
+//  X  Y  Z  W   Nx Ny Nz    s t
    //  Front
    +1,+1,+1,+1,   0, 0,+1,  1,1,
    -1,+1,+1,+1,   0, 0,+1,  0,1,
@@ -22,7 +22,10 @@ Triangle::Triangle(SciShieldOpengl *context) : Object(context)
 
     //  Copy data to vertex buffer object
     vertexBuffer.create();
-    vertexBuffer.bind();
+    if (!vertexBuffer.bind())
+    {
+        cerr << "error binding vertexBuffer" << endl;
+    }
     vertexBuffer.setUsagePattern(QGLBuffer::StaticDraw);
     cout << "allocating buffer space of " << sizeof(triangle_data) << endl;
 
@@ -78,4 +81,10 @@ void Triangle::display()
 
     // Back to fixed pipeline
     shader.release();
+
+    GLenum error = glGetError();
+    if (error)
+    {
+        cerr << "error rendering: " << error << endl;
+    }
 }

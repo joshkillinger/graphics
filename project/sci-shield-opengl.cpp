@@ -185,6 +185,12 @@ void SciShieldOpengl::paintGL()
 {
     //cout << "painting" << endl;
 
+    GLenum error = glGetError();
+    if (error)
+    {
+        cerr << "error at start of paintGL: " << error << endl;
+    }
+
     //  Wall time (seconds)
     float t = 0.001*time.elapsed();
     if (move) zh = fmod(90*t,360);
@@ -223,6 +229,13 @@ void SciShieldOpengl::paintGL()
     //move the light by the view matrix (model matrix is the identity matrix in this case)
     Light.Position = view * Light.Position;
 
+    error = glGetError();
+    if (error)
+    {
+        cerr << "error prior to display call: " << error << endl;
+    }
+
+
     cube->display();
 
     //  Axes for reference
@@ -239,6 +252,13 @@ void SciShieldOpengl::paintGL()
     renderText(2,0,0,"X");
     renderText(0,2,0,"Y");
     renderText(0,0,2,"Z");
+
+    error = glGetError();
+    if (error)
+    {
+        cerr << "error after all rendering: " << error << endl;
+    }
+
 
     //  Emit angles to display
     emit angles(QString::number(th)+","+QString::number(ph));
