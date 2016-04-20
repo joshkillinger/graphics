@@ -73,7 +73,7 @@ protected:
     void wheelEvent(QWheelEvent*);         //  Mouse wheel
 private:
     void Projection();                      //  Update projection
-    void Shader(QString vert,QString frag);  //  Create shader
+    void ShowAxes();
 };
 
 #endif

@@ -21,6 +21,9 @@ protected:
     QColor tint;
     QGLShaderProgram shader;   //  Shader
     QPixmap texture;
+    QPixmap specmap;
+    QPixmap illummap;
+    QPixmap bumpmap;
     unsigned int tex;  //  Texture
 
     SciShieldOpengl *glContext;
@@ -28,15 +31,20 @@ protected:
     int vertexCount;
     QGLBuffer vertexBuffer;
 
+    int visibleStage;
+
     Object(SciShieldOpengl *context);          //  Constructor
 public:
     void SetShader(QString vert, QString frag);
-    virtual void display()=0;                         //  Render the object
+    void display(int stage);                         //  Render the object
     virtual ~Object() {};                             //  Do nothing destructor
 protected:
     void EnableTex();
     void DisableTex();
     int  Increment(int n);
+    void PreRender();
+    virtual void Render();
+    void PostRender();
 };
 
 #endif

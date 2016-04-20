@@ -7,7 +7,6 @@ class Cube : public Object
 {
 public:
     Cube(SciShieldOpengl *context);
-    void display();
 };
 
 #endif // CUBE_H

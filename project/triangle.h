@@ -7,7 +7,6 @@ class Triangle : public Object
 {
 public:
     Triangle(SciShieldOpengl *context);
-    void display();
 };
 
 #endif // TRIANGLE_H

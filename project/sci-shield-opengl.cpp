@@ -58,7 +58,7 @@ SciShieldOpengl::SciShieldOpengl(QWidget* parent)
     init  = false;
     mouse = false;
     asp = 1;
-    dim = 3;
+    dim = 10;
     fov = 55;
     th = ph = 0;
     x0 = y0 = 0;
@@ -74,7 +74,7 @@ void SciShieldOpengl::reset()
     cout << "resetting" << endl;
 
     th = ph = 0;
-    dim = 3;
+    dim = 10;
     Projection();
 
     cout << "reset done" << endl;
@@ -132,21 +132,22 @@ void SciShieldOpengl::initializeGL()
     cout << "timers set" << endl;
 
 
-    // Cruiser
-//    WaveOBJ* fighter=0;
-//    try
-//    {
-//        fighter = new WaveOBJ("dark_fighter_6.obj",":/models/fighter/");
-//    }
-//    catch (QString err)
-//    {
-//        Fatal("Error loading object\n"+err);
-//    }
-//    if (fighter)
-//    {
-//        //cruiser->color(1,1,0);
-//        ship1 = fighter;
-//    }
+    // obj model
+    WaveOBJ* fighter=0;
+    try
+    {
+        //fighter = new WaveOBJ(this,"dark_fighter_6.obj",":/models/fighter/");
+        fighter = new WaveOBJ(this, "cruiser.obj", ":/models/cruiser/");
+    }
+    catch (QString err)
+    {
+        Fatal("Error loading object\n"+err);
+    }
+    if (fighter)
+    {
+        fighter->SetShader(":/object.vert",":/object.frag");
+        ship1 = fighter;
+    }
 
 }
 
@@ -234,23 +235,9 @@ void SciShieldOpengl::paintGL()
         cerr << "error prior to display call: " << error << endl;
     }
 
+    cube->display(0);
 
-    cube->display();
-
-    //  Axes for reference
-    glColor3f(1,1,1);
-    glBegin(GL_LINES);
-    glVertex3f(0,0,0);
-    glVertex3f(2,0,0);
-    glVertex3f(0,0,0);
-    glVertex3f(0,2,0);
-    glVertex3f(0,0,0);
-    glVertex3f(0,0,2);
-    glEnd();
-    glDisable(GL_DEPTH_TEST);
-    renderText(2,0,0,"X");
-    renderText(0,2,0,"Y");
-    renderText(0,0,2,"Z");
+    ShowAxes();
 
     error = glGetError();
     if (error)
@@ -263,6 +250,29 @@ void SciShieldOpengl::paintGL()
     emit angles(QString::number(th)+","+QString::number(ph));
     //  Emit light angle
     emit light((int)zh);
+}
+
+void SciShieldOpengl::ShowAxes()
+{
+    //  Axes for reference
+    glBegin(GL_LINES);
+    glColor3f(1,0,0);
+    glVertex3f(0,0,0);
+    glVertex3f(4,0,0);
+    glColor3f(0,1,0);
+    glVertex3f(0,0,0);
+    glVertex3f(0,4,0);
+    glColor3f(0,0,1);
+    glVertex3f(0,0,0);
+    glVertex3f(0,0,4);
+    glEnd();
+    glDisable(GL_DEPTH_TEST);
+    glColor3f(1,0,0);
+    renderText(4.5,0,0,"X");
+    glColor3f(0,1,0);
+    renderText(0,4.5,0,"Y");
+    glColor3f(0,0,1);
+    renderText(0,0,4.5,"Z");
 }
 
 //
@@ -336,10 +346,10 @@ void SciShieldOpengl::wheelEvent(QWheelEvent* e)
 {
    //  Zoom out
    if (e->delta()<0)
-      dim += 0.1;
+      dim += 0.25;
    //  Zoom in
    else if (dim>1)
-      dim -= 0.1;
+      dim -= 0.25;
    //  Request redisplay
    Projection();
    //updateGL();

@@ -182,6 +182,12 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
 //    normals = (float *)malloc(F.count() * 3 * 3 * sizeof(float));
 //    texcoords = (float *)malloc(F.count() * 3 * 2 * sizeof(float));
 
+    vertexCount = F.count() * 3;
+    vertexBuffer.create();
+    vertexBuffer.bind();
+    vertexBuffer.setUsagePattern(QGLBuffer::StaticDraw);
+    vertexBuffer.allocate(sizeof(float) * vertexCount * 8);
+
     //  parse faces
     //  Read Vertex/Texture/Normal triplets
     for (int i = 0; i < F.count(); i++)
@@ -205,39 +211,25 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
 
             //  Draw vertex
             int index = (i*9)+((k-1)*3);
-//            vertices[index+0] = V[Kv-1].x;
-//            vertices[index+1] = V[Kv-1].y;
-//            vertices[index+2] = V[Kv-1].z;
+            float vertex[8];
 
-//            normals[index+0] = N[Kn-1].x;
-//            normals[index+1] = N[Kn-1].y;
-//            normals[index+2] = N[Kn-1].z;
+            vertex[0] = V[Kv-1].x;
+            vertex[1] = V[Kv-1].y;
+            vertex[2] = V[Kv-1].z;
 
-//            index = (i*6)+((k-1)*2);
-//            texcoords[index+0] = T[Kt-1].x;
-//            texcoords[index+0] = T[Kt-1].y;
+            vertex[3] = N[Kn-1].x;
+            vertex[4] = N[Kn-1].y;
+            vertex[5] = N[Kn-1].z;
+
+            index = (i*6)+((k-1)*2);
+            vertex[6] = T[Kt-1].x;
+            vertex[7] = T[Kt-1].y;
+
+            vertexBuffer.write(sizeof(float)*k*i*8, vertex, sizeof(vertex));
         }
     }
+
+    //  Unbind this buffer
+    vertexBuffer.release();
+
 }
-
-//
-//  Display
-//
-void WaveOBJ::display()
-{
-   glPushMatrix();
-   //setColor();
-
-   //draw stuff here
-
-   glPopMatrix();
-}
-
-//
-//  Set scaling
-//
-void WaveOBJ::scale(float S)
-{
-   sr = S;
-}
-

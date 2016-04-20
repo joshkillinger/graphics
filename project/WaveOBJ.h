@@ -30,8 +30,6 @@ private:
    void LoadMaterial(const QString& name,const QString& path="");
 public:
    WaveOBJ(SciShieldOpengl *context, const char* file,const QString& path);     //  Constructor
-   void scale(float s);                               //  Set scale
-   void display();                                    //  Render the object
 };
 
 #endif

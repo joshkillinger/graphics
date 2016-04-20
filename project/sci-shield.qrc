@@ -6,5 +6,10 @@
         <file>models/cruiser/cruiser.obj</file>
         <file>object.frag</file>
         <file>object.vert</file>
+        <file>models/fighter/dark_fighter_6.obj</file>
+        <file>models/fighter/dark_fighter_6_bump.gif</file>
+        <file>models/fighter/dark_fighter_6_color.png</file>
+        <file>models/fighter/dark_fighter_6_illumination.png</file>
+        <file>models/fighter/dark_fighter_6_specular.png</file>
     </qresource>
 </RCC>
