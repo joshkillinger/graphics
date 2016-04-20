@@ -11,5 +11,9 @@
         <file>models/fighter/dark_fighter_6_color.png</file>
         <file>models/fighter/dark_fighter_6_illumination.png</file>
         <file>models/fighter/dark_fighter_6_specular.png</file>
+        <file>models/primitives/cube.mtl</file>
+        <file>models/primitives/cube.obj</file>
+        <file>models/primitives/tri.obj</file>
+        <file>models/primitives/quad.obj</file>
     </qresource>
 </RCC>

@@ -222,7 +222,14 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
             vertex[6] = T[Kt-1].x;
             vertex[7] = T[Kt-1].y;
 
-            vertexBuffer.write(sizeof(float)*(k-1)*i*8, vertex, sizeof(vertex));
+            int index = ((i*3)+(k-1))*8;
+            vertexBuffer.write(sizeof(float)*index, vertex, sizeof(vertex));
+//            cout << "writing ";
+//            for (int j = 0; j < 8; j++)
+//            {
+//                cout << vertex[j] << " ";
+//            }
+//            cout << "(" << sizeof(vertex) << " bytes) to offset " << sizeof(float)*index << endl;
         }
     }
 

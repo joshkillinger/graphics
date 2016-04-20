@@ -163,7 +163,7 @@ void SciShieldOpengl::initializeGL()
     WaveOBJ* cruiser=0;
     try
     {
-        cruiser = new WaveOBJ(this, "cruiser.obj", ":/models/cruiser/");
+        cruiser = new WaveOBJ(this, "quad.obj", ":/models/primitives/");
     }
     catch (QString err)
     {
@@ -173,7 +173,7 @@ void SciShieldOpengl::initializeGL()
     {
         Material *cruiserMat = new Material(this, 0.2f, 0.5f, 0.3f, 32.0f);
         cruiserMat->SetShader(":/object.vert",":/object.frag");
-        cruiserMat->SetTexture(":/models/cruiser/cruiser.bmp");
+        cruiserMat->SetTexture(":/crate.png");
         cruiser->SetMaterial(cruiserMat);
         cruiser->transform.SetScale(QVector3D(5,5,5));
         cruiser->transform.SetPosition(QVector3D(0,-1,0));
