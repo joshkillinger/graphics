@@ -4,7 +4,7 @@ joshua.killinger@colorado.edu
 CPSC 5239
 Project Progress Report
 
-I'll say it right up front: I'm behind on my project. I began with HW4, and spent a lot of time redesigning the object class from HW3 to do its own rendering. Objects have a transform and material component, and rendering uses the prototype method design pattern. The display call also takes a rendering stage parameter, so that each object's display function can be called at each rendering stage, and only the relevant objects will draw. This will make the code a lot cleaner as the code base gets bigger. My intent here is to get to something resembling a game engine by the end of the project.
+I'll say it right up front: I'm behind on my project. I began with HW4 using Qt, and spent a lot of time redesigning the object class from HW3 to do its own rendering. Objects have a transform and material component, and rendering uses the prototype method design pattern. The display call also takes a rendering stage parameter, so that each object's display function can be called at each rendering stage, and only the relevant objects will draw. This will make the code a lot cleaner as the code base gets bigger. My intent here is to get to something resembling a game engine by the end of the project.
 The major issue I am facing right now is that I'm having trouble converting the WaveOBJ file to use OpenGL 4. It seems to be only rendering every other triangle. Not sure what is causing this issue currently.
 
 Remaining:
