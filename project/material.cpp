@@ -35,10 +35,10 @@ void Material::SetShader(QString vert, QString frag)
         glContext->Fatal("Error linking shader\n"+shader.log(),"Object");
 }
 
-void Material::SetTexture(QPixmap t)
+void Material::SetTexture(QString file)
 {
     // Texture
-    texture = t;
+    texture = QPixmap(file);
     tex = glContext->bindTexture(texture,GL_TEXTURE_2D);
 }
 
@@ -66,6 +66,5 @@ void Material::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
 
 void Material::PostRender()
 {
-    // Back to fixed pipeline
     shader.release();
 }

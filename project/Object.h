@@ -17,7 +17,6 @@
 class Object
 {
 protected:
-    Transform transform;
     Material *material;
 
     SciShieldOpengl *glContext;
@@ -26,15 +25,14 @@ protected:
     QGLBuffer vertexBuffer;
 
     Object(SciShieldOpengl *context);          //  Constructor
+    void Render();
 public:
+    Transform transform;
+
     void SetMaterial(Material *mat);
     void display(int stage);                         //  Render the object
     virtual ~Object() {};                             //  Do nothing destructor
 protected:
-//    void EnableTex();
-//    void DisableTex();
-//    int  Increment(int n);
-    void Render();
 };
 
 #endif

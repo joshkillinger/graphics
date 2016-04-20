@@ -9,6 +9,7 @@
 #include <QPixmap>
 #include <QGLWidget>
 #include "WaveOBJ.h"
+#include <iostream>
 
 using namespace std;
 
@@ -178,15 +179,13 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
     }
     f.close();
 
-//    vertices = (float *)malloc(F.count() * 3 * 3 * sizeof(float));
-//    normals = (float *)malloc(F.count() * 3 * 3 * sizeof(float));
-//    texcoords = (float *)malloc(F.count() * 3 * 2 * sizeof(float));
-
     vertexCount = F.count() * 3;
     vertexBuffer.create();
     vertexBuffer.bind();
     vertexBuffer.setUsagePattern(QGLBuffer::StaticDraw);
     vertexBuffer.allocate(sizeof(float) * vertexCount * 8);
+
+    cout << F.count() << " faces, " << vertexCount << " vertices, " << vertexBuffer.size() << " bytes." << endl;
 
     //  parse faces
     //  Read Vertex/Texture/Normal triplets
@@ -210,7 +209,6 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
             if (Kt<0) Kt = T.count()+Kt+1;
 
             //  Draw vertex
-            int index = (i*9)+((k-1)*3);
             float vertex[8];
 
             vertex[0] = V[Kv-1].x;
@@ -221,11 +219,10 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
             vertex[4] = N[Kn-1].y;
             vertex[5] = N[Kn-1].z;
 
-            index = (i*6)+((k-1)*2);
             vertex[6] = T[Kt-1].x;
             vertex[7] = T[Kt-1].y;
 
-            vertexBuffer.write(sizeof(float)*k*i*8, vertex, sizeof(vertex));
+            vertexBuffer.write(sizeof(float)*(k-1)*i*8, vertex, sizeof(vertex));
         }
     }
 

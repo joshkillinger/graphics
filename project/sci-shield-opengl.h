@@ -38,6 +38,7 @@ private:
 
     Object *cube;
     Object *ship1;
+    Object *ship2;
 
     QTimer           timer;    //  Timer for animations
     QElapsedTimer    time;     //  Track elapsed time

@@ -30,7 +30,7 @@ public:
 
     Material(SciShieldOpengl *context, float ambient, float diffuse, float specular, float shininess);
     void SetShader(QString vert, QString frag);
-    void SetTexture(QPixmap t);
+    void SetTexture(QString file);
 
     void PreRender(QMatrix4x4 modelview, QMatrix3x3 norm);
     void PostRender();

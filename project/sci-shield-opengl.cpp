@@ -63,7 +63,7 @@ SciShieldOpengl::SciShieldOpengl(QWidget* parent)
     fov = 55;
     th = ph = 0;
     x0 = y0 = 0;
-    z0 = 1;
+    z0 = 3;
     zh = 0;
 }
 
@@ -123,9 +123,10 @@ void SciShieldOpengl::initializeGL()
     Material *mat = new Material(this, 0.2f, 0.5f, 0.3f, 32.0f);
     mat->SetShader(":/object.vert",":/object.frag");
     cout << "shader created" << endl;
-    mat->SetTexture(QPixmap(":/crate.png"));
+    mat->SetTexture(":/crate.png");
     cout << "texture created" << endl;
     cube->SetMaterial(mat);
+    cube->transform.SetPosition(QVector3D(0,3,0));
 
 
     //  Start 100 fps timer connected to updateGL
@@ -141,8 +142,7 @@ void SciShieldOpengl::initializeGL()
     WaveOBJ* fighter=0;
     try
     {
-        //fighter = new WaveOBJ(this,"dark_fighter_6.obj",":/models/fighter/");
-        fighter = new WaveOBJ(this, "cruiser.obj", ":/models/cruiser/");
+        fighter = new WaveOBJ(this,"dark_fighter_6.obj",":/models/fighter/");
     }
     catch (QString err)
     {
@@ -152,8 +152,32 @@ void SciShieldOpengl::initializeGL()
     {
         Material *fighterMat = new Material(this, 0.2f, 0.5f, 0.3f, 32.0f);
         fighterMat->SetShader(":/object.vert",":/object.frag");
+        fighterMat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
         fighter->SetMaterial(fighterMat);
+        fighter->transform.SetScale(QVector3D(0.2f,0.2f,0.2f));
+        fighter->transform.SetPosition(QVector3D(4,-1,0));
         ship1 = fighter;
+    }
+
+    // obj model
+    WaveOBJ* cruiser=0;
+    try
+    {
+        cruiser = new WaveOBJ(this, "cruiser.obj", ":/models/cruiser/");
+    }
+    catch (QString err)
+    {
+        Fatal("Error loading object\n"+err);
+    }
+    if (fighter)
+    {
+        Material *cruiserMat = new Material(this, 0.2f, 0.5f, 0.3f, 32.0f);
+        cruiserMat->SetShader(":/object.vert",":/object.frag");
+        cruiserMat->SetTexture(":/models/cruiser/cruiser.bmp");
+        cruiser->SetMaterial(cruiserMat);
+        cruiser->transform.SetScale(QVector3D(5,5,5));
+        cruiser->transform.SetPosition(QVector3D(0,-1,0));
+        ship2 = cruiser;
     }
 
 }
@@ -207,10 +231,7 @@ void SciShieldOpengl::paintGL()
     glEnable(GL_DEPTH_TEST);
 
     //  Translate intensity to color vectors
-//    float Ambient[]  = {0.3,0.3,0.3,1.0};
-//    float Diffuse[]  = {0.8,0.8,0.8,1.0};
-//    float Specular[] = {1.0,1.0,1.0,1.0};
-    float Position[] = {(float)(3*Cos(zh)),z0,(float)(3*Sin(zh)),1.0};
+    float Position[] = {(float)(6*Cos(zh)),z0,(float)(6*Sin(zh)),1.0};
 
     //  Draw light position (no lighting yet)
     glColor3f(1,1,1);
@@ -230,9 +251,6 @@ void SciShieldOpengl::paintGL()
 
     Light.Position = QVector4D(Position[0], Position[1], Position[2], Position[3]);
     Light.Color = QVector4D(1,1,1,1);
-//    Light.Ambient = QVector4D(Ambient[0], Ambient[1], Ambient[2], Ambient[3]);
-//    Light.Diffuse = QVector4D(Diffuse[0], Diffuse[1], Diffuse[2], Diffuse[3]);
-//    Light.Specular = QVector4D(Specular[0], Specular[1], Specular[2], Specular[3]);
 
     //move the light by the view matrix (model matrix is the identity matrix in this case)
     Light.Position = view * Light.Position;
@@ -244,6 +262,8 @@ void SciShieldOpengl::paintGL()
     }
 
     cube->display(0);
+    //ship1->display(0);
+    ship2->display(0);
 
     ShowAxes();
 
@@ -343,7 +363,6 @@ void SciShieldOpengl::mouseMoveEvent(QMouseEvent* e)
       th = (th+d.x())%360;      //  Translate x movement to azimuth
       ph = (ph+d.y())%360;      //  Translate y movement to elevation
       pos = e->pos();           //  Remember new location
-      //updateGL();               //  Request redisplay
    }
 }
 
@@ -358,8 +377,7 @@ void SciShieldOpengl::wheelEvent(QWheelEvent* e)
    //  Zoom in
    else if (dim>1)
       dim -= 0.25;
-   //  Request redisplay
+
    Projection();
-   //updateGL();
 }
 
