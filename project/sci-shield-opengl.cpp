@@ -9,6 +9,7 @@
 #include "WaveOBJ.h"
 #include "cube.h"
 #include "triangle.h"
+#include "material.h"
 
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
@@ -118,9 +119,13 @@ void SciShieldOpengl::initializeGL()
     cout << "instantiating triangle" << endl;
 
     cube = new Cube(this);
-    cout << "triangle instantiated" << endl;
-    cube->SetShader(":/object.vert",":/object.frag");
+    cout << "cube instantiated" << endl;
+    Material *mat = new Material(this, 0.2f, 0.5f, 0.3f, 32.0f);
+    mat->SetShader(":/object.vert",":/object.frag");
     cout << "shader created" << endl;
+    mat->SetTexture(QPixmap(":/crate.png"));
+    cout << "texture created" << endl;
+    cube->SetMaterial(mat);
 
 
     //  Start 100 fps timer connected to updateGL
@@ -145,7 +150,9 @@ void SciShieldOpengl::initializeGL()
     }
     if (fighter)
     {
-        fighter->SetShader(":/object.vert",":/object.frag");
+        Material *fighterMat = new Material(this, 0.2f, 0.5f, 0.3f, 32.0f);
+        fighterMat->SetShader(":/object.vert",":/object.frag");
+        fighter->SetMaterial(fighterMat);
         ship1 = fighter;
     }
 
@@ -200,9 +207,9 @@ void SciShieldOpengl::paintGL()
     glEnable(GL_DEPTH_TEST);
 
     //  Translate intensity to color vectors
-    float Ambient[]  = {0.3,0.3,0.3,1.0};
-    float Diffuse[]  = {0.8,0.8,0.8,1.0};
-    float Specular[] = {1.0,1.0,1.0,1.0};
+//    float Ambient[]  = {0.3,0.3,0.3,1.0};
+//    float Diffuse[]  = {0.8,0.8,0.8,1.0};
+//    float Specular[] = {1.0,1.0,1.0,1.0};
     float Position[] = {(float)(3*Cos(zh)),z0,(float)(3*Sin(zh)),1.0};
 
     //  Draw light position (no lighting yet)
@@ -222,9 +229,10 @@ void SciShieldOpengl::paintGL()
     view.rotate(th,0,1,0);
 
     Light.Position = QVector4D(Position[0], Position[1], Position[2], Position[3]);
-    Light.Ambient = QVector4D(Ambient[0], Ambient[1], Ambient[2], Ambient[3]);
-    Light.Diffuse = QVector4D(Diffuse[0], Diffuse[1], Diffuse[2], Diffuse[3]);
-    Light.Specular = QVector4D(Specular[0], Specular[1], Specular[2], Specular[3]);
+    Light.Color = QVector4D(1,1,1,1);
+//    Light.Ambient = QVector4D(Ambient[0], Ambient[1], Ambient[2], Ambient[3]);
+//    Light.Diffuse = QVector4D(Diffuse[0], Diffuse[1], Diffuse[2], Diffuse[3]);
+//    Light.Specular = QVector4D(Specular[0], Specular[1], Specular[2], Specular[3]);
 
     //move the light by the view matrix (model matrix is the identity matrix in this case)
     Light.Position = view * Light.Position;

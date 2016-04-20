@@ -3,14 +3,17 @@
 struct light
 {
 	vec4 Position;
-	vec4 Ambient;
-	vec4 Diffuse;
-	vec4 Specular;
+    vec4 Color;
 };
 
 uniform light Light;
+
+uniform vec4 Tint;
+uniform float Diffuse;
+uniform float Specular;
+uniform float Shininess;
+
 uniform sampler2D Texture;
-uniform float shininess;
 
 //  Input from previous shader
 in vec3 View;
@@ -37,14 +40,14 @@ vec4 phong()
    if (Id>0.0)
    {
       //  Add diffuse
-      color += Id*Light.Diffuse;
+      color += Id*Diffuse;
       //  R is the reflected light vector R = 2(L.N)N - L
       vec3 R = reflect(-L,N);
       //  V is the view vector (eye vector)
       vec3 V = normalize(View);
       //  Specular is cosine of reflected and view vectors
       float Is = dot(R,V);
-      if (Is>0.0) color += pow(Is,shininess)*Light.Specular;
+      if (Is>0.0) color += pow(Is,Shininess)*Specular;
    }
 
    //  Return sum of color components
@@ -53,7 +56,9 @@ vec4 phong()
 
 void main()
 {
-    Fragcolor = (Color + phong()) * texture(Texture, vs_tex_coord);
+
+    Fragcolor = Color + (phong() * Light.Color);
+    Fragcolor = Fragcolor * texture(Texture, vs_tex_coord) * Tint;
     //Fragcolor = (Color + phong());
     //Fragcolor = vec4(normalize(Normal), 1);
     //Fragcolor = Color;

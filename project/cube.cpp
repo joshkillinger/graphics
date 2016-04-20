@@ -55,10 +55,6 @@ Cube::Cube(SciShieldOpengl *context) : Object(context)
     //
     vertexCount = 36;
 
-    // Texture
-    texture = QPixmap(":/crate.png");
-    tex = glContext->bindTexture(texture,GL_TEXTURE_2D);
-
     //  Cube vertex buffer object
     //  Copy data to vertex buffer object
     vertexBuffer.create();

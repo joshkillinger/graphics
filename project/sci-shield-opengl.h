@@ -15,9 +15,7 @@ class Object;
 struct light
 {
     QVector4D Position;
-    QVector4D Ambient;
-    QVector4D Diffuse;
-    QVector4D Specular;
+    QVector4D Color;
 };
 
 class SciShieldOpengl : public QGLWidget

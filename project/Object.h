@@ -12,39 +12,29 @@
 #include <QtOpenGL>
 #include "sci-shield-opengl.h"
 #include "transform.h"
+#include "material.h"
 
 class Object
 {
 protected:
     Transform transform;
-
-    QColor tint;
-    QGLShaderProgram shader;   //  Shader
-    QPixmap texture;
-    QPixmap specmap;
-    QPixmap illummap;
-    QPixmap bumpmap;
-    unsigned int tex;  //  Texture
+    Material *material;
 
     SciShieldOpengl *glContext;
 
     int vertexCount;
     QGLBuffer vertexBuffer;
 
-    int visibleStage;
-
     Object(SciShieldOpengl *context);          //  Constructor
 public:
-    void SetShader(QString vert, QString frag);
+    void SetMaterial(Material *mat);
     void display(int stage);                         //  Render the object
     virtual ~Object() {};                             //  Do nothing destructor
 protected:
-    void EnableTex();
-    void DisableTex();
-    int  Increment(int n);
-    void PreRender();
-    virtual void Render();
-    void PostRender();
+//    void EnableTex();
+//    void DisableTex();
+//    int  Increment(int n);
+    void Render();
 };
 
 #endif

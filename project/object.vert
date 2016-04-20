@@ -3,9 +3,7 @@
 struct light
 {
 	vec4 Position;
-	vec4 Ambient;
-	vec4 Diffuse;
-	vec4 Specular;
+    vec4 Color;
 };
 
 //  Transformation matrices
@@ -14,6 +12,8 @@ uniform mat4 ModelViewMatrix;
 uniform mat3 NormalMatrix;
 
 uniform light Light;
+
+uniform float Ambient;
 
 //  Vertex attributes (input)
 layout(location = 0) in vec3 Vertex;
@@ -41,7 +41,7 @@ void main()
    
    
    //  Ambient color
-   Color = Light.Ambient;
+   Color = Light.Color * Ambient;
    //Color = vec4(normalize(VNormal),1);
 
    //  Set transformed vertex location

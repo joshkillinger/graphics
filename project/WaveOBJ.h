@@ -25,9 +25,9 @@ class WaveOBJ: public Object
 private:
    float sr;              // Scale
    //int   list;            // Display list
-   QHash<QString,Mat> mat;
-   void SetMaterial(const QString& name);
-   void LoadMaterial(const QString& name,const QString& path="");
+   //QHash<QString,Mat> mat;
+   //void SetMaterial(const QString& name);
+   //void LoadMaterial(const QString& name,const QString& path="");
 public:
    WaveOBJ(SciShieldOpengl *context, const char* file,const QString& path);     //  Constructor
 };

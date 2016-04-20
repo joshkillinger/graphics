@@ -48,73 +48,73 @@ static Vec3 Read3(QStringList s)
 //
 //  Load materials from file
 //
-void WaveOBJ::LoadMaterial(const QString& file,const QString& path)
-{
-   //  Open file or return with warning on error
-   QFile f(path+file);
-   if (!f.open(QFile::ReadOnly|QFile::Text)) throw "Cannot open material file "+path+file;
-   QTextStream in(&f);
+//void WaveOBJ::LoadMaterial(const QString& file,const QString& path)
+//{
+//   //  Open file or return with warning on error
+//   QFile f(path+file);
+//   if (!f.open(QFile::ReadOnly|QFile::Text)) throw "Cannot open material file "+path+file;
+//   QTextStream in(&f);
 
-   //  Process materials file
-   QString name;
-   QString line;
-   while (line = in.readLine(),!line.isNull())
-   {
-      //  Split line into words
-      QStringList words = line.simplified().split(" ");
-      //  New material
-      if (words.size()==2 && words[0]=="newmtl")
-      {
-         name  = words[1];
-         Mat m;
-         m.Ns  = 0;
-         m.d   = 0;
-         m.map = 0;
-         mat[name] = m;
-      }
-      //  If no material short circuit here
-      else if (name.isNull())
-      {}
-      //  Emission color
-      else if (words.size()==4 && words[0]=="Ke")
-         mat[name].Ke = Read3(words);
-      //  Ambient color
-      else if (words.size()==4 && words[0]=="Ka")
-         mat[name].Ka = Read3(words);
-      //  Diffuse color
-      else if (words.size()==4 && words[0]=="Kd")
-         mat[name].Kd = Read3(words);
-      //  Specular color
-      else if (words.size()==4 && words[0]=="Ks")
-         mat[name].Ks = Read3(words);
-      //  Material Shininess
-      else if (words.size()==2 && words[0]=="Ns")
-         mat[name].Ns = Read1(words);
-      //  Textures (must be BMP - will fail if not)
-      else if (words.size()==2 && words[0]=="map_Kd")
-      {
-         unsigned int tex;
-         glGenTextures(1,&tex);
-         glBindTexture(GL_TEXTURE_2D,tex);
-         QImage img(path+words[1]);
-         QImage rgba = QGLWidget::convertToGLFormat(img);
-         glTexImage2D(GL_TEXTURE_2D,0,4,rgba.width(),rgba.height(),0,GL_RGBA,GL_UNSIGNED_BYTE,rgba.bits());
-         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-         mat[name].map = tex; 
-      }
-      //  Ignore line if we get here
-   }
-   f.close();
-}
+//   //  Process materials file
+//   QString name;
+//   QString line;
+//   while (line = in.readLine(),!line.isNull())
+//   {
+//      //  Split line into words
+//      QStringList words = line.simplified().split(" ");
+//      //  New material
+//      if (words.size()==2 && words[0]=="newmtl")
+//      {
+//         name  = words[1];
+//         Mat m;
+//         m.Ns  = 0;
+//         m.d   = 0;
+//         m.map = 0;
+//         mat[name] = m;
+//      }
+//      //  If no material short circuit here
+//      else if (name.isNull())
+//      {}
+//      //  Emission color
+//      else if (words.size()==4 && words[0]=="Ke")
+//         mat[name].Ke = Read3(words);
+//      //  Ambient color
+//      else if (words.size()==4 && words[0]=="Ka")
+//         mat[name].Ka = Read3(words);
+//      //  Diffuse color
+//      else if (words.size()==4 && words[0]=="Kd")
+//         mat[name].Kd = Read3(words);
+//      //  Specular color
+//      else if (words.size()==4 && words[0]=="Ks")
+//         mat[name].Ks = Read3(words);
+//      //  Material Shininess
+//      else if (words.size()==2 && words[0]=="Ns")
+//         mat[name].Ns = Read1(words);
+//      //  Textures (must be BMP - will fail if not)
+//      else if (words.size()==2 && words[0]=="map_Kd")
+//      {
+//         unsigned int tex;
+//         glGenTextures(1,&tex);
+//         glBindTexture(GL_TEXTURE_2D,tex);
+//         QImage img(path+words[1]);
+//         QImage rgba = QGLWidget::convertToGLFormat(img);
+//         glTexImage2D(GL_TEXTURE_2D,0,4,rgba.width(),rgba.height(),0,GL_RGBA,GL_UNSIGNED_BYTE,rgba.bits());
+//         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+//         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+//         mat[name].map = tex;
+//      }
+//      //  Ignore line if we get here
+//   }
+//   f.close();
+//}
 
 //
 //  Set material
 //
-void WaveOBJ::SetMaterial(const QString& name)
-{
+//void WaveOBJ::SetMaterial(const QString& name)
+//{
    //  Search materials for a matching name
-   if (!mat.contains(name)) throw "Unknown material "+name;
+   //if (!mat.contains(name)) throw "Unknown material "+name;
 
    //  Set material colors
    //setColor(mat[name].Ka,mat[name].Kd,mat[name].Ks,mat[name].Ke,mat[name].Ns);
@@ -127,7 +127,7 @@ void WaveOBJ::SetMaterial(const QString& name)
    //   }
    //   else
    //      glDisable(GL_TEXTURE_2D);
-}
+//}
 
 //
 //  Constructor
@@ -143,7 +143,7 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
    QTextStream in(&f);
 
    //  Process file
-   mat.clear();
+   //mat.clear();
    QVector<Vec3> V,N;
    QVector<Vec2> T;
    QVector<QString> F;
@@ -169,11 +169,11 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
           F.push_back(line);
       }
       //  Use material
-      else if (words.size()==2 && words[0]=="usemtl")
-         SetMaterial(words[1]);
-      //  Load materials
-      else if (words.size()==2 && words[0]=="mtllib")
-         LoadMaterial(words[1],path);
+//      else if (words.size()==2 && words[0]=="usemtl")
+//         SetMaterial(words[1]);
+//      //  Load materials
+//      else if (words.size()==2 && words[0]=="mtllib")
+//         LoadMaterial(words[1],path);
       //  Skip this line
     }
     f.close();
