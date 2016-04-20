@@ -20,18 +20,13 @@ protected:
 
     QColor tint;
     QGLShaderProgram shader;   //  Shader
-    QPixmap qtex;
+    QPixmap texture;
     unsigned int tex;  //  Texture
 
     SciShieldOpengl *glContext;
 
     int vertexCount;
-    float *vertices;
-    float *normals;
-    float *texcoords;
     QGLBuffer vertexBuffer;
-    QGLBuffer normalBuffer;
-    QGLBuffer texCoordBuffer;
 
     Object(SciShieldOpengl *context);          //  Constructor
 public:

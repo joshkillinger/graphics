@@ -178,9 +178,9 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
     }
     f.close();
 
-    vertices = (float *)malloc(F.count() * 3 * 3 * sizeof(float));
-    normals = (float *)malloc(F.count() * 3 * 3 * sizeof(float));
-    texcoords = (float *)malloc(F.count() * 3 * 2 * sizeof(float));
+//    vertices = (float *)malloc(F.count() * 3 * 3 * sizeof(float));
+//    normals = (float *)malloc(F.count() * 3 * 3 * sizeof(float));
+//    texcoords = (float *)malloc(F.count() * 3 * 2 * sizeof(float));
 
     //  parse faces
     //  Read Vertex/Texture/Normal triplets
@@ -205,17 +205,17 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
 
             //  Draw vertex
             int index = (i*9)+((k-1)*3);
-            vertices[index+0] = V[Kv-1].x;
-            vertices[index+1] = V[Kv-1].y;
-            vertices[index+2] = V[Kv-1].z;
+//            vertices[index+0] = V[Kv-1].x;
+//            vertices[index+1] = V[Kv-1].y;
+//            vertices[index+2] = V[Kv-1].z;
 
-            normals[index+0] = N[Kn-1].x;
-            normals[index+1] = N[Kn-1].y;
-            normals[index+2] = N[Kn-1].z;
+//            normals[index+0] = N[Kn-1].x;
+//            normals[index+1] = N[Kn-1].y;
+//            normals[index+2] = N[Kn-1].z;
 
-            index = (i*6)+((k-1)*2);
-            texcoords[index+0] = T[Kt-1].x;
-            texcoords[index+0] = T[Kt-1].y;
+//            index = (i*6)+((k-1)*2);
+//            texcoords[index+0] = T[Kt-1].x;
+//            texcoords[index+0] = T[Kt-1].y;
         }
     }
 }

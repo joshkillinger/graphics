@@ -117,7 +117,7 @@ void SciShieldOpengl::initializeGL()
 
     cout << "instantiating triangle" << endl;
 
-    cube = new Triangle(this);
+    cube = new Cube(this);
     cout << "triangle instantiated" << endl;
     cube->SetShader(":/object.vert",":/object.frag");
     cout << "shader created" << endl;

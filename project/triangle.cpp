@@ -58,8 +58,8 @@ void Triangle::display()
 
     shader.setUniformValue("shininess",32.0f);
 
-    tex = glContext->bindTexture(qtex,GL_TEXTURE_2D);
-    shader.setUniformValue("Texture",0);
+    tex = glContext->bindTexture(texture,GL_TEXTURE_2D);
+    shader.setUniformValue("Texture",tex);
 
     //   Attribute 0: vertex coordinate (vec3) at offset 0
     vertexBuffer.bind();
