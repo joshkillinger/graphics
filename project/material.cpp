@@ -42,6 +42,11 @@ void Material::SetTexture(QString file)
     tex = glContext->bindTexture(texture,GL_TEXTURE_2D);
 }
 
+void Material::SetTint(QVector4D color)
+{
+    tint = color;
+}
+
 void Material::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
 {
     // Enable shader

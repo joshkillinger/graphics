@@ -24,6 +24,8 @@ protected:
     int vertexCount;
     QGLBuffer vertexBuffer;
 
+    int renderStage;
+
     Object(SciShieldOpengl *context);          //  Constructor
     void Render();
 public:

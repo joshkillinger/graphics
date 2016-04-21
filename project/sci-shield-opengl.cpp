@@ -10,6 +10,7 @@
 #include "cube.h"
 #include "triangle.h"
 #include "material.h"
+#include "shield.h"
 
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
@@ -180,6 +181,26 @@ void SciShieldOpengl::initializeGL()
         ship2 = cruiser;
     }
 
+    // obj model
+    sphere=0;
+    try
+    {
+        sphere = new WaveOBJ(this, "sphere.obj", ":/models/primitives/");
+    }
+    catch (QString err)
+    {
+        Fatal("Error loading object\n"+err);
+    }
+    if (sphere)
+    {
+        Material *sphereMat = new Shield(this);
+        sphereMat->SetShader(":/shield.vert",":/shield.frag");
+        sphereMat->SetTexture(":/crate.png");
+        sphereMat->SetTint(QVector4D(0,.7,1,1));
+        sphere->SetMaterial(sphereMat);
+        sphere->transform.SetScale(QVector3D(2,2,2));
+        sphere->transform.SetPosition(QVector3D(0,0,0));
+    }
 }
 
 static void PrintQMatrix(const float *f, int size, QString label)
@@ -261,9 +282,11 @@ void SciShieldOpengl::paintGL()
         cerr << "error prior to display call: " << error << endl;
     }
 
-    cube->display(0);
-    ship1->display(0);
-    ship2->display(0);
+    //cube->display(0);
+    //ship1->display(0);
+    //ship2->display(0);
+
+    sphere->display(1);
 
     ShowAxes();
 
