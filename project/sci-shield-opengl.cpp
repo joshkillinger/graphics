@@ -155,8 +155,8 @@ void SciShieldOpengl::initializeGL()
         fighterMat->SetShader(":/object.vert",":/object.frag");
         fighterMat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
         fighter->SetMaterial(fighterMat);
-        fighter->transform.SetScale(QVector3D(0.1f,0.1f,0.1f));
-        fighter->transform.SetPosition(QVector3D(4,-1,0));
+        fighter->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
+        fighter->transform.SetPosition(QVector3D(0,0,0));
         ship1 = fighter;
     }
 
@@ -282,11 +282,22 @@ void SciShieldOpengl::paintGL()
         cerr << "error prior to display call: " << error << endl;
     }
 
+    //opaque pipeline
+
     //cube->display(0);
-    //ship1->display(0);
+    ship1->display(0);
     //ship2->display(0);
 
+    //blended pipeline
+    glDepthMask(GL_FALSE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     sphere->display(1);
+
+    glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
+
 
     ShowAxes();
 
