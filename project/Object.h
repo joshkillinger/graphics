@@ -34,6 +34,9 @@ public:
     void SetMaterial(Material *mat);
     void display(int stage);                         //  Render the object
     virtual ~Object() {};                             //  Do nothing destructor
+
+    void Hit(QVector3D point);
+
 protected:
 };
 

@@ -55,3 +55,7 @@ void Object::Render()
     vertexBuffer.release();
 }
 
+void Object::Hit(QVector3D point)
+{
+    material->Hit(point);
+}

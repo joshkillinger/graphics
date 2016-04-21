@@ -73,3 +73,6 @@ void Material::PostRender()
 {
     shader.release();
 }
+
+void Material::Hit(QVector3D point)
+{}

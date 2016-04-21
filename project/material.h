@@ -6,7 +6,7 @@
 
 class Material
 {
-private:
+protected:
     SciShieldOpengl *glContext;
 
     QVector4D tint;
@@ -33,8 +33,10 @@ public:
     void SetTexture(QString file);
     void SetTint(QVector4D color);
 
-    void PreRender(QMatrix4x4 modelview, QMatrix3x3 norm);
-    void PostRender();
+    virtual void PreRender(QMatrix4x4 modelview, QMatrix3x3 norm);
+    virtual void PostRender();
+
+    virtual void Hit(QVector3D point);
 };
 
 #endif // MATERIAL_H

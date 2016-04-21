@@ -56,6 +56,7 @@ public:
 
     void Fatal(QString message, QString caller = "SciShieldOpengl");            //  Error handler
 public slots:
+    void hit();                            //  Slot to hit shield (testing only)
     void setPos(int ang);                  //  Slot to light position
     void setElev(int z);                   //  Slot to light elevation (%)
     void setLightMove(bool on);            //  Slot to set light movement

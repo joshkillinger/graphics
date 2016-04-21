@@ -10,6 +10,7 @@ class Shield : public Material
 
 public:
     Shield(SciShieldOpengl *context);
+    void PreRender(QMatrix4x4 modelview, QMatrix3x3 norm);
     void Hit(QVector3D location);
 };
 

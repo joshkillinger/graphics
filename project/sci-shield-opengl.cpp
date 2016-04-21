@@ -109,6 +109,11 @@ void SciShieldOpengl::setElev(int Z)
     z0 = 0.02*Z;
 }
 
+void SciShieldOpengl::hit()
+{
+    sphere->Hit(QVector3D(2,0,0));
+}
+
 //
 //  Initialize
 //

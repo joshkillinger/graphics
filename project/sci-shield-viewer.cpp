@@ -36,6 +36,9 @@ SciShieldViewer::SciShieldViewer()
    light = new QPushButton("Pause");
 
    //  Reset
+   QPushButton* hit = new QPushButton("Hit");
+
+   //  Reset
    QPushButton* rst = new QPushButton("Reset");
    //  Quit
    QPushButton* quit = new QPushButton("Quit");
@@ -44,7 +47,7 @@ SciShieldViewer::SciShieldViewer()
 
    //  Set layout of child widgets
    QGridLayout* layout = new QGridLayout;
-   layout->addWidget(ogl,0,0,6,1);
+   layout->addWidget(ogl,0,0,7,1);
    layout->addWidget(new QLabel("Light Position"),0,1);
    layout->addWidget(Lpos,0,2);
    layout->addWidget(new QLabel("Light"),1,1);
@@ -53,12 +56,13 @@ SciShieldViewer::SciShieldViewer()
    layout->addWidget(Zpos,2,2);
    layout->addWidget(new QLabel("Angles"),3,1);
    layout->addWidget(angles,3,2);
-   layout->addWidget(rst,5,1);
-   layout->addWidget(quit,5,2);
+   layout->addWidget(hit,4,2);
+   layout->addWidget(rst,6,1);
+   layout->addWidget(quit,6,2);
    //  Manage resizing
    layout->setColumnStretch(0,100);
    layout->setColumnMinimumWidth(0,100);
-   layout->setRowStretch(4,100);
+   layout->setRowStretch(5,100);
    setLayout(layout);
 
    cout << "grid laid out" << endl;
