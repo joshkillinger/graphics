@@ -50,9 +50,9 @@ void Transform::Rotate(float angle, QVector3D axis)
 QMatrix4x4 Transform::GetModelMatrix()
 {
     QMatrix4x4 modelMatrix;
-    modelMatrix.scale(scale);
-    modelMatrix.rotate(rotation);
     modelMatrix.translate(position);
+    modelMatrix.rotate(rotation);
+    modelMatrix.scale(scale);
 
     return modelMatrix;
 }

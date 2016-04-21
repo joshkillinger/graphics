@@ -150,11 +150,11 @@ void SciShieldOpengl::initializeGL()
     }
     if (fighter)
     {
-        Material *fighterMat = new Material(this, 0.2f, 0.5f, 0.3f, 32.0f);
+        Material *fighterMat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
         fighterMat->SetShader(":/object.vert",":/object.frag");
         fighterMat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
         fighter->SetMaterial(fighterMat);
-        fighter->transform.SetScale(QVector3D(0.2f,0.2f,0.2f));
+        fighter->transform.SetScale(QVector3D(0.1f,0.1f,0.1f));
         fighter->transform.SetPosition(QVector3D(4,-1,0));
         ship1 = fighter;
     }
@@ -163,7 +163,7 @@ void SciShieldOpengl::initializeGL()
     WaveOBJ* cruiser=0;
     try
     {
-        cruiser = new WaveOBJ(this, "quad.obj", ":/models/primitives/");
+        cruiser = new WaveOBJ(this, "cruiser.obj", ":/models/cruiser/");
     }
     catch (QString err)
     {
@@ -171,12 +171,12 @@ void SciShieldOpengl::initializeGL()
     }
     if (fighter)
     {
-        Material *cruiserMat = new Material(this, 0.2f, 0.5f, 0.3f, 32.0f);
+        Material *cruiserMat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
         cruiserMat->SetShader(":/object.vert",":/object.frag");
-        cruiserMat->SetTexture(":/crate.png");
+        cruiserMat->SetTexture(":/models/cruiser/cruiser.bmp");
         cruiser->SetMaterial(cruiserMat);
         cruiser->transform.SetScale(QVector3D(5,5,5));
-        cruiser->transform.SetPosition(QVector3D(0,-1,0));
+        cruiser->transform.SetPosition(QVector3D(-4,-1,0));
         ship2 = cruiser;
     }
 
@@ -262,7 +262,7 @@ void SciShieldOpengl::paintGL()
     }
 
     cube->display(0);
-    //ship1->display(0);
+    ship1->display(0);
     ship2->display(0);
 
     ShowAxes();
