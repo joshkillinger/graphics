@@ -6,28 +6,21 @@
 class GameTime
 {
 private:
-    static QElapsedTimer    timer;     //  Track elapsed time
+    static QElapsedTimer timer;     //  Track elapsed time
 
     static float time;
     static float deltatime;
 
+    static bool running;
+
 public:
-    static Start()
-    {
-        timer.start();
-        time = 0;
-        deltatime = 0;
-    }
 
-    static void Tick()
-    {
-        float newtime = timer.restart() / 1000.f;
-        deltatime = newtime - time;
-        time += newtime;
-    }
+    static void Start();
 
-    static float GetTime() { return time; }
-    static float GetDeltaTime() { return deltatime; }
+    static void Tick();
+
+    static float Time();
+    static float DeltaTime();
 };
 
 #endif // GAMETIME_H

@@ -11,6 +11,7 @@
 #include "triangle.h"
 #include "material.h"
 #include "shield.h"
+#include "gametime.h"
 
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
@@ -122,6 +123,8 @@ void SciShieldOpengl::initializeGL()
     if (init) return;
     init = true;
 
+    GameTime::Start();
+
     cout << "instantiating triangle" << endl;
 
     cube = new Cube(this);
@@ -134,6 +137,7 @@ void SciShieldOpengl::initializeGL()
     cube->SetMaterial(mat);
     cube->transform.SetPosition(QVector3D(0,3,0));
 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //  Start 100 fps timer connected to updateGL
     move = true;
@@ -201,7 +205,7 @@ void SciShieldOpengl::initializeGL()
         Material *sphereMat = new Shield(this);
         sphereMat->SetShader(":/shield.vert",":/shield.frag");
         sphereMat->SetTexture(":/crate.png");
-        sphereMat->SetTint(QVector4D(0,.7,1,1));
+        sphereMat->SetTint(QVector4D(0,0.7f,1,1));
         sphere->SetMaterial(sphereMat);
         sphere->transform.SetScale(QVector3D(2,2,2));
         sphere->transform.SetPosition(QVector3D(0,0,0));
@@ -242,6 +246,8 @@ void SciShieldOpengl::paintGL()
 {
     //cout << "painting" << endl;
 
+    GameTime::Tick();
+
     GLenum error = glGetError();
     if (error)
     {
@@ -249,8 +255,8 @@ void SciShieldOpengl::paintGL()
     }
 
     //  Wall time (seconds)
-    float t = 0.001*time.elapsed();
-    if (move) zh = fmod(90*t,360);
+    //float t = 0.001 * GameTime::Time();
+    if (move) zh = fmod(90*GameTime::Time(),360);
 
     //  Clear screen and Z-buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -296,7 +302,6 @@ void SciShieldOpengl::paintGL()
     //blended pipeline
     glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     sphere->display(1);
 
