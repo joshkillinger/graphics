@@ -1,4 +1,8 @@
 #include "shield.h"
+#include "gametime.h"
+#include <iostream>
+
+using namespace std;
 
 Shield::Shield(SciShieldOpengl *context)
     : Material(context, 0, 0, 0, 0)
@@ -11,6 +15,8 @@ void Shield::Hit(QVector3D location)
 {
     hitPoint = location;
     hitTime = 0;
+
+    cout << "Shield hit" << endl;
 }
 
 void Shield::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
@@ -29,4 +35,14 @@ void Shield::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
 
     tex = glContext->bindTexture(texture,GL_TEXTURE_2D);
     shader.setUniformValue("Texture",0);
+}
+
+void Shield::Update()
+{
+    if (hitTime < 0)
+    {
+        return;
+    }
+
+    hitTime += GameTime::DeltaTime();
 }

@@ -112,7 +112,7 @@ void SciShieldOpengl::setElev(int Z)
 
 void SciShieldOpengl::hit()
 {
-    sphere->Hit(QVector3D(2,0,0));
+    objects[sphere]->Hit(QVector3D(1,0,0));
 }
 
 //
@@ -127,15 +127,16 @@ void SciShieldOpengl::initializeGL()
 
     cout << "instantiating triangle" << endl;
 
-    cube = new Cube(this);
+    Object *obj = new Cube(this);
     cout << "cube instantiated" << endl;
     Material *mat = new Material(this, 0.2f, 0.5f, 0.3f, 32.0f);
     mat->SetShader(":/object.vert",":/object.frag");
     cout << "shader created" << endl;
     mat->SetTexture(":/crate.png");
     cout << "texture created" << endl;
-    cube->SetMaterial(mat);
-    cube->transform.SetPosition(QVector3D(0,3,0));
+    obj->SetMaterial(mat);
+    obj->transform.SetPosition(QVector3D(0,3,0));
+    //objects.push_back(obj);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -149,67 +150,69 @@ void SciShieldOpengl::initializeGL()
 
 
     // obj model
-    WaveOBJ* fighter=0;
+    obj=0;
     try
     {
-        fighter = new WaveOBJ(this,"dark_fighter_6.obj",":/models/fighter/");
+        obj = new WaveOBJ(this,"dark_fighter_6.obj",":/models/fighter/");
     }
     catch (QString err)
     {
         Fatal("Error loading object\n"+err);
     }
-    if (fighter)
+    if (obj)
     {
-        Material *fighterMat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
-        fighterMat->SetShader(":/object.vert",":/object.frag");
-        fighterMat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
-        fighter->SetMaterial(fighterMat);
-        fighter->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
-        fighter->transform.SetPosition(QVector3D(0,0,0));
-        ship1 = fighter;
+        mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
+        mat->SetShader(":/object.vert",":/object.frag");
+        mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
+        obj->SetMaterial(mat);
+        obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
+        obj->transform.SetPosition(QVector3D(0,0,0));
+        objects.push_back(obj);
     }
 
     // obj model
-    WaveOBJ* cruiser=0;
+    obj=0;
     try
     {
-        cruiser = new WaveOBJ(this, "cruiser.obj", ":/models/cruiser/");
+        obj = new WaveOBJ(this, "cruiser.obj", ":/models/cruiser/");
     }
     catch (QString err)
     {
         Fatal("Error loading object\n"+err);
     }
-    if (fighter)
+    if (obj)
     {
-        Material *cruiserMat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
-        cruiserMat->SetShader(":/object.vert",":/object.frag");
-        cruiserMat->SetTexture(":/models/cruiser/cruiser.bmp");
-        cruiser->SetMaterial(cruiserMat);
-        cruiser->transform.SetScale(QVector3D(5,5,5));
-        cruiser->transform.SetPosition(QVector3D(-4,-1,0));
-        ship2 = cruiser;
+        mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
+        mat->SetShader(":/object.vert",":/object.frag");
+        mat->SetTexture(":/models/cruiser/cruiser.bmp");
+        obj->SetMaterial(mat);
+        obj->transform.SetScale(QVector3D(5,5,5));
+        obj->transform.SetPosition(QVector3D(0,0,0));
+        //objects.push_back(obj);
     }
 
     // obj model
-    sphere=0;
+    obj=0;
     try
     {
-        sphere = new WaveOBJ(this, "sphere.obj", ":/models/primitives/");
+        obj = new WaveOBJ(this, "sphere.obj", ":/models/primitives/");
     }
     catch (QString err)
     {
         Fatal("Error loading object\n"+err);
     }
-    if (sphere)
+    if (obj)
     {
-        Material *sphereMat = new Shield(this);
-        sphereMat->SetShader(":/shield.vert",":/shield.frag");
-        sphereMat->SetTexture(":/crate.png");
-        sphereMat->SetTint(QVector4D(0,0.7f,1,1));
-        sphere->SetMaterial(sphereMat);
-        sphere->transform.SetScale(QVector3D(2,2,2));
-        sphere->transform.SetPosition(QVector3D(0,0,0));
+        mat = new Shield(this);
+        mat->SetShader(":/shield.vert",":/shield.frag");
+        mat->SetTint(QVector4D(0,0.7f,1,1));
+        obj->SetMaterial(mat);
+        obj->transform.SetScale(QVector3D(2,2,2));
+        obj->transform.SetPosition(QVector3D(0,0,0));
+        objects.push_back(obj);
+        sphere = objects.count() - 1;
     }
+
 }
 
 static void PrintQMatrix(const float *f, int size, QString label)
@@ -247,6 +250,8 @@ void SciShieldOpengl::paintGL()
     //cout << "painting" << endl;
 
     GameTime::Tick();
+
+    UpdateObjects();
 
     GLenum error = glGetError();
     if (error)
@@ -294,16 +299,13 @@ void SciShieldOpengl::paintGL()
     }
 
     //opaque pipeline
-
-    //cube->display(0);
-    ship1->display(0);
-    //ship2->display(0);
+    RenderObjects(0);
 
     //blended pipeline
     glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
 
-    sphere->display(1);
+    RenderObjects(1);
 
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
@@ -322,6 +324,23 @@ void SciShieldOpengl::paintGL()
     emit angles(QString::number(th)+","+QString::number(ph));
     //  Emit light angle
     emit light((int)zh);
+}
+
+void SciShieldOpengl::UpdateObjects()
+{
+    for (int i = 0; i < objects.count(); i++)
+    {
+        objects[i]->Update();
+    }
+}
+
+
+void SciShieldOpengl::RenderObjects(int stage)
+{
+    for (int i = 0; i < objects.count(); i++)
+    {
+        objects[i]->display(stage);
+    }
 }
 
 void SciShieldOpengl::ShowAxes()

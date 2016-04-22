@@ -75,6 +75,7 @@ SciShieldViewer::SciShieldViewer()
    connect(ogl,SIGNAL(angles(QString)) , angles,SLOT(setText(QString)));
    connect(ogl,SIGNAL(light(int))      , Lpos,SLOT(setValue(int)));
    //  Connect reset() and lmove() signals
+   connect(hit  ,SIGNAL(pressed()),ogl,SLOT(hit()));
    connect(rst  ,SIGNAL(pressed()),ogl,SLOT(reset()));
    connect(light,SIGNAL(pressed()),this,SLOT(lmove()));
    //  Connect quit() signal to qApp::quit()

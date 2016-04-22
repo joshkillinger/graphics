@@ -36,10 +36,8 @@ private:
     double  asp;       //  Sceen aspect ratio
     unsigned int tex;  //  Textures
 
-    Object *cube;
-    Object *ship1;
-    Object *ship2;
-    Object *sphere;
+    QVector<Object*> objects;
+    int sphere;
 
     QTimer           timer;    //  Timer for animations
     QElapsedTimer    time;     //  Track elapsed time
@@ -74,6 +72,8 @@ protected:
     void wheelEvent(QWheelEvent*);         //  Mouse wheel
 private:
     void Projection();                      //  Update projection
+    void UpdateObjects();
+    void RenderObjects(int stage);
     void ShowAxes();
 };
 

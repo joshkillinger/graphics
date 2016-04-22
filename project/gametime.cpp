@@ -32,7 +32,7 @@ void GameTime::Tick()
     GameTime::deltatime = GameTime::timer.restart() / 1000.0;
     GameTime::time += GameTime::deltatime;
 
-    cout << "GameTime time " << time << " deltatime " << deltatime << endl;
+    //cout << "GameTime time " << time << " deltatime " << deltatime << endl;
 }
 
 float GameTime::Time() { return GameTime::time; }

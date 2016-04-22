@@ -37,6 +37,7 @@ public:
     virtual void PostRender();
 
     virtual void Hit(QVector3D point);
+    virtual void Update(){};
 };
 
 #endif // MATERIAL_H

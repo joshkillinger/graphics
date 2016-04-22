@@ -37,6 +37,8 @@ public:
 
     void Hit(QVector3D point);
 
+    virtual void Update();
+
 protected:
 };
 

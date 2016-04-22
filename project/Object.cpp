@@ -59,3 +59,8 @@ void Object::Hit(QVector3D point)
 {
     material->Hit(point);
 }
+
+void Object::Update()
+{
+    material->Update();
+}
