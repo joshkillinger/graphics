@@ -6,14 +6,14 @@
 
 class Hitbox
 {
-private:
+protected:
     Transform *parent;
 
 public:
     Hitbox(){};
     void SetParent(Transform *t);
 
-    virtual QVector3D IsHit(QVector3D origin, QVector3D direction);
+    virtual float IsHit(QVector3D origin, QVector3D direction);
 };
 
 #endif // HITBOX_H

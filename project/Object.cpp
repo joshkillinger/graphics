@@ -73,11 +73,11 @@ void Object::Update()
     material->Update();
 }
 
-QVector3D Object::IsHit(QVector3D origin, QVector3D direction)
+float Object::IsHit(QVector3D origin, QVector3D direction)
 {
     if (hitbox != NULL)
     {
         return hitbox->IsHit(origin, direction);
     }
-    else return QVector3D();
+    else return -1;
 }

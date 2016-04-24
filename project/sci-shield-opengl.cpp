@@ -12,6 +12,7 @@
 #include "material.h"
 #include "shield.h"
 #include "gametime.h"
+#include "spherehitbox.h"
 
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
@@ -166,7 +167,7 @@ void SciShieldOpengl::initializeGL()
         mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
-        obj->transform.SetPosition(QVector3D(0,0,0));
+        obj->transform.SetPosition(QVector3D(2,0,0));
         objects.push_back(obj);
     }
 
@@ -208,7 +209,8 @@ void SciShieldOpengl::initializeGL()
         mat->SetTint(QVector4D(0,0.7f,1,1));
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(2,2,2));
-        obj->transform.SetPosition(QVector3D(0,0,0));
+        obj->transform.SetPosition(QVector3D(2,0,0));
+        obj->SetHitbox(new SphereHitbox(2));
         objects.push_back(obj);
         sphere = objects.count() - 1;
     }
@@ -227,6 +229,11 @@ static void PrintQMatrix(const float *f, int size, QString label)
         cout << endl;
     }
     cout << endl;
+}
+
+static inline void PrintQVector3D(const QVector3D vec, QString label)
+{
+    cout << label.toStdString() << ": " << vec[0] << ", " << vec[1] << ", " << vec[2] << endl;
 }
 
 //
@@ -402,7 +409,7 @@ QVector3D SciShieldOpengl::ScreenToWorldVector(QPointF screenPoint, float z)
     float x = screenPoint.x() * 2.0f / (float)width() - 1;
     float y = -(screenPoint.y() * 2.0f / (float)height() - 1);
 
-    cout << "relative position: " << x << ", " << y << endl;
+    //cout << "relative position: " << x << ", " << y << endl;
 
     QVector4D vec(x,y,z,1);
 
@@ -413,7 +420,7 @@ QVector3D SciShieldOpengl::ScreenToWorldVector(QPointF screenPoint, float z)
     vec = invView * vec;
     vec /= vec.w();
 
-    cout << "vector: " << vec.x() << ", " << vec.y() << ", " << vec.z() << ", " << vec.w() << endl;
+    //cout << "vector: " << vec.x() << ", " << vec.y() << ", " << vec.z() << ", " << vec.w() << endl;
 
     return vec.toVector3D();
 }
@@ -424,22 +431,22 @@ void SciShieldOpengl::Fire(QPointF screenPoint)
     QVector3D direction = ScreenToWorldVector(screenPoint, 1) - origin;
     direction.normalize();
 
+    PrintQVector3D(origin, "Origin");
+    PrintQVector3D(direction, "Direction");
+
     int hitIndex = -1;
     float hitDistance = FLT_MAX;
-    QVector3D hitPoint;
 
     //find closest hittable object from origin along direction
     for (int i = 0; i < objects.count(); i++)
     {
-        QVector3D hit = objects[i]->IsHit(origin, direction);
-        if (!hit.isNull())
+        float hit = objects[i]->IsHit(origin, direction);
+        if (hit > 0)
         {
-            float distance = (hit - origin).length();
-            if ((distance > 0) && (distance < hitDistance))
+            if ((hit < hitDistance))
             {
                 hitIndex = i;
-                hitDistance = distance;
-                hitPoint = hit;
+                hitDistance = hit;
             }
         }
     }
@@ -447,7 +454,13 @@ void SciShieldOpengl::Fire(QPointF screenPoint)
     //if we hit something, tell it we hit it
     if (hitIndex != -1)
     {
+        QVector3D hitPoint = origin + (hitDistance * direction);
         objects[hitIndex]->Hit(hitPoint);
+        PrintQVector3D(hitPoint, "got a hit at");
+    }
+    else
+    {
+        cout << "no hit" << endl;
     }
 }
 

@@ -43,7 +43,7 @@ public:
 
     virtual void Update();
 
-    QVector3D IsHit(QVector3D origin, QVector3D direction);
+    float IsHit(QVector3D origin, QVector3D direction);
 
 protected:
 };
