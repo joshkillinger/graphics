@@ -5,6 +5,8 @@ const float M_PI = 3.14159265;
 uniform vec4 Tint;
 uniform float Time;
 
+uniform vec3 HitPoint;
+
 in vec3 Vert;
 in vec3 Hit;
 
@@ -14,6 +16,7 @@ layout (location=0) out vec4 Fragcolor;
 void main()
 {
     float distanceFromHit = distance(Hit, Vert);
+    //float distanceFromHit = distance(HitPoint, Vert);
 
     float intensity = clamp((10*Time) - distanceFromHit,0,M_PI);
 
