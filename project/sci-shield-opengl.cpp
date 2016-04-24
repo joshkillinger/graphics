@@ -395,6 +395,38 @@ void SciShieldOpengl::Projection()
     proj.perspective(fov,asp,dim/4,4*dim);
 }
 
+QVector4D SciShieldOpengl::ScreenToWorldVector(QPointF screenPoint, float z)
+{
+    //cout << "screen position: " << screenPoint.x() << ", " << screenPoint.y() << endl;
+
+    float x = screenPoint.x() * 2.0f / (float)width() - 1;
+    float y = -(screenPoint.y() * 2.0f / (float)height() - 1);
+
+    cout << "relative position: " << x << ", " << y << endl;
+
+    QVector4D vec(x,y,z,1);
+
+    QMatrix4x4 invView = view.inverted();
+    QMatrix4x4 invProj = proj.inverted();
+
+    vec = invProj * vec;
+    vec = invView * vec;
+    vec /= vec.w();
+
+    cout << "vector: " << vec.x() << ", " << vec.y() << ", " << vec.z() << ", " << vec.w() << endl;
+
+    return vec;
+}
+
+void SciShieldOpengl::Fire(QPointF screenPoint)
+{
+    QVector4D origin = ScreenToWorldVector(screenPoint, 0);
+    QVector4D direction = ScreenToWorldVector(screenPoint, 1) - origin;
+    direction.normalize();
+}
+
+
+
 /******************************************************************/
 /*************************  Mouse Events  *************************/
 /******************************************************************/
@@ -403,16 +435,27 @@ void SciShieldOpengl::Projection()
 //
 void SciShieldOpengl::mousePressEvent(QMouseEvent* e)
 {
-   mouse = true;
-   pos = e->pos();  //  Remember mouse location
+    if (e->button() == Qt::MouseButton::RightButton)
+    {
+        mouse = true;
+        pos = e->pos();  //  Remember mouse location
+    }
+
+    if (e->button() == Qt::MouseButton::LeftButton)
+    {
+        Fire(e->localPos());
+    }
 }
 
 //
 //  Mouse released
 //
-void SciShieldOpengl::mouseReleaseEvent(QMouseEvent*)
+void SciShieldOpengl::mouseReleaseEvent(QMouseEvent* e)
 {
-    mouse = false;
+    if (e->button() == Qt::MouseButton::RightButton)
+    {
+        mouse = false;
+    }
 }
 
 //

@@ -75,6 +75,8 @@ private:
     void UpdateObjects();
     void RenderObjects(int stage);
     void ShowAxes();
+    QVector4D ScreenToWorldVector(QPointF screenPoint, float z);
+    void Fire(QPointF screenPoint);
 };
 
 #endif
