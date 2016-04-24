@@ -395,7 +395,7 @@ void SciShieldOpengl::Projection()
     proj.perspective(fov,asp,dim/4,4*dim);
 }
 
-QVector4D SciShieldOpengl::ScreenToWorldVector(QPointF screenPoint, float z)
+QVector3D SciShieldOpengl::ScreenToWorldVector(QPointF screenPoint, float z)
 {
     //cout << "screen position: " << screenPoint.x() << ", " << screenPoint.y() << endl;
 
@@ -415,14 +415,40 @@ QVector4D SciShieldOpengl::ScreenToWorldVector(QPointF screenPoint, float z)
 
     cout << "vector: " << vec.x() << ", " << vec.y() << ", " << vec.z() << ", " << vec.w() << endl;
 
-    return vec;
+    return vec.toVector3D();
 }
 
 void SciShieldOpengl::Fire(QPointF screenPoint)
 {
-    QVector4D origin = ScreenToWorldVector(screenPoint, 0);
-    QVector4D direction = ScreenToWorldVector(screenPoint, 1) - origin;
+    QVector3D origin = ScreenToWorldVector(screenPoint, 0);
+    QVector3D direction = ScreenToWorldVector(screenPoint, 1) - origin;
     direction.normalize();
+
+    int hitIndex = -1;
+    float hitDistance = FLT_MAX;
+    QVector3D hitPoint;
+
+    //find closest hittable object from origin along direction
+    for (int i = 0; i < objects.count(); i++)
+    {
+        QVector3D hit = objects[i]->IsHit(origin, direction);
+        if (!hit.isNull())
+        {
+            float distance = (hit - origin).length();
+            if ((distance > 0) && (distance < hitDistance))
+            {
+                hitIndex = i;
+                hitDistance = distance;
+                hitPoint = hit;
+            }
+        }
+    }
+
+    //if we hit something, tell it we hit it
+    if (hitIndex != -1)
+    {
+        objects[hitIndex]->Hit(hitPoint);
+    }
 }
 
 

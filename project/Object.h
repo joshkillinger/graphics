@@ -13,6 +13,7 @@
 #include "sci-shield-opengl.h"
 #include "transform.h"
 #include "material.h"
+#include "hitbox.h"
 
 class Object
 {
@@ -20,6 +21,8 @@ protected:
     Material *material;
 
     SciShieldOpengl *glContext;
+
+    Hitbox *hitbox;
 
     int vertexCount;
     QGLBuffer vertexBuffer;
@@ -32,12 +35,15 @@ public:
     Transform transform;
 
     void SetMaterial(Material *mat);
+    void SetHitbox(Hitbox *hb);
     void display(int stage);                         //  Render the object
     virtual ~Object() {};                             //  Do nothing destructor
 
     void Hit(QVector3D point);
 
     virtual void Update();
+
+    QVector3D IsHit(QVector3D origin, QVector3D direction);
 
 protected:
 };

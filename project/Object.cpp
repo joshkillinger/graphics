@@ -11,11 +11,19 @@ Object::Object(SciShieldOpengl *context)
     transform = Transform();
 
     glContext = context;
+
+    hitbox = NULL;
 }
 
 void Object::SetMaterial(Material *mat)
 {
     material = mat;
+}
+
+void Object::SetHitbox(Hitbox *hb)
+{
+    hitbox = hb;
+    hitbox->SetParent(&transform);
 }
 
 void Object::display(int stage)
@@ -63,4 +71,13 @@ void Object::Hit(QVector3D point)
 void Object::Update()
 {
     material->Update();
+}
+
+QVector3D Object::IsHit(QVector3D origin, QVector3D direction)
+{
+    if (hitbox != NULL)
+    {
+        return hitbox->IsHit(origin, direction);
+    }
+    else return QVector3D();
 }
