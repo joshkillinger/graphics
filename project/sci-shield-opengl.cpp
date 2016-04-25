@@ -14,6 +14,7 @@
 #include "gametime.h"
 #include "spherehitbox.h"
 #include "squadron.h"
+#include "bullet.h"
 
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
@@ -147,7 +148,7 @@ void SciShieldOpengl::initializeGL()
     obj = new Object(this);
     obj->transform.Rotate(-90, QVector3D(0,1,0));
     obj->SetBehavior(new Squadron());
-    objects.push_back(obj);
+    //objects.push_back(obj);
 
     cout << "fighter1" << endl;
     // fighter
@@ -169,8 +170,8 @@ void SciShieldOpengl::initializeGL()
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         obj->transform.Rotate(45, QVector3D(1,0,0));
         obj->transform.SetPosition(QVector3D(1,-1,-3));
-        obj->transform.SetParent(&(objects[0]->transform));
-        objects.push_back(obj);
+        //obj->transform.SetParent(&(objects[0]->transform));
+        //objects.push_back(obj);
     }
 
     cout << "fighter shield" << endl;
@@ -192,9 +193,9 @@ void SciShieldOpengl::initializeGL()
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
         //obj->transform.SetPosition(QVector3D(0,0,0));
-        obj->transform.SetParent(&(objects[objects.count()-1]->transform));
+        //obj->transform.SetParent(&(objects[objects.count()-1]->transform));
         obj->SetHitbox(new SphereHitbox(2));
-        objects.push_back(obj);
+        //objects.push_back(obj);
     }
 
     cout << "fighter2" << endl;
@@ -217,8 +218,8 @@ void SciShieldOpengl::initializeGL()
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         obj->transform.Rotate(45, QVector3D(1,0,0));
         obj->transform.SetPosition(QVector3D(-1,1,0));
-        obj->transform.SetParent(&(objects[0]->transform));
-        objects.push_back(obj);
+        //obj->transform.SetParent(&(objects[0]->transform));
+        //objects.push_back(obj);
     }
 
     cout << "fighter shield" << endl;
@@ -240,9 +241,9 @@ void SciShieldOpengl::initializeGL()
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
         //obj->transform.SetPosition(QVector3D(0,0,0));
-        obj->transform.SetParent(&(objects[objects.count()-1]->transform));
+        //obj->transform.SetParent(&(objects[objects.count()-1]->transform));
         obj->SetHitbox(new SphereHitbox(2));
-        objects.push_back(obj);
+        //objects.push_back(obj);
     }
 
     cout << "fighter3" << endl;
@@ -265,8 +266,8 @@ void SciShieldOpengl::initializeGL()
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         obj->transform.Rotate(45, QVector3D(1,0,0));
         obj->transform.SetPosition(QVector3D(1,-1,3));
-        obj->transform.SetParent(&(objects[0]->transform));
-        objects.push_back(obj);
+        //obj->transform.SetParent(&(objects[0]->transform));
+        //objects.push_back(obj);
     }
 
     cout << "fighter shield" << endl;
@@ -288,9 +289,9 @@ void SciShieldOpengl::initializeGL()
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
         //obj->transform.SetPosition(QVector3D(0,0,0));
-        obj->transform.SetParent(&(objects[objects.count()-1]->transform));
+        //obj->transform.SetParent(&(objects[objects.count()-1]->transform));
         obj->SetHitbox(new SphereHitbox(2));
-        objects.push_back(obj);
+        //objects.push_back(obj);
     }
 
     cout << "cruiser" << endl;
@@ -334,11 +335,34 @@ void SciShieldOpengl::initializeGL()
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(1.7,1.7,1.7));
         obj->transform.SetPosition(QVector3D(0,0,0.125));
-        obj->transform.SetParent(&(objects[objects.count()-1]->transform));
+        //obj->transform.SetParent(&(objects[objects.count()-1]->transform));
         obj->SetHitbox(new SphereHitbox(8.5));
         //objects.push_back(obj);
     }
 
+    cout << "fighter4" << endl;
+    // fighter
+    obj=0;
+    try
+    {
+        obj = new WaveOBJ(this,"dark_fighter_6.obj",":/models/fighter/");
+    }
+    catch (QString err)
+    {
+        Fatal("Error loading object\n"+err);
+    }
+    if (obj)
+    {
+        mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
+        mat->SetShader(":/object.vert",":/object.frag");
+        mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
+        obj->SetMaterial(mat);
+        obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
+        //obj->transform.Rotate(45, QVector3D(0,1,0));
+        obj->transform.SetPosition(QVector3D(0,0,10));
+        obj->SetBehavior(new Bullet());
+        objects.push_back(obj);
+    }
 
 }
 
