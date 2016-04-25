@@ -14,6 +14,7 @@
 #include "transform.h"
 #include "material.h"
 #include "hitbox.h"
+#include "behavior.h"
 
 class Object
 {
@@ -22,18 +23,20 @@ protected:
 
     Material *material;
     Hitbox *hitbox;
-    Object *parent;
+    Behavior *behavior;
 
     int vertexCount;
     QGLBuffer vertexBuffer;
 
-    Object(SciShieldOpengl *context);          //  Constructor
     void Render();
 public:
     Transform transform;
 
+    Object(SciShieldOpengl *context);          //  Constructor
+
     void SetMaterial(Material *mat);
     void SetHitbox(Hitbox *hb);
+    void SetBehavior(Behavior *b);
     void display(int stage);                         //  Render the object
     virtual ~Object() {};                             //  Do nothing destructor
 

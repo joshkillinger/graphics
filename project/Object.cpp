@@ -2,6 +2,9 @@
 //  Generic Object class
 //
 #include "Object.h"
+#include <iostream>
+
+using namespace std;
 
 //
 //  Constructor
@@ -12,7 +15,7 @@ Object::Object(SciShieldOpengl *context)
     glContext = context;
     material = NULL;
     hitbox = NULL;
-    parent = NULL;
+    behavior = NULL;
 }
 
 void Object::SetMaterial(Material *mat)
@@ -24,6 +27,12 @@ void Object::SetHitbox(Hitbox *hb)
 {
     hitbox = hb;
     hitbox->SetParent(&transform);
+}
+
+void Object::SetBehavior(Behavior *b)
+{
+    behavior = b;
+    behavior->SetParent(this);
 }
 
 void Object::display(int stage)
@@ -80,7 +89,13 @@ void Object::Update()
 {
     if (material != NULL)
     {
+        //cout << "updating material" << endl;
         material->Update();
+    }
+    if (behavior != NULL)
+    {
+        //cout << "updating behavior" << endl;
+        behavior->Update();
     }
 }
 
