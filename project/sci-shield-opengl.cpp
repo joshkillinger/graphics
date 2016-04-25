@@ -113,7 +113,7 @@ void SciShieldOpengl::setElev(int Z)
 
 void SciShieldOpengl::hit()
 {
-    objects[sphere]->Hit(QVector3D(1,0,0));
+    //objects[sphere]->Hit(QVector3D(1,0,0));
 }
 
 //
@@ -167,8 +167,32 @@ void SciShieldOpengl::initializeGL()
         mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
-        obj->transform.SetPosition(QVector3D(2,0,0));
+        obj->transform.SetPosition(QVector3D(0,0,0));
         objects.push_back(obj);
+    }
+
+    // obj model
+    obj=0;
+    try
+    {
+        obj = new WaveOBJ(this, "sphere.obj", ":/models/primitives/");
+    }
+    catch (QString err)
+    {
+        Fatal("Error loading object\n"+err);
+    }
+    if (obj)
+    {
+        mat = new Shield(this);
+        mat->SetShader(":/shield.vert",":/shield.frag");
+        mat->SetTint(QVector4D(0,0.7f,1,1));
+        obj->SetMaterial(mat);
+        obj->transform.SetScale(QVector3D(40,40,40));
+        obj->transform.SetPosition(QVector3D(0,0,0));
+        obj->transform.SetParent(&(objects[0]->transform));
+        obj->SetHitbox(new SphereHitbox(2));
+        objects.push_back(obj);
+        sphere = objects.count() - 1;
     }
 
     // obj model
@@ -192,28 +216,6 @@ void SciShieldOpengl::initializeGL()
         //objects.push_back(obj);
     }
 
-    // obj model
-    obj=0;
-    try
-    {
-        obj = new WaveOBJ(this, "sphere.obj", ":/models/primitives/");
-    }
-    catch (QString err)
-    {
-        Fatal("Error loading object\n"+err);
-    }
-    if (obj)
-    {
-        mat = new Shield(this);
-        mat->SetShader(":/shield.vert",":/shield.frag");
-        mat->SetTint(QVector4D(0,0.7f,1,1));
-        obj->SetMaterial(mat);
-        obj->transform.SetScale(QVector3D(2,2,2));
-        obj->transform.SetPosition(QVector3D(2,0,0));
-        obj->SetHitbox(new SphereHitbox(2));
-        objects.push_back(obj);
-        sphere = objects.count() - 1;
-    }
 
 }
 

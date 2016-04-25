@@ -1,21 +1,19 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include <QMatrix3x3>
-#include <QMatrix4x4>
-#include <QQuaternion>
-#include <QVector3D>
-
+#include <QtOpenGL>
 class Transform
 {
 private:
     QVector3D position;    //  Location
     QQuaternion rotation; //  Rotation (angle and axis)
     QVector3D scale;
+    Transform *parent;
 
 public:
     Transform();
     QVector3D GetPosition();
+    QVector3D GetWorldPosition();
     void SetPosition(QVector3D pos);
     QQuaternion GetRotation();
     void SetRotation(QQuaternion rot);
@@ -25,6 +23,7 @@ public:
     void Rotate(float angle, QVector3D axis);
     QMatrix4x4 GetModelMatrix();
     QMatrix3x3 GetNormalMatrix();
+    void SetParent(Transform *p);
 };
 
 #endif // TRANSFORM_H

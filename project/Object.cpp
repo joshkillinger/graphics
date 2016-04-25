@@ -9,10 +9,10 @@
 Object::Object(SciShieldOpengl *context)
 {
     transform = Transform();
-
     glContext = context;
-
+    material = NULL;
     hitbox = NULL;
+    parent = NULL;
 }
 
 void Object::SetMaterial(Material *mat)
@@ -28,6 +28,11 @@ void Object::SetHitbox(Hitbox *hb)
 
 void Object::display(int stage)
 {
+    if (material == NULL)
+    {
+        return;
+    }
+
     if (stage == material->visibleStage)
     {
         QMatrix4x4 modelview = glContext->view * transform.GetModelMatrix();
@@ -65,12 +70,18 @@ void Object::Render()
 
 void Object::Hit(QVector3D point)
 {
-    material->Hit(point);
+    if (material != NULL)
+    {
+        material->Hit(point);
+    }
 }
 
 void Object::Update()
 {
-    material->Update();
+    if (material != NULL)
+    {
+        material->Update();
+    }
 }
 
 float Object::IsHit(QVector3D origin, QVector3D direction)

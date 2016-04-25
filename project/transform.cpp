@@ -5,11 +5,24 @@ Transform::Transform()
     position = QVector3D(0,0,0);
     rotation = QQuaternion();
     scale = QVector3D(1,1,1);
+    parent = NULL;
 }
 
 QVector3D Transform::GetPosition()
 {
     return position;
+}
+
+QVector3D Transform::GetWorldPosition()
+{
+    if (parent != NULL)
+    {
+        return parent->GetModelMatrix() * position;
+    }
+    else
+    {
+        return position;
+    }
 }
 
 void Transform::SetPosition(QVector3D pos)
@@ -54,5 +67,17 @@ QMatrix4x4 Transform::GetModelMatrix()
     modelMatrix.rotate(rotation);
     modelMatrix.scale(scale);
 
-    return modelMatrix;
+    if (parent != NULL)
+    {
+        return parent->GetModelMatrix() * modelMatrix;
+    }
+    else
+    {
+        return modelMatrix;
+    }
+}
+
+void Transform::SetParent(Transform *p)
+{
+        parent = p;
 }

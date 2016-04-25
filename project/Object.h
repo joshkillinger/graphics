@@ -18,16 +18,14 @@
 class Object
 {
 protected:
-    Material *material;
-
     SciShieldOpengl *glContext;
 
+    Material *material;
     Hitbox *hitbox;
+    Object *parent;
 
     int vertexCount;
     QGLBuffer vertexBuffer;
-
-    int renderStage;
 
     Object(SciShieldOpengl *context);          //  Constructor
     void Render();

@@ -6,7 +6,7 @@ using namespace std;
 
 float SphereHitbox::IsHit(QVector3D origin, QVector3D direction)
 {
-    QVector3D h = parent->GetPosition() - origin;
+    QVector3D h = parent->GetWorldPosition() - origin;
 
     float mu = QVector3D::dotProduct(h,direction);
 
