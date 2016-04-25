@@ -169,9 +169,10 @@ void SciShieldOpengl::initializeGL()
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         obj->transform.Rotate(45, QVector3D(1,0,0));
-        obj->transform.SetPosition(QVector3D(1,-1,-3));
+        //obj->transform.SetPosition(QVector3D(1,-1,-3));
+        obj->transform.SetPosition(QVector3D(0,0,-10));
         //obj->transform.SetParent(&(objects[0]->transform));
-        //objects.push_back(obj);
+        objects.push_back(obj);
     }
 
     cout << "fighter shield" << endl;
@@ -192,10 +193,10 @@ void SciShieldOpengl::initializeGL()
         mat->SetTint(QVector4D(0,0.7f,1,1));
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
-        //obj->transform.SetPosition(QVector3D(0,0,0));
-        //obj->transform.SetParent(&(objects[objects.count()-1]->transform));
+        obj->transform.SetPosition(QVector3D(0,0,0));
+        obj->transform.SetParent(&(objects[objects.count()-1]->transform));
         obj->SetHitbox(new SphereHitbox(2));
-        //objects.push_back(obj);
+        objects.push_back(obj);
     }
 
     cout << "fighter2" << endl;
@@ -240,7 +241,6 @@ void SciShieldOpengl::initializeGL()
         mat->SetTint(QVector4D(0,0.7f,1,1));
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
-        //obj->transform.SetPosition(QVector3D(0,0,0));
         //obj->transform.SetParent(&(objects[objects.count()-1]->transform));
         obj->SetHitbox(new SphereHitbox(2));
         //objects.push_back(obj);
@@ -288,7 +288,6 @@ void SciShieldOpengl::initializeGL()
         mat->SetTint(QVector4D(0,0.7f,1,1));
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
-        //obj->transform.SetPosition(QVector3D(0,0,0));
         //obj->transform.SetParent(&(objects[objects.count()-1]->transform));
         obj->SetHitbox(new SphereHitbox(2));
         //objects.push_back(obj);
@@ -359,7 +358,7 @@ void SciShieldOpengl::initializeGL()
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         //obj->transform.Rotate(45, QVector3D(0,1,0));
-        obj->transform.SetPosition(QVector3D(0,0,10));
+        obj->transform.SetPosition(QVector3D(0,0,30));
         obj->SetBehavior(new Bullet());
         objects.push_back(obj);
     }
@@ -577,16 +576,9 @@ QVector3D SciShieldOpengl::ScreenToWorldVector(QPointF screenPoint, float z)
     return vec.toVector3D();
 }
 
-void SciShieldOpengl::Fire(QPointF screenPoint)
+float SciShieldOpengl::TraceRay(QVector3D origin, QVector3D direction, int *hitIndex)
 {
-    QVector3D origin = ScreenToWorldVector(screenPoint, 0);
-    QVector3D direction = ScreenToWorldVector(screenPoint, 1) - origin;
-    direction.normalize();
-
-    PrintQVector3D(origin, "Origin");
-    PrintQVector3D(direction, "Direction");
-
-    int hitIndex = -1;
+    *hitIndex = -1;
     float hitDistance = FLT_MAX;
 
     //find closest hittable object from origin along direction
@@ -597,11 +589,27 @@ void SciShieldOpengl::Fire(QPointF screenPoint)
         {
             if ((hit < hitDistance))
             {
-                hitIndex = i;
+                *hitIndex = i;
                 hitDistance = hit;
             }
         }
     }
+
+    return hitDistance;
+}
+
+void SciShieldOpengl::Fire(QPointF screenPoint)
+{
+    QVector3D origin = ScreenToWorldVector(screenPoint, 0);
+    QVector3D direction = ScreenToWorldVector(screenPoint, 1) - origin;
+    direction.normalize();
+
+    PrintQVector3D(origin, "Origin");
+    PrintQVector3D(direction, "Direction");
+
+    int hitIndex = -1;
+
+    float hitDistance = TraceRay(origin, direction, &hitIndex);
 
     //if we hit something, tell it we hit it
     if (hitIndex != -1)

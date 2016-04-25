@@ -36,14 +36,12 @@ private:
     double  asp;       //  Sceen aspect ratio
     unsigned int tex;  //  Textures
 
-    QVector<Object*> objects;
-    int sphere;
-
     QTimer           timer;    //  Timer for animations
     QElapsedTimer    time;     //  Track elapsed time
     QPixmap   qtex;
 
 public:
+    QVector<Object*> objects;
     struct light Light;
 
     QMatrix4x4       proj;     //  Projection matrix
@@ -51,6 +49,8 @@ public:
 
     SciShieldOpengl(QWidget* parent=0);                  //  Constructor
     QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
+
+    float TraceRay(QVector3D origin, QVector3D direction, int *hitIndex);
 
     void Fatal(QString message, QString caller = "SciShieldOpengl");            //  Error handler
 public slots:

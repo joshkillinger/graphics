@@ -19,8 +19,6 @@
 class Object
 {
 protected:
-    SciShieldOpengl *glContext;
-
     Material *material;
     Hitbox *hitbox;
     Behavior *behavior;
@@ -31,6 +29,7 @@ protected:
     void Render();
 public:
     Transform transform;
+    SciShieldOpengl *glContext;
 
     Object(SciShieldOpengl *context);          //  Constructor
 
