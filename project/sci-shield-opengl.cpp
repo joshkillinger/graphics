@@ -128,17 +128,6 @@ void SciShieldOpengl::initializeGL()
 
     cout << "instantiating triangle" << endl;
 
-    Object *obj = new Cube(this);
-    cout << "cube instantiated" << endl;
-    Material *mat = new Material(this, 0.2f, 0.5f, 0.3f, 32.0f);
-    mat->SetShader(":/object.vert",":/object.frag");
-    cout << "shader created" << endl;
-    mat->SetTexture(":/crate.png");
-    cout << "texture created" << endl;
-    obj->SetMaterial(mat);
-    obj->transform.SetPosition(QVector3D(0,3,0));
-    //objects.push_back(obj);
-
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //  Start 100 fps timer connected to updateGL
@@ -149,8 +138,11 @@ void SciShieldOpengl::initializeGL()
     time.start();
     cout << "timers set" << endl;
 
+    Object *obj;
+    Material *mat;
 
-    // obj model
+    cout << "fighter" << endl;
+    // fighter
     obj=0;
     try
     {
@@ -167,11 +159,12 @@ void SciShieldOpengl::initializeGL()
         mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
-        obj->transform.SetPosition(QVector3D(0,0,0));
+        obj->transform.SetPosition(QVector3D(6,0,0));
         objects.push_back(obj);
     }
 
-    // obj model
+    cout << "fighter shield" << endl;
+    // fighter shield
     obj=0;
     try
     {
@@ -189,13 +182,13 @@ void SciShieldOpengl::initializeGL()
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
         obj->transform.SetPosition(QVector3D(0,0,0));
-        obj->transform.SetParent(&(objects[0]->transform));
+        obj->transform.SetParent(&(objects[objects.count()-1]->transform));
         obj->SetHitbox(new SphereHitbox(2));
         objects.push_back(obj);
-        sphere = objects.count() - 1;
     }
 
-    // obj model
+    cout << "cruiser" << endl;
+    // cruiser
     obj=0;
     try
     {
@@ -212,8 +205,32 @@ void SciShieldOpengl::initializeGL()
         mat->SetTexture(":/models/cruiser/cruiser.bmp");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(5,5,5));
-        obj->transform.SetPosition(QVector3D(0,0,0));
-        //objects.push_back(obj);
+        obj->transform.SetPosition(QVector3D(-6,0,0));
+        objects.push_back(obj);
+    }
+
+    cout << "cruiser shield" << endl;
+    // cruiser shield
+    obj=0;
+    try
+    {
+        obj = new WaveOBJ(this, "sphere.obj", ":/models/primitives/");
+    }
+    catch (QString err)
+    {
+        Fatal("Error loading object\n"+err);
+    }
+    if (obj)
+    {
+        mat = new Shield(this);
+        mat->SetShader(":/shield.vert",":/shield.frag");
+        mat->SetTint(QVector4D(0,1,0.7f,1));
+        obj->SetMaterial(mat);
+        obj->transform.SetScale(QVector3D(1.7,1.7,1.7));
+        obj->transform.SetPosition(QVector3D(0,0,0.125));
+        obj->transform.SetParent(&(objects[objects.count()-1]->transform));
+        obj->SetHitbox(new SphereHitbox(8.5));
+        objects.push_back(obj);
     }
 
 
