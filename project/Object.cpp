@@ -21,6 +21,7 @@ Object::Object(SciShieldOpengl *context)
 void Object::SetMaterial(Material *mat)
 {
     material = mat;
+    material->SetParent(this);
 }
 
 void Object::SetHitbox(Hitbox *hb)

@@ -35,6 +35,18 @@ QQuaternion Transform::GetRotation()
     return rotation;
 }
 
+QQuaternion Transform::GetWorldRotation()
+{
+    if (parent != NULL)
+    {
+        return parent->GetWorldRotation() * rotation;
+    }
+    else
+    {
+        return rotation;
+    }
+}
+
 void Transform::SetRotation(QQuaternion rot)
 {
     rotation = rot;

@@ -1,4 +1,5 @@
 #include "material.h"
+#include "Object.h"
 
 Material::Material(SciShieldOpengl *context, float ambient, float diffuse, float specular, float shininess)
 {
@@ -76,3 +77,8 @@ void Material::PostRender()
 
 void Material::Hit(QVector3D point)
 {}
+
+void Material::SetParent(Object *p)
+{
+    parent = p;
+}

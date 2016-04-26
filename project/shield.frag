@@ -3,27 +3,31 @@
 const float M_PI = 3.14159265;
 
 uniform vec4 Tint;
-uniform float Time;
+uniform float Time[10];
 
-uniform vec3 HitPoint;
+//uniform vec3 HitPoint;
 
 in vec3 Vert;
-in vec3 Hit;
+in vec3 Hit[10];
 
 //  Fragment color
 layout (location=0) out vec4 Fragcolor;
 
 void main()
 {
-    float distanceFromHit = distance(Hit, Vert);
-    //float distanceFromHit = distance(HitPoint, Vert);
+    float totalIntensity = 0;
 
-    float intensity = clamp((10*Time) - distanceFromHit,0,M_PI);
+    for (int i = 0; i < 10; i++)
+    {
+        float distanceFromHit = distance(Hit[i], Vert);
+        //float distanceFromHit = distance(HitPoint, Vert);
 
-    intensity = sin(intensity) / (1 + distanceFromHit * 2);
+        float intensity = clamp((10*Time[i]) - distanceFromHit, 0, M_PI);
 
+        totalIntensity += sin(intensity) / (1 + distanceFromHit * 2);
+    }
 
     //intensity = clamp(Time,0,1);
-    Fragcolor = vec4(Tint.rgb,intensity);
+    Fragcolor = vec4(Tint.rgb, totalIntensity);
     //Fragcolor = vec4(Vert,1);
 }

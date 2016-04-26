@@ -5,8 +5,9 @@
 
 class Shield : public Material
 {
-    QVector3D hitPoint;
-    float hitTime;
+    QVector3D hitPoint[10];
+    float hitTime[10];
+    int nextHit;
 
 public:
     Shield(SciShieldOpengl *context);
