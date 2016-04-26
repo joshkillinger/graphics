@@ -10,6 +10,8 @@ PlasmaMaterial::PlasmaMaterial(SciShieldOpengl *context, float ambient, float di
 
 void PlasmaMaterial::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
 {
+    glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+
     // Enable shader
     shader.bind();
     //  Set Modelview and Projection Matrix

@@ -21,5 +21,6 @@
         <file>plasma.vert</file>
         <file>plasma.geom</file>
         <file>plasma.frag</file>
+        <file>models/radial_gradient.png</file>
     </qresource>
 </RCC>

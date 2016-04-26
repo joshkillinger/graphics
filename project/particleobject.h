@@ -6,6 +6,8 @@
 class ParticleObject : public Object
 {
 protected:
+    float lifetime;
+
     void Render();
 
 public:

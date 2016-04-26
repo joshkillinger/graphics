@@ -23,39 +23,6 @@
 
 using namespace std;
 
-////
-////  Draw vertex in polar coordinates
-////
-//static void Vertex(double th,double ph)
-//{
-//   glVertex3d(Sin(th)*Cos(ph),Cos(th)*Cos(ph),Sin(ph));
-//}
-
-////
-////  Draw a ball at (x,y,z) radius r
-////
-//static void ball(double x,double y,double z,double r)
-//{
-//   //  Save transformation
-//   glPushMatrix();
-//   //  Offset, scale and rotate
-//   glTranslated(x,y,z);
-//   glScaled(r,r,r);
-//   //  Bands of latitude
-//   for (int ph=-90;ph<90;ph+=10)
-//   {
-//      glBegin(GL_QUAD_STRIP);
-//      for (int th=0;th<=360;th+=20)
-//      {
-//         Vertex(th,ph);
-//         Vertex(th,ph+10);
-//      }
-//      glEnd();
-//   }
-//   //  Undo transofrmations
-//   glPopMatrix();
-//}
-
 //
 //  Constructor
 //
@@ -128,9 +95,6 @@ void SciShieldOpengl::initializeGL()
     GameTime::Start();
 
     cout << "instantiating triangle" << endl;
-
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);
 
     //  Start 100 fps timer connected to updateGL
     timer.setInterval(10);
@@ -342,7 +306,7 @@ void SciShieldOpengl::initializeGL()
     obj=0;
     try
     {
-        obj = new ParticleObject(this, 10);
+        obj = new ParticleObject(this, 25);
     }
     catch (QString err)
     {
@@ -352,10 +316,12 @@ void SciShieldOpengl::initializeGL()
     {
         mat = new PlasmaMaterial(this, 0.3f, 0.6f, 0.3f, 32.0f);
         mat->SetShader(":/plasma.vert",":/plasma.geom",":/plasma.frag");
-        //mat->SetTexture(":/models/cruiser/cruiser.bmp");
-        mat->SetTint(QVector4D(1,1,1,.5));
+        mat->SetTexture(":/models/radial_gradient.png");
+        mat->SetTint(QVector4D(1,.4,.4,1));
         obj->SetMaterial(mat);
-        obj->transform.SetPosition(QVector3D(0,0,30));
+        obj->transform.SetPosition(QVector3D(-8,0,30));
+        //obj->transform.SetPosition(QVector3D(-1,1,0));
+        obj->transform.SetScale(QVector3D(.5,.5,.5));
         obj->SetBehavior(new Bullet());
         objects.push_back(obj);
     }

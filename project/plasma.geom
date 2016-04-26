@@ -7,6 +7,7 @@ uniform mat4 ProjectionMatrix;
 
 layout (location = 0) in vec4 VertPosition[];
 layout (location = 1) in vec4 VertColor[];
+layout (location = 2) in float Size[];
 
 layout(triangle_strip,max_vertices=4) out;
 
@@ -34,7 +35,7 @@ void billboard(float x,float y,int s,int t)
 
 void main()
 {
-    float size = 1;
+    float size = Size[0];
     billboard(-size,-size , 0,0);
     billboard(+size,-size , 1,0);
     billboard(-size,+size , 0,1);

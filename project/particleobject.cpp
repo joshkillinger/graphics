@@ -15,15 +15,16 @@ static float frand(float rng,float off)
 ParticleObject::ParticleObject(SciShieldOpengl *context, int numParticles) : Object(context)
 {
     vertexCount = numParticles;
+    lifetime = 1;
 
     float *data = (float *)malloc(sizeof(float) * numParticles * 4);
 
     for (int i = 0; i < numParticles; i++)
     {
-        data[(i*4)+0] = frand(2,-1); //x
-        data[(i*4)+1] = frand(2,-1); //y
-        data[(i*4)+2] = frand(2,-1); //z
-        data[(i*4)+3] = frand(.5,0); //color
+        data[(i*4)+0] = 0;
+        data[(i*4)+1] = 0;
+        data[(i*4)+2] = 0;
+        data[(i*4)+3] = i / (numParticles / lifetime);
     }
 
     //  Copy data to vertex buffer object
@@ -49,6 +50,8 @@ ParticleObject::ParticleObject(SciShieldOpengl *context, int numParticles) : Obj
 void ParticleObject::Render()
 {
     //cout << "rendering particles" << endl;
+
+    material->shader.setUniformValue("Lifetime", lifetime);
 
     //   Attribute 0: vertex coordinate (vec3) at offset 0
     vertexBuffer.bind();
