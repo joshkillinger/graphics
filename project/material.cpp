@@ -23,11 +23,14 @@ Material::Material(SciShieldOpengl *context, float ambient, float diffuse, float
 //
 //  Load shader
 //
-void Material::SetShader(QString vert, QString frag)
+void Material::SetShader(QString vert, QString geom, QString frag)
 {
     //  Vertex shader
     if (vert.length() && !shader.addShaderFromSourceFile(QGLShader::Vertex,vert))
         glContext->Fatal("Error compiling "+vert+"\n"+shader.log(),"Object");
+    //  Geometry shader
+    if (geom.length() && !shader.addShaderFromSourceFile(QGLShader::Geometry,geom))
+        glContext->Fatal("Error compiling "+geom+"\n"+shader.log(),"Object");
     //  Fragment shader
     if (frag.length() && !shader.addShaderFromSourceFile(QGLShader::Fragment,frag))
         glContext->Fatal("Error compiling "+frag+"\n"+shader.log(),"Object");

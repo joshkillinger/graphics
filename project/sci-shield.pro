@@ -6,7 +6,9 @@ HEADERS = sci-shield-viewer.h sci-shield-opengl.h Type.h Object.h WaveOBJ.h tran
     spherehitbox.h \
     behavior.h \
     squadron.h \
-    bullet.h
+    bullet.h \
+    particleobject.h \
+    plasmamaterial.h
 SOURCES = sci-shield.cpp sci-shield-viewer.cpp sci-shield-opengl.cpp Object.cpp WaveOBJ.cpp transform.cpp cube.cpp triangle.cpp \
     material.cpp \
     shield.cpp \
@@ -15,6 +17,10 @@ SOURCES = sci-shield.cpp sci-shield-viewer.cpp sci-shield-opengl.cpp Object.cpp 
     spherehitbox.cpp \
     behavior.cpp \
     squadron.cpp \
-    bullet.cpp
+    bullet.cpp \
+    particleobject.cpp \
+    plasmamaterial.cpp
 QT += opengl
 RESOURCES = sci-shield.qrc
+
+DISTFILES +=

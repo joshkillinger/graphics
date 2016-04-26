@@ -18,5 +18,8 @@
         <file>shield.frag</file>
         <file>shield.vert</file>
         <file>models/primitives/sphere.obj</file>
+        <file>plasma.vert</file>
+        <file>plasma.geom</file>
+        <file>plasma.frag</file>
     </qresource>
 </RCC>

@@ -26,7 +26,7 @@ protected:
     int vertexCount;
     QGLBuffer vertexBuffer;
 
-    void Render();
+    virtual void Render();
 public:
     Transform transform;
     SciShieldOpengl *glContext;

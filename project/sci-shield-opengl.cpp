@@ -15,6 +15,8 @@
 #include "spherehitbox.h"
 #include "squadron.h"
 #include "bullet.h"
+#include "particleobject.h"
+#include "plasmamaterial.h"
 
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
@@ -128,6 +130,7 @@ void SciShieldOpengl::initializeGL()
     cout << "instantiating triangle" << endl;
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);
 
     //  Start 100 fps timer connected to updateGL
     timer.setInterval(10);
@@ -160,7 +163,7 @@ void SciShieldOpengl::initializeGL()
     if (obj)
     {
         mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
-        mat->SetShader(":/object.vert",":/object.frag");
+        mat->SetShader(":/object.vert","",":/object.frag");
         mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
@@ -185,7 +188,7 @@ void SciShieldOpengl::initializeGL()
     if (obj)
     {
         mat = new Shield(this);
-        mat->SetShader(":/shield.vert",":/shield.frag");
+        mat->SetShader(":/shield.vert","",":/shield.frag");
         mat->SetTint(QVector4D(0,0.7f,1,1));
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
@@ -209,7 +212,7 @@ void SciShieldOpengl::initializeGL()
     if (obj)
     {
         mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
-        mat->SetShader(":/object.vert",":/object.frag");
+        mat->SetShader(":/object.vert","",":/object.frag");
         mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
@@ -233,7 +236,7 @@ void SciShieldOpengl::initializeGL()
     if (obj)
     {
         mat = new Shield(this);
-        mat->SetShader(":/shield.vert",":/shield.frag");
+        mat->SetShader(":/shield.vert","",":/shield.frag");
         mat->SetTint(QVector4D(0,0.7f,1,1));
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
@@ -256,7 +259,7 @@ void SciShieldOpengl::initializeGL()
     if (obj)
     {
         mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
-        mat->SetShader(":/object.vert",":/object.frag");
+        mat->SetShader(":/object.vert","",":/object.frag");
         mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
@@ -280,7 +283,7 @@ void SciShieldOpengl::initializeGL()
     if (obj)
     {
         mat = new Shield(this);
-        mat->SetShader(":/shield.vert",":/shield.frag");
+        mat->SetShader(":/shield.vert","",":/shield.frag");
         mat->SetTint(QVector4D(0,0.7f,1,1));
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
@@ -303,7 +306,7 @@ void SciShieldOpengl::initializeGL()
     if (obj)
     {
         mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
-        mat->SetShader(":/object.vert",":/object.frag");
+        mat->SetShader(":/object.vert","",":/object.frag");
         mat->SetTexture(":/models/cruiser/cruiser.bmp");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(5,5,5));
@@ -325,7 +328,7 @@ void SciShieldOpengl::initializeGL()
     if (obj)
     {
         mat = new Shield(this);
-        mat->SetShader(":/shield.vert",":/shield.frag");
+        mat->SetShader(":/shield.vert","",":/shield.frag");
         mat->SetTint(QVector4D(0,1,0.7f,1));
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(1.7,1.7,1.7));
@@ -335,29 +338,28 @@ void SciShieldOpengl::initializeGL()
         objects.push_back(obj);
     }
 
-//    cout << "fighter4" << endl;
-//    // fighter
-//    obj=0;
-//    try
-//    {
-//        obj = new WaveOBJ(this,"dark_fighter_6.obj",":/models/fighter/");
-//    }
-//    catch (QString err)
-//    {
-//        Fatal("Error loading object\n"+err);
-//    }
-//    if (obj)
-//    {
-//        mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
-//        mat->SetShader(":/object.vert",":/object.frag");
-//        mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
-//        obj->SetMaterial(mat);
-//        obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
-//        //obj->transform.Rotate(45, QVector3D(0,1,0));
-//        obj->transform.SetPosition(QVector3D(0,0,30));
-//        obj->SetBehavior(new Bullet());
-//        objects.push_back(obj);
-//    }
+    cout << "plasma" << endl;
+    obj=0;
+    try
+    {
+        obj = new ParticleObject(this, 10);
+    }
+    catch (QString err)
+    {
+        Fatal("Error loading plasma\n"+err);
+    }
+    if (obj)
+    {
+        mat = new PlasmaMaterial(this, 0.3f, 0.6f, 0.3f, 32.0f);
+        mat->SetShader(":/plasma.vert",":/plasma.geom",":/plasma.frag");
+        //mat->SetTexture(":/models/cruiser/cruiser.bmp");
+        mat->SetTint(QVector4D(1,1,1,.5));
+        obj->SetMaterial(mat);
+        obj->transform.SetPosition(QVector3D(0,0,30));
+        obj->SetBehavior(new Bullet());
+        objects.push_back(obj);
+    }
+
 
     Light.Direction = QVector3D(1.5, -1, -2).normalized();
     Light.Color = QVector4D(1,1,1,1);

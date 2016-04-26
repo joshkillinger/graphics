@@ -32,7 +32,7 @@ public:
     int visibleStage;
 
     Material(SciShieldOpengl *context, float ambient, float diffuse, float specular, float shininess);
-    void SetShader(QString vert, QString frag);
+    void SetShader(QString vert, QString geom, QString frag);
     void SetTexture(QString file);
     void SetTint(QVector4D color);
     void SetParent(Object *p);
