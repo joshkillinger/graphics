@@ -14,7 +14,7 @@ class Object;
 
 struct light
 {
-    QVector4D Position;
+    QVector3D Direction;
     QVector4D Color;
 };
 
@@ -23,12 +23,7 @@ class SciShieldOpengl : public QGLWidget
 Q_OBJECT
 private:
     bool    init;      //  Initialized
-    bool    move;      //  Light animation
-    float   zh;        //  Light position
     int     fov;
-    float   x0,y0;     //  Object center
-    float   z0;        //  Zoom
-    int     mode;      //  Display mode
     int     th,ph;     //  Display angles
     bool    mouse;     //  Mouse pressed
     QPoint  pos;       //  Mouse position
@@ -71,7 +66,7 @@ protected:
     void mouseMoveEvent(QMouseEvent*);     //  Mouse moved
     void wheelEvent(QWheelEvent*);         //  Mouse wheel
 private:
-    void Projection();                      //  Update projection
+    void Projection();                     //  Update projection
     void UpdateObjects();
     void RenderObjects(int stage);
     void ShowAxes();

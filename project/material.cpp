@@ -56,7 +56,7 @@ void Material::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
     shader.setUniformValue("ModelViewMatrix",modelview);
     shader.setUniformValue("NormalMatrix",norm);
 
-    shader.setUniformValue("Light.Position",glContext->Light.Position);
+    shader.setUniformValue("Light.Direction",glContext->Light.Direction);
     shader.setUniformValue("Light.Color",glContext->Light.Color);
 
     shader.setUniformValue("Tint",tint);

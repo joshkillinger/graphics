@@ -1,6 +1,7 @@
 #ifndef SQUADRON_H
 #define SQUADRON_H
 
+#include <QtOpenGL>
 #include "behavior.h"
 
 class Squadron : public Behavior
@@ -8,9 +9,10 @@ class Squadron : public Behavior
 private:
     float radius;
     float speed;
+    QVector3D center;
 
 public:
-    Squadron();
+    Squadron(QVector3D center);
     void Update();
 };
 

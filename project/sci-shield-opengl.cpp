@@ -21,38 +21,38 @@
 
 using namespace std;
 
-//
-//  Draw vertex in polar coordinates
-//
-static void Vertex(double th,double ph)
-{
-   glVertex3d(Sin(th)*Cos(ph),Cos(th)*Cos(ph),Sin(ph));
-}
+////
+////  Draw vertex in polar coordinates
+////
+//static void Vertex(double th,double ph)
+//{
+//   glVertex3d(Sin(th)*Cos(ph),Cos(th)*Cos(ph),Sin(ph));
+//}
 
-//
-//  Draw a ball at (x,y,z) radius r
-//
-static void ball(double x,double y,double z,double r)
-{
-   //  Save transformation
-   glPushMatrix();
-   //  Offset, scale and rotate
-   glTranslated(x,y,z);
-   glScaled(r,r,r);
-   //  Bands of latitude
-   for (int ph=-90;ph<90;ph+=10)
-   {
-      glBegin(GL_QUAD_STRIP);
-      for (int th=0;th<=360;th+=20)
-      {
-         Vertex(th,ph);
-         Vertex(th,ph+10);
-      }
-      glEnd();
-   }
-   //  Undo transofrmations
-   glPopMatrix();
-}
+////
+////  Draw a ball at (x,y,z) radius r
+////
+//static void ball(double x,double y,double z,double r)
+//{
+//   //  Save transformation
+//   glPushMatrix();
+//   //  Offset, scale and rotate
+//   glTranslated(x,y,z);
+//   glScaled(r,r,r);
+//   //  Bands of latitude
+//   for (int ph=-90;ph<90;ph+=10)
+//   {
+//      glBegin(GL_QUAD_STRIP);
+//      for (int th=0;th<=360;th+=20)
+//      {
+//         Vertex(th,ph);
+//         Vertex(th,ph+10);
+//      }
+//      glEnd();
+//   }
+//   //  Undo transofrmations
+//   glPopMatrix();
+//}
 
 //
 //  Constructor
@@ -60,16 +60,13 @@ static void ball(double x,double y,double z,double r)
 SciShieldOpengl::SciShieldOpengl(QWidget* parent)
     : QGLWidget(parent)
 {
-    mode = 0;
     init  = false;
     mouse = false;
     asp = 1;
-    dim = 10;
+    dim = 20;
     fov = 55;
-    th = ph = 0;
-    x0 = y0 = 0;
-    z0 = 3;
-    zh = 0;
+    th = 0;
+    ph = 30;
 }
 
 //
@@ -92,9 +89,9 @@ void SciShieldOpengl::reset()
 //
 void SciShieldOpengl::setLightMove(bool on)
 {
-    cout << "light move " << on << endl;
+//    cout << "light move " << on << endl;
 
-    move = on;
+//    move = on;
 }
 
 //
@@ -102,7 +99,7 @@ void SciShieldOpengl::setLightMove(bool on)
 //
 void SciShieldOpengl::setPos(int Zh)
 {
-    zh = Zh;
+    //zh = Zh;
 }
 
 //
@@ -110,7 +107,7 @@ void SciShieldOpengl::setPos(int Zh)
 //
 void SciShieldOpengl::setElev(int Z)
 {
-    z0 = 0.02*Z;
+    //z0 = 0.02*Z;
 }
 
 void SciShieldOpengl::hit()
@@ -133,7 +130,6 @@ void SciShieldOpengl::initializeGL()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //  Start 100 fps timer connected to updateGL
-    move = true;
     timer.setInterval(10);
     connect(&timer,SIGNAL(timeout()),this,SLOT(updateGL()));
     timer.start();
@@ -147,8 +143,8 @@ void SciShieldOpengl::initializeGL()
     cout << "squadron" << endl;
     obj = new Object(this);
     obj->transform.Rotate(-90, QVector3D(0,1,0));
-    obj->SetBehavior(new Squadron());
-    //objects.push_back(obj);
+    obj->SetBehavior(new Squadron(QVector3D(15,0,0)));
+    objects.push_back(obj);
 
     cout << "fighter1" << endl;
     // fighter
@@ -169,9 +165,9 @@ void SciShieldOpengl::initializeGL()
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         obj->transform.Rotate(45, QVector3D(1,0,0));
-        //obj->transform.SetPosition(QVector3D(1,-1,-3));
-        obj->transform.SetPosition(QVector3D(0,0,-10));
-        //obj->transform.SetParent(&(objects[0]->transform));
+        obj->transform.SetPosition(QVector3D(1,-1,-3));
+        //obj->transform.SetPosition(QVector3D(0,0,-10));
+        obj->transform.SetParent(&(objects[0]->transform));
         objects.push_back(obj);
     }
 
@@ -219,8 +215,8 @@ void SciShieldOpengl::initializeGL()
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         obj->transform.Rotate(45, QVector3D(1,0,0));
         obj->transform.SetPosition(QVector3D(-1,1,0));
-        //obj->transform.SetParent(&(objects[0]->transform));
-        //objects.push_back(obj);
+        obj->transform.SetParent(&(objects[0]->transform));
+        objects.push_back(obj);
     }
 
     cout << "fighter shield" << endl;
@@ -241,9 +237,9 @@ void SciShieldOpengl::initializeGL()
         mat->SetTint(QVector4D(0,0.7f,1,1));
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
-        //obj->transform.SetParent(&(objects[objects.count()-1]->transform));
+        obj->transform.SetParent(&(objects[objects.count()-1]->transform));
         obj->SetHitbox(new SphereHitbox(2));
-        //objects.push_back(obj);
+        objects.push_back(obj);
     }
 
     cout << "fighter3" << endl;
@@ -266,8 +262,8 @@ void SciShieldOpengl::initializeGL()
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         obj->transform.Rotate(45, QVector3D(1,0,0));
         obj->transform.SetPosition(QVector3D(1,-1,3));
-        //obj->transform.SetParent(&(objects[0]->transform));
-        //objects.push_back(obj);
+        obj->transform.SetParent(&(objects[0]->transform));
+        objects.push_back(obj);
     }
 
     cout << "fighter shield" << endl;
@@ -288,9 +284,9 @@ void SciShieldOpengl::initializeGL()
         mat->SetTint(QVector4D(0,0.7f,1,1));
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(40,40,40));
-        //obj->transform.SetParent(&(objects[objects.count()-1]->transform));
+        obj->transform.SetParent(&(objects[objects.count()-1]->transform));
         obj->SetHitbox(new SphereHitbox(2));
-        //objects.push_back(obj);
+        objects.push_back(obj);
     }
 
     cout << "cruiser" << endl;
@@ -311,8 +307,8 @@ void SciShieldOpengl::initializeGL()
         mat->SetTexture(":/models/cruiser/cruiser.bmp");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(5,5,5));
-        obj->transform.SetPosition(QVector3D(-6,0,0));
-        //objects.push_back(obj);
+        obj->transform.SetPosition(QVector3D(-15,0,0));
+        objects.push_back(obj);
     }
 
     cout << "cruiser shield" << endl;
@@ -334,35 +330,37 @@ void SciShieldOpengl::initializeGL()
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(1.7,1.7,1.7));
         obj->transform.SetPosition(QVector3D(0,0,0.125));
-        //obj->transform.SetParent(&(objects[objects.count()-1]->transform));
+        obj->transform.SetParent(&(objects[objects.count()-1]->transform));
         obj->SetHitbox(new SphereHitbox(8.5));
-        //objects.push_back(obj);
-    }
-
-    cout << "fighter4" << endl;
-    // fighter
-    obj=0;
-    try
-    {
-        obj = new WaveOBJ(this,"dark_fighter_6.obj",":/models/fighter/");
-    }
-    catch (QString err)
-    {
-        Fatal("Error loading object\n"+err);
-    }
-    if (obj)
-    {
-        mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
-        mat->SetShader(":/object.vert",":/object.frag");
-        mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
-        obj->SetMaterial(mat);
-        obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
-        //obj->transform.Rotate(45, QVector3D(0,1,0));
-        obj->transform.SetPosition(QVector3D(0,0,30));
-        obj->SetBehavior(new Bullet());
         objects.push_back(obj);
     }
 
+//    cout << "fighter4" << endl;
+//    // fighter
+//    obj=0;
+//    try
+//    {
+//        obj = new WaveOBJ(this,"dark_fighter_6.obj",":/models/fighter/");
+//    }
+//    catch (QString err)
+//    {
+//        Fatal("Error loading object\n"+err);
+//    }
+//    if (obj)
+//    {
+//        mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
+//        mat->SetShader(":/object.vert",":/object.frag");
+//        mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
+//        obj->SetMaterial(mat);
+//        obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
+//        //obj->transform.Rotate(45, QVector3D(0,1,0));
+//        obj->transform.SetPosition(QVector3D(0,0,30));
+//        obj->SetBehavior(new Bullet());
+//        objects.push_back(obj);
+//    }
+
+    Light.Direction = QVector3D(1.5, -1, -2).normalized();
+    Light.Color = QVector4D(1,1,1,1);
 }
 
 static void PrintQMatrix(const float *f, int size, QString label)
@@ -414,20 +412,9 @@ void SciShieldOpengl::paintGL()
         cerr << "error at start of paintGL: " << error << endl;
     }
 
-    //  Wall time (seconds)
-    //float t = 0.001 * GameTime::Time();
-    if (move) zh = fmod(90*GameTime::Time(),360);
-
     //  Clear screen and Z-buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-
-    //  Translate intensity to color vectors
-    float Position[] = {(float)(6*Cos(zh)),z0,(float)(6*Sin(zh)),1.0};
-
-    //  Draw light position (no lighting yet)
-    glColor3f(1,1,1);
-    ball(Position[0],Position[1],Position[2] , 0.1);
 
     //  Set view
     glLoadIdentity();
@@ -440,12 +427,6 @@ void SciShieldOpengl::paintGL()
     view.translate(0,0,-2*dim);
     view.rotate(ph,1,0,0);
     view.rotate(th,0,1,0);
-
-    Light.Position = QVector4D(Position[0], Position[1], Position[2], Position[3]);
-    Light.Color = QVector4D(1,1,1,1);
-
-    //move the light by the view matrix (model matrix is the identity matrix in this case)
-    Light.Position = view * Light.Position;
 
     error = glGetError();
     if (error)
@@ -477,8 +458,6 @@ void SciShieldOpengl::paintGL()
 
     //  Emit angles to display
     emit angles(QString::number(th)+","+QString::number(ph));
-    //  Emit light angle
-    emit light((int)zh);
 }
 
 void SciShieldOpengl::UpdateObjects()
@@ -541,8 +520,8 @@ void SciShieldOpengl::Projection()
     //  Set fixed pipeline transformation
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    float zmin = dim/4;
-    float zmax = 4*dim;
+    float zmin = dim/10;
+    float zmax = 10*dim;
     float ydim = zmin*tan(fov*M_PI/360);
     float xdim = ydim*asp;
     glFrustum(-xdim,+xdim,-ydim,+ydim,zmin,zmax);
@@ -550,7 +529,7 @@ void SciShieldOpengl::Projection()
     glLoadIdentity();
     //  Set GL4 transformation
     proj.setToIdentity();
-    proj.perspective(fov,asp,dim/4,4*dim);
+    proj.perspective(fov,asp,dim/10,10*dim);
 }
 
 QVector3D SciShieldOpengl::ScreenToWorldVector(QPointF screenPoint, float z)

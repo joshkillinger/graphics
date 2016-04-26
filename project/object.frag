@@ -2,7 +2,7 @@
 
 struct light
 {
-	vec4 Position;
+    vec3 Direction;
     vec4 Color;
 };
 

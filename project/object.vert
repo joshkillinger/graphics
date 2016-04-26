@@ -2,7 +2,7 @@
 
 struct light
 {
-	vec4 Position;
+    vec3 Direction;
     vec4 Color;
 };
 
@@ -33,7 +33,8 @@ void main()
    vec4 vpos = vec4(Vertex,1);
    vec3 P = vec3(ModelViewMatrix * vpos);
    //  Light position
-   DirToLight  = vec3(Light.Position) - P;
+   //DirToLight = vec3(Light.Position) - P;
+   DirToLight = -Light.Direction;
    //  Normal
    Normal = NormalMatrix * VNormal;
    //  Eye position
