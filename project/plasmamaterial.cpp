@@ -23,7 +23,7 @@ void PlasmaMaterial::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
 
     shader.setUniformValue("Time",time);
 
-    tex = glContext->bindTexture(texture,GL_TEXTURE_2D);
+    tex = glContext->glBindTexture(GL_TEXTURE_2D,texture);
     shader.setUniformValue("Texture",0);
 }
 

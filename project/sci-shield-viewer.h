@@ -1,9 +1,10 @@
 #ifndef SCISHIELDV_H
 #define SCISHIELDV_H
 
-#include <QWidget>
-#include <QSlider>
-#include <QDoubleSpinBox>
+#include <QtGui>
+#include <QtWidgets/QSlider>
+#include <QtWidgets/QPushButton>
+
 #include "sci-shield-opengl.h"
 
 class SciShieldViewer : public QWidget

@@ -42,8 +42,9 @@ void Material::SetShader(QString vert, QString geom, QString frag)
 void Material::SetTexture(QString file)
 {
     // Texture
-    texture = QPixmap(file);
-    tex = glContext->bindTexture(texture,GL_TEXTURE_2D);
+    texture = QOpenGLTexture(QImage(file));
+    texture.setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+    texture.setMagnificationFilter(QOpenGLTexture::Linear);
 }
 
 void Material::SetTint(QVector4D color)
@@ -69,7 +70,9 @@ void Material::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
     shader.setUniformValue("Specular",specular);
     shader.setUniformValue("Shininess",shininess);
 
-    tex = glContext->bindTexture(texture,GL_TEXTURE_2D);
+    texture.bind();
+    //glContext->glBindTexture(GL_TEXTURE_2D,tex);
+    //glContext->glActiveTexture(GL_TEXTURE0);
     shader.setUniformValue("Texture",0);
 }
 

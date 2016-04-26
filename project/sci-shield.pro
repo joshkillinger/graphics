@@ -20,7 +20,6 @@ SOURCES = sci-shield.cpp sci-shield-viewer.cpp sci-shield-opengl.cpp Object.cpp 
     bullet.cpp \
     particleobject.cpp \
     plasmamaterial.cpp
-QT += opengl
 RESOURCES = sci-shield.qrc
 
 DISTFILES +=

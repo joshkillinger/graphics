@@ -24,6 +24,11 @@ void Object::SetMaterial(Material *mat)
     material->SetParent(this);
 }
 
+Material *Object::GetMaterial()
+{
+    return material;
+}
+
 void Object::SetHitbox(Hitbox *hb)
 {
     hitbox = hb;

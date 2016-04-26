@@ -18,11 +18,11 @@ protected:
     float specular;
     float shininess;
 
-    QPixmap texture;
+    QOpenGLTexture *texture;
     //QPixmap specmap;
     //QPixmap illummap;
     //QPixmap bumpmap;
-    unsigned int tex;  //  Texture
+    GLuint tex;  //  Texture
     //unsigned int spec;  //  Texture
     //unsigned int illum;  //  Texture
     //unsigned int bump;  //  Texture

@@ -34,6 +34,7 @@ public:
     Object(SciShieldOpengl *context);          //  Constructor
 
     void SetMaterial(Material *mat);
+    Material *GetMaterial();
     void SetHitbox(Hitbox *hb);
     void SetBehavior(Behavior *b);
     void display(int stage);                         //  Render the object

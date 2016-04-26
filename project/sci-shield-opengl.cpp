@@ -2,7 +2,8 @@
 //  OpenGL SciShieldOpengl widget
 //
 #include "sci-shield-opengl.h"
-#include <QtOpenGL>
+#include <QtGui>
+//#include <QtOpenGL>
 #include <QMessageBox>
 #include <math.h>
 #include <iostream>
@@ -23,11 +24,28 @@
 
 using namespace std;
 
+static float frand(float rng,float off)
+{
+   return rand()*rng/RAND_MAX+off;
+}
+
+//static QQuaternion QuaternionFromDirection(QVector3D direction, QVector3D up)
+//{
+//    QVector3D S = QVector3D::crossProduct(direction, up);
+//    QVector3D Un = QVector3D::crossProduct(direction, S);
+//    QMatrix4x4 rotation();
+//    rotation.setRow(0, QVector4D(direction));
+//    rotation.setRow(1, Un);
+//    rotation.setRow(2, S);
+
+
+//}
+
 //
 //  Constructor
 //
 SciShieldOpengl::SciShieldOpengl(QWidget* parent)
-    : QGLWidget(parent)
+    : QOpenGLWidget(parent)
 {
     init  = false;
     mouse = false;
@@ -91,6 +109,8 @@ void SciShieldOpengl::initializeGL()
 {
     if (init) return;
     init = true;
+
+    initializeOpenGLFunctions();
 
     GameTime::Start();
 
@@ -450,25 +470,25 @@ void SciShieldOpengl::RenderObjects(int stage)
 
 void SciShieldOpengl::ShowAxes()
 {
-    //  Axes for reference
-    glBegin(GL_LINES);
-    glColor3f(1,0,0);
-    glVertex3f(0,0,0);
-    glVertex3f(4,0,0);
-    glColor3f(0,1,0);
-    glVertex3f(0,0,0);
-    glVertex3f(0,4,0);
-    glColor3f(0,0,1);
-    glVertex3f(0,0,0);
-    glVertex3f(0,0,4);
-    glEnd();
-    glDisable(GL_DEPTH_TEST);
-    glColor3f(1,0,0);
-    renderText(4.5,0,0,"X");
-    glColor3f(0,1,0);
-    renderText(0,4.5,0,"Y");
-    glColor3f(0,0,1);
-    renderText(0,0,4.5,"Z");
+//    //  Axes for reference
+//    glBegin(GL_LINES);
+//    glColor3f(1,0,0);
+//    glVertex3f(0,0,0);
+//    glVertex3f(4,0,0);
+//    glColor3f(0,1,0);
+//    glVertex3f(0,0,0);
+//    glVertex3f(0,4,0);
+//    glColor3f(0,0,1);
+//    glVertex3f(0,0,0);
+//    glVertex3f(0,0,4);
+//    glEnd();
+//    glDisable(GL_DEPTH_TEST);
+//    glColor3f(1,0,0);
+//    renderText(4.5,0,0,"X");
+//    glColor3f(0,1,0);
+//    renderText(0,4.5,0,"Y");
+//    glColor3f(0,0,1);
+//    renderText(0,0,4.5,"Z");
 }
 
 //
@@ -554,21 +574,48 @@ void SciShieldOpengl::Fire(QPointF screenPoint)
     PrintQVector3D(origin, "Origin");
     PrintQVector3D(direction, "Direction");
 
-    int hitIndex = -1;
+//    int hitIndex = -1;
 
-    float hitDistance = TraceRay(origin, direction, &hitIndex);
+//    float hitDistance = TraceRay(origin, direction, &hitIndex);
 
-    //if we hit something, tell it we hit it
-    if (hitIndex != -1)
+//    //if we hit something, tell it we hit it
+//    if (hitIndex != -1)
+//    {
+//        QVector3D hitPoint = origin + (hitDistance * direction);
+//        objects[hitIndex]->Hit(hitPoint);
+//        PrintQVector3D(hitPoint, "got a hit at");
+//    }
+//    else
+//    {
+//        cout << "no hit" << endl;
+//    }
+
+    Object *obj = 0;
+    if (particlePool.count() > 0)
     {
-        QVector3D hitPoint = origin + (hitDistance * direction);
-        objects[hitIndex]->Hit(hitPoint);
-        PrintQVector3D(hitPoint, "got a hit at");
+        obj = particlePool[0];
+        particlePool.remove(0);
     }
     else
     {
-        cout << "no hit" << endl;
+        obj = new ParticleObject(this, 25);
+        Material *mat = new PlasmaMaterial(this, 0.3f, 0.6f, 0.3f, 32.0f);
+        mat->SetShader(":/plasma.vert",":/plasma.geom",":/plasma.frag");
+        mat->SetTexture(":/models/radial_gradient.png");
+        obj->SetMaterial(mat);
+        obj->SetBehavior(new Bullet());
     }
+
+    QVector4D tint(rand() % 2,rand() % 2,rand() % 2,1);
+    tint *= QVector4D(.6,.6,.6,1);
+    tint += QVector4D(.4,.4,.4,0);
+    obj->GetMaterial()->SetTint(tint);
+
+    obj->transform.SetPosition(origin);
+    obj->transform.SetRotation(QQuaternion::fromDirection(direction, QVector3D(0,1,0)));
+    obj->transform.SetScale(QVector3D(.5,.5,.5));
+    objects.push_back(obj);
+
 }
 
 
