@@ -12,6 +12,8 @@ protected:
 
 public:
     ParticleObject(SciShieldOpengl *context, int numParticles);
+    void Hit(QVector3D point);
+    void Kill();
 };
 
 #endif // PARTICLEOBJECT_H

@@ -70,3 +70,24 @@ void ParticleObject::Render()
 
     vertexBuffer.release();
 }
+
+void ParticleObject::Hit(QVector3D point)
+{
+    Object::Hit(point);
+
+    Kill();
+}
+
+void ParticleObject::Kill()
+{
+    for (int i = 0; i < glContext->objects.count(); i++)
+    {
+        if (this == glContext->objects[i])
+        {
+            glContext->objects.remove(i);
+            break;
+        }
+    }
+
+    glContext->particlePool.push_back(this);
+}

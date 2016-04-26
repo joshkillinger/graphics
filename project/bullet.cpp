@@ -22,7 +22,9 @@ void Bullet::Update()
         if (rayDistance < travelDistance)
         {
             // we hit something, inform it
-            parent->glContext->objects[hitIndex]->Hit(origin + (dir * rayDistance));
+            QVector3D hitPoint = origin + (dir * rayDistance);
+            parent->glContext->objects[hitIndex]->Hit(hitPoint);
+            parent->Hit(hitPoint);
         }
     }
 

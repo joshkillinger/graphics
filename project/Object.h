@@ -39,7 +39,7 @@ public:
     void display(int stage);                         //  Render the object
     virtual ~Object() {};                             //  Do nothing destructor
 
-    void Hit(QVector3D point);
+    virtual void Hit(QVector3D point);
 
     virtual void Update();
 

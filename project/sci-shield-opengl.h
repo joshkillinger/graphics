@@ -37,6 +37,7 @@ private:
 
 public:
     QVector<Object*> objects;
+    QVector<Object*> particlePool;
     struct light Light;
 
     QMatrix4x4       proj;     //  Projection matrix
