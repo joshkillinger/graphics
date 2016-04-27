@@ -40,7 +40,7 @@ void FighterBehavior::Fire()
     lastShot += frequency;
     nextShotOffset = frand(.5f, -.25f);
 
-    cout << "firing!" << endl;
+    //cout << "firing!" << endl;
 
     QVector3D direction = parent->transform.GetModelMatrix().mapVector(QVector3D(-1,0,0)).normalized();
     QVector3D leftOrigin = parent->transform.GetModelMatrix().mapVector(left);

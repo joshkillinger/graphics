@@ -55,7 +55,7 @@ void CruiserBehavior::Fire(int index)
 {
     lastShot[index] += frequency[index];
 
-    cout << "firing!" << endl;
+    //cout << "firing!" << endl;
 
     QVector3D jitter(0,frand(.25f,-.125f),frand(.25f,-.125f));
 
