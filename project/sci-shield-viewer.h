@@ -11,12 +11,7 @@ class SciShieldViewer : public QWidget
 {
 Q_OBJECT
 private:
-    QSlider*         Lpos;
-    QSlider*         Zpos;
-    QPushButton*     light;
     SciShieldOpengl* ogl;
-private slots:
-    void lmove();        //  Light movement
 public:
     SciShieldViewer();
 };

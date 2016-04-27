@@ -1,10 +1,11 @@
-#version 410 core
+#version 420 core
 
 //  Billboards point to rotated quad
 
 uniform mat4 ModelViewMatrix;
 uniform mat4 ProjectionMatrix;
 
+layout (points) in;
 layout (location = 0) in vec4 VertPosition[];
 layout (location = 1) in vec4 VertColor[];
 layout (location = 2) in float Size[];

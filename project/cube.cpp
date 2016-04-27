@@ -1,5 +1,5 @@
 #include "cube.h"
-#include <QtOpenGL>
+#include <QtGui>
 
 const float cube_data[] =  // Vertex data
 {
@@ -59,7 +59,7 @@ Cube::Cube(SciShieldOpengl *context) : Object(context)
     //  Copy data to vertex buffer object
     vertexBuffer.create();
     vertexBuffer.bind();
-    vertexBuffer.setUsagePattern(QGLBuffer::StaticDraw);
+    vertexBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
     vertexBuffer.allocate(sizeof(cube_data));
     vertexBuffer.write(0, cube_data, sizeof(cube_data));
     //  Unbind this buffer

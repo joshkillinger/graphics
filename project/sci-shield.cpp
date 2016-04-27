@@ -4,7 +4,7 @@
 //  CSCI 4239/5239 Spring 2016
 //
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include "sci-shield-viewer.h"
 #include <iostream>
 

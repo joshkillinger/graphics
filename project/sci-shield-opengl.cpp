@@ -3,8 +3,8 @@
 //
 #include "sci-shield-opengl.h"
 #include <QtGui>
-//#include <QtOpenGL>
-#include <QMessageBox>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QApplication>
 #include <math.h>
 #include <iostream>
 #include "WaveOBJ.h"
@@ -28,18 +28,6 @@ static float frand(float rng,float off)
 {
    return rand()*rng/RAND_MAX+off;
 }
-
-//static QQuaternion QuaternionFromDirection(QVector3D direction, QVector3D up)
-//{
-//    QVector3D S = QVector3D::crossProduct(direction, up);
-//    QVector3D Un = QVector3D::crossProduct(direction, S);
-//    QMatrix4x4 rotation();
-//    rotation.setRow(0, QVector4D(direction));
-//    rotation.setRow(1, Un);
-//    rotation.setRow(2, S);
-
-
-//}
 
 //
 //  Constructor
@@ -71,32 +59,6 @@ void SciShieldOpengl::reset()
 
 }
 
-//
-//  Light animation
-//
-void SciShieldOpengl::setLightMove(bool on)
-{
-//    cout << "light move " << on << endl;
-
-//    move = on;
-}
-
-//
-//  Set light position
-//
-void SciShieldOpengl::setPos(int Zh)
-{
-    //zh = Zh;
-}
-
-//
-//  Set light elevation
-//
-void SciShieldOpengl::setElev(int Z)
-{
-    //z0 = 0.02*Z;
-}
-
 void SciShieldOpengl::hit()
 {
     //objects[sphere]->Hit(QVector3D(1,0,0));
@@ -118,7 +80,6 @@ void SciShieldOpengl::initializeGL()
     timer.setInterval(10);
     connect(&timer,SIGNAL(timeout()),this,SLOT(update()));
     timer.start();
-    //time.start();
     cout << "timers set" << endl;
 
     Object *obj;
@@ -313,10 +274,10 @@ void SciShieldOpengl::initializeGL()
         mat->SetShader(":/shield.vert","",":/shield.frag");
         mat->SetTint(QVector4D(0,1,0.7f,1));
         obj->SetMaterial(mat);
-        obj->transform.SetScale(QVector3D(1.7,1.7,1.7));
-        obj->transform.SetPosition(QVector3D(0,0,0.125));
+        obj->transform.SetScale(QVector3D(1.7f,1.7f,1.7f));
+        obj->transform.SetPosition(QVector3D(0,0,0.125f));
         obj->transform.SetParent(&(objects[objects.count()-1]->transform));
-        obj->SetHitbox(new SphereHitbox(8.5));
+        obj->SetHitbox(new SphereHitbox(8.5f));
         objects.push_back(obj);
     }
 
@@ -335,7 +296,7 @@ void SciShieldOpengl::initializeGL()
         mat = new PlasmaMaterial(this, 0.3f, 0.6f, 0.3f, 32.0f);
         mat->SetShader(":/plasma.vert",":/plasma.geom",":/plasma.frag");
         mat->SetTexture(":/models/radial_gradient.png");
-        mat->SetTint(QVector4D(1,.4,.4,1));
+        mat->SetTint(QVector4D(1,.4f,.4f,1));
         obj->SetMaterial(mat);
         obj->transform.SetPosition(QVector3D(-8,0,30));
         //obj->transform.SetPosition(QVector3D(-1,1,0));
@@ -414,10 +375,10 @@ void SciShieldOpengl::paintGL()
         cerr << "error prior to display call: " << error << endl;
     }
 
-    //opaque pipeline
+    //opaque stage
     RenderObjects(0);
 
-    //blended pipeline
+    //blended stage
     glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
 
@@ -525,23 +486,19 @@ float SciShieldOpengl::TraceRay(QVector3D origin, QVector3D direction, int *hitI
     return hitDistance;
 }
 
-void SciShieldOpengl::Fire(QPointF screenPoint)
+void SciShieldOpengl::Fire(QVector3D origin, QVector3D direction)
 {
-    QVector3D origin = ScreenToWorldVector(screenPoint, 0);
-    QVector3D direction = ScreenToWorldVector(screenPoint, 1) - origin;
-    direction.normalize();
-
-    PrintQVector3D(origin, "Origin");
-    PrintQVector3D(direction, "Direction");
-
     Object *obj = 0;
     if (particlePool.count() > 0)
     {
+        cout << "reusing particle object" << endl;
         obj = particlePool[0];
+        obj->GetBehavior()->Reset();
         particlePool.remove(0);
     }
     else
     {
+        cout << "creating new particle object" << endl;
         obj = new ParticleObject(this, 25);
         Material *mat = new PlasmaMaterial(this, 0.3f, 0.6f, 0.3f, 32.0f);
         mat->SetShader(":/plasma.vert",":/plasma.geom",":/plasma.frag");
@@ -551,18 +508,25 @@ void SciShieldOpengl::Fire(QPointF screenPoint)
     }
 
     QVector4D tint(rand() % 2,rand() % 2,rand() % 2,1);
-    tint *= QVector4D(.6,.6,.6,1);
-    tint += QVector4D(.4,.4,.4,0);
+    tint *= QVector4D(.6f,.6f,.6f,1);
+    tint += QVector4D(.4f,.4f,.4f,0);
     obj->GetMaterial()->SetTint(tint);
 
     obj->transform.SetPosition(origin);
     obj->transform.SetRotation(QQuaternion::fromDirection(-direction, QVector3D(0,1,0)));
-    obj->transform.SetScale(QVector3D(.5,.5,.5));
+    obj->transform.SetScale(QVector3D(.5f,.5f,.5f));
     objects.push_back(obj);
 
 }
 
+void SciShieldOpengl::FireFromClick(QPointF screenPoint)
+{
+    QVector3D origin = ScreenToWorldVector(screenPoint, 0);
+    QVector3D direction = ScreenToWorldVector(screenPoint, 1) - origin;
+    direction.normalize();
 
+    Fire(origin, direction);
+}
 
 /******************************************************************/
 /*************************  Mouse Events  *************************/
@@ -580,7 +544,7 @@ void SciShieldOpengl::mousePressEvent(QMouseEvent* e)
 
     if (e->button() == Qt::MouseButton::LeftButton)
     {
-        Fire(e->localPos());
+        FireFromClick(e->localPos());
     }
 }
 

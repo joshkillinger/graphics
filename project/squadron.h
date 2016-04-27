@@ -1,7 +1,7 @@
 #ifndef SQUADRON_H
 #define SQUADRON_H
 
-#include <QtOpenGL>
+#include <QtGui>
 #include "behavior.h"
 
 class Squadron : public Behavior

@@ -12,6 +12,7 @@ private:
 public:
     Bullet();
     void Update();
+    void Reset();
 };
 
 #endif // BULLET_H

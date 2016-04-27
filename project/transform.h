@@ -1,7 +1,7 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include <QtOpenGL>
+#include <QtGui>
 class Transform
 {
 private:

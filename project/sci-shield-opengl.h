@@ -33,7 +33,6 @@ private:
     unsigned int tex;  //  Textures
 
     QTimer           timer;    //  Timer for animations
-    //QElapsedTimer    time;     //  Track elapsed time
     QPixmap   qtex;
 
 public:
@@ -48,13 +47,11 @@ public:
     QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
 
     float TraceRay(QVector3D origin, QVector3D direction, int *hitIndex);
+    void Fire(QVector3D origin, QVector3D direction);
 
     void Fatal(QString message, QString caller = "SciShieldOpengl");            //  Error handler
 public slots:
     void hit();                            //  Slot to hit shield (testing only)
-    void setPos(int ang);                  //  Slot to light position
-    void setElev(int z);                   //  Slot to light elevation (%)
-    void setLightMove(bool on);            //  Slot to set light movement
     void reset();                          //  Reset view
 signals:
     void angles(QString text);             //  Signal for view angles
@@ -72,7 +69,7 @@ private:
     void UpdateObjects();
     void RenderObjects(int stage);
     QVector3D ScreenToWorldVector(QPointF screenPoint, float z);
-    void Fire(QPointF screenPoint);
+    void FireFromClick(QPointF screenPoint);
 };
 
 #endif

@@ -1,5 +1,5 @@
 #include "triangle.h"
-#include <QtOpenGL>
+#include <QtGui>
 #include <iostream>
 
 using namespace std;
@@ -26,7 +26,7 @@ Triangle::Triangle(SciShieldOpengl *context) : Object(context)
     {
         cerr << "error binding vertexBuffer" << endl;
     }
-    vertexBuffer.setUsagePattern(QGLBuffer::StaticDraw);
+    vertexBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
     cout << "allocating buffer space of " << sizeof(triangle_data) << endl;
 
     vertexBuffer.allocate(sizeof(triangle_data));

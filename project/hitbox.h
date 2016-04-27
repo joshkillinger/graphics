@@ -1,7 +1,7 @@
 #ifndef HITBOX_H
 #define HITBOX_H
 
-#include <QtOpenGL>
+#include <QtGui>
 #include "transform.h"
 
 class Hitbox

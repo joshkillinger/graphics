@@ -41,6 +41,11 @@ void Object::SetBehavior(Behavior *b)
     behavior->SetParent(this);
 }
 
+Behavior *Object::GetBehavior()
+{
+    return behavior;
+}
+
 void Object::display(int stage)
 {
     if (material == NULL)

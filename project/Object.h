@@ -9,7 +9,9 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <QtOpenGL>
+//#include <QtOpenGL>
+#include <QOpenGLFunctions>
+#include <QOpenGLBuffer>
 #include "sci-shield-opengl.h"
 #include "transform.h"
 #include "material.h"
@@ -24,7 +26,7 @@ protected:
     Behavior *behavior;
 
     int vertexCount;
-    QGLBuffer vertexBuffer;
+    QOpenGLBuffer vertexBuffer;
 
     virtual void Render();
 public:
@@ -37,6 +39,7 @@ public:
     Material *GetMaterial();
     void SetHitbox(Hitbox *hb);
     void SetBehavior(Behavior *b);
+    Behavior *GetBehavior();
     void display(int stage);                         //  Render the object
     virtual ~Object() {};                             //  Do nothing destructor
 

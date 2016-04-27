@@ -14,6 +14,7 @@ public:
     Behavior();
     void SetParent(Object *parent);
     virtual void Update()=0;
+    virtual void Reset(){};
 };
 
 #endif // BEHAVIOR_H

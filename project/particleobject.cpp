@@ -33,7 +33,7 @@ ParticleObject::ParticleObject(SciShieldOpengl *context, int numParticles) : Obj
     {
         cerr << "error binding vertexBuffer for particles" << endl;
     }
-    vertexBuffer.setUsagePattern(QGLBuffer::StaticDraw);
+    vertexBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
     //cout << "allocating buffer space of " << sizeof(float) * numParticles * 4 << endl;
 
     vertexBuffer.allocate(sizeof(float) * numParticles * 4);
@@ -90,4 +90,5 @@ void ParticleObject::Kill()
     }
 
     glContext->particlePool.push_back(this);
+    cout << "particles killed" << endl;
 }

@@ -3,8 +3,13 @@
 
 Bullet::Bullet()
 {
+    Reset();
+}
+
+void Bullet::Reset()
+{
     speed = 10;
-    life = 5;
+    life = 10;
 }
 
 void Bullet::Update()
@@ -30,4 +35,9 @@ void Bullet::Update()
 
     parent->transform.Translate(dir * travelDistance);
     life -= GameTime::DeltaTime();
+
+    if (life < 0)
+    {
+        parent->Hit(parent->transform.GetWorldPosition());
+    }
 }

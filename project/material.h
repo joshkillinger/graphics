@@ -1,7 +1,8 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include <QtOpenGL>
+#include <QtGui>
+#include <QOpenGLFunctions>
 #include "sci-shield-opengl.h"
 
 class Object;
@@ -28,7 +29,7 @@ protected:
     //unsigned int bump;  //  Texture
 
 public:
-    QGLShaderProgram shader;   //  Shader
+    QOpenGLShaderProgram shader;   //  Shader
     int visibleStage;
 
     Material(SciShieldOpengl *context, float ambient, float diffuse, float specular, float shininess);

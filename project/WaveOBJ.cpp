@@ -7,7 +7,7 @@
 #include <QTextStream>
 #include <QVector>
 #include <QPixmap>
-#include <QGLWidget>
+#include <QtWidgets/QOpenGLWidget>
 #include "WaveOBJ.h"
 #include <iostream>
 
@@ -93,7 +93,7 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
     vertexCount = F.count() * 3;
     vertexBuffer.create();
     vertexBuffer.bind();
-    vertexBuffer.setUsagePattern(QGLBuffer::StaticDraw);
+    vertexBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
     vertexBuffer.allocate(sizeof(float) * vertexCount * 8);
 
     //cout << F.count() << " faces, " << vertexCount << " vertices, " << vertexBuffer.size() << " bytes." << endl;
