@@ -90,7 +90,6 @@ void SciShieldOpengl::initializeGL()
     objects.push_back(obj);
 
     cout << "fighter1" << endl;
-    // fighter
     obj=0;
     try
     {
@@ -110,14 +109,12 @@ void SciShieldOpengl::initializeGL()
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         obj->transform.Rotate(45, QVector3D(1,0,0));
         obj->transform.SetPosition(QVector3D(1,-1,-3));
-        //obj->transform.SetPosition(QVector3D(0,0,-10));
         obj->transform.SetParent(&(objects[0]->transform));
         obj->SetBehavior(new FighterBehavior());
         objects.push_back(obj);
     }
 
     cout << "fighter shield" << endl;
-    // fighter shield
     obj=0;
     try
     {
@@ -141,7 +138,6 @@ void SciShieldOpengl::initializeGL()
     }
 
     cout << "fighter2" << endl;
-    // fighter
     obj=0;
     try
     {
@@ -167,7 +163,6 @@ void SciShieldOpengl::initializeGL()
     }
 
     cout << "fighter shield" << endl;
-    // fighter shield
     obj=0;
     try
     {
@@ -190,7 +185,6 @@ void SciShieldOpengl::initializeGL()
     }
 
     cout << "fighter3" << endl;
-    // fighter
     obj=0;
     try
     {
@@ -216,7 +210,6 @@ void SciShieldOpengl::initializeGL()
     }
 
     cout << "fighter shield" << endl;
-    // fighter shield
     obj=0;
     try
     {
@@ -239,7 +232,6 @@ void SciShieldOpengl::initializeGL()
     }
 
     cout << "cruiser" << endl;
-    // cruiser
     obj=0;
     try
     {
@@ -263,7 +255,6 @@ void SciShieldOpengl::initializeGL()
     }
 
     cout << "cruiser shield" << endl;
-    // cruiser shield
     obj=0;
     try
     {
@@ -285,10 +276,6 @@ void SciShieldOpengl::initializeGL()
         obj->SetHitbox(new SphereHitbox(8.5f));
         objects.push_back(obj);
     }
-
-    cout << "plasma" << endl;
-    Fire(QVector3D(-8,0,30), QVector3D(0,0,-1), QVector3D(.5f, .5f, .5f), QVector4D(1,.4f,.4f,1));
-
 
     Light.Direction = QVector3D(1.5, -1, -2).normalized();
     Light.Color = QVector4D(1,1,1,1);
@@ -415,11 +402,6 @@ void SciShieldOpengl::Fatal(QString message, QString caller)
 //
 void SciShieldOpengl::Projection()
 {
-    float zmin = dim/10;
-    float zmax = 10*dim;
-    float ydim = zmin*tan(fov*M_PI/360);
-    float xdim = ydim*asp;
-
     //  Set GL4 transformation
     proj.setToIdentity();
     proj.perspective(fov,asp,dim/10,10*dim);

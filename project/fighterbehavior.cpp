@@ -3,7 +3,7 @@
 #include "fighterbehavior.h"
 #include "Object.h"
 
-#define PI 3.14159265358979
+#define PI 3.14159265358979f
 #define DEGREES_TO_RAD PI / 180
 #define RAD_TO_DEGREES 180 / PI
 
@@ -29,7 +29,6 @@ void FighterBehavior::Update()
     lastShot -= GameTime::DeltaTime();
 
     if ((lastShot + nextShotOffset) < 0)
-    //if (lastShot < 0)
     {
         Fire();
     }

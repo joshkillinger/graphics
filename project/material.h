@@ -38,7 +38,7 @@ public:
     virtual void PreRender(QMatrix4x4 modelview, QMatrix3x3 norm);
     virtual void PostRender();
 
-    virtual void Hit(QVector3D point);
+    virtual void Hit(QVector3D point){};
     virtual void Update(){};
 };
 

@@ -102,9 +102,6 @@ void Material::PostRender()
     shader.release();
 }
 
-void Material::Hit(QVector3D point)
-{}
-
 void Material::SetParent(Object *p)
 {
     parent = p;
