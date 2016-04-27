@@ -61,11 +61,6 @@ void SciShieldOpengl::reset()
 
 }
 
-void SciShieldOpengl::hit()
-{
-    //objects[sphere]->Hit(QVector3D(1,0,0));
-}
-
 //
 //  Initialize
 //
@@ -293,33 +288,6 @@ void SciShieldOpengl::initializeGL()
 
     cout << "plasma" << endl;
     Fire(QVector3D(-8,0,30), QVector3D(0,0,-1), QVector3D(.5f, .5f, .5f), QVector4D(1,.4f,.4f,1));
-
-
-
-//    cout << "testFighter" << endl;
-//    // fighter
-//    obj=0;
-//    try
-//    {
-//        obj = new WaveOBJ(this,"dark_fighter_6.obj",":/models/fighter/");
-//    }
-//    catch (QString err)
-//    {
-//        Fatal("Error loading object\n"+err);
-//    }
-//    if (obj)
-//    {
-//        mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
-//        mat->SetShader(":/object.vert","",":/object.frag");
-//        mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
-//        obj->SetMaterial(mat);
-//        obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
-//        //obj->transform.Rotate(45, QVector3D(1,0,0));
-//        obj->transform.SetPosition(QVector3D(0,0,0));
-//        obj->SetBehavior(new FighterBehavior());
-//        objects.push_back(obj);
-//    }
-
 
 
     Light.Direction = QVector3D(1.5, -1, -2).normalized();

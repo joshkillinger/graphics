@@ -27,9 +27,6 @@ SciShieldViewer::SciShieldViewer()
    QLabel* angles = new QLabel();
 
    //  Reset
-   QPushButton* hit = new QPushButton("Hit");
-
-   //  Reset
    QPushButton* rst = new QPushButton("Reset");
    //  Quit
    QPushButton* quit = new QPushButton("Quit");
@@ -38,16 +35,15 @@ SciShieldViewer::SciShieldViewer()
 
    //  Set layout of child widgets
    QGridLayout* layout = new QGridLayout;
-   layout->addWidget(ogl,0,0,4,1);
+   layout->addWidget(ogl,0,0,3,1);
    layout->addWidget(new QLabel("Angles"),0,1);
    layout->addWidget(angles,0,2);
-   layout->addWidget(hit,1,2);
-   layout->addWidget(rst,3,1);
-   layout->addWidget(quit,3,2);
+   layout->addWidget(rst,2,1);
+   layout->addWidget(quit,2,2);
    //  Manage resizing
    layout->setColumnStretch(0,100);
    layout->setColumnMinimumWidth(0,100);
-   layout->setRowStretch(2,100);
+   layout->setRowStretch(1,100);
    setLayout(layout);
 
    cout << "grid laid out" << endl;
@@ -55,7 +51,6 @@ SciShieldViewer::SciShieldViewer()
    //  Connect angles() and zoom() signal to labels
    connect(ogl,SIGNAL(angles(QString)) , angles,SLOT(setText(QString)));
    //  Connect reset() and lmove() signals
-   connect(hit  ,SIGNAL(pressed()),ogl,SLOT(hit()));
    connect(rst  ,SIGNAL(pressed()),ogl,SLOT(reset()));
    //  Connect quit() signal to qApp::quit()
    connect(quit,SIGNAL(pressed()) , qApp,SLOT(quit()));

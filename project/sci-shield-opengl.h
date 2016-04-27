@@ -51,7 +51,6 @@ public:
 
     void Fatal(QString message, QString caller = "SciShieldOpengl");            //  Error handler
 public slots:
-    void hit();                            //  Slot to hit shield (testing only)
     void reset();                          //  Reset view
 signals:
     void angles(QString text);             //  Signal for view angles

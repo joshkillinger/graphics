@@ -20,14 +20,11 @@ void main()
     for (int i = 0; i < 10; i++)
     {
         float distanceFromHit = distance(Hit[i], Vert);
-        //float distanceFromHit = distance(HitPoint, Vert);
 
         float intensity = clamp((10*Time[i]) - distanceFromHit, 0, M_PI);
 
         totalIntensity += sin(intensity) / (1 + distanceFromHit * 2);
     }
 
-    //intensity = clamp(Time,0,1);
     Fragcolor = vec4(Tint.rgb, totalIntensity);
-    //Fragcolor = vec4(Vert,1);
 }

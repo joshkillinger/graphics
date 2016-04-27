@@ -22,7 +22,6 @@ void main()
    {
       Hit[i] = (ModelViewMatrix * vec4(HitPoint[i],1)).xyz;
    }
-   //Hit = HitPoint;
 
    //  Set transformed vertex location
    gl_Position =  ProjectionMatrix * ModelViewMatrix * vpos;
