@@ -8,7 +8,9 @@ HEADERS = sci-shield-viewer.h sci-shield-opengl.h Type.h Object.h WaveOBJ.h tran
     squadron.h \
     bullet.h \
     particleobject.h \
-    plasmamaterial.h
+    plasmamaterial.h \
+    fighterbehavior.h \
+    cruiserbehavior.h
 SOURCES = sci-shield.cpp sci-shield-viewer.cpp sci-shield-opengl.cpp Object.cpp WaveOBJ.cpp transform.cpp cube.cpp triangle.cpp \
     material.cpp \
     shield.cpp \
@@ -19,7 +21,9 @@ SOURCES = sci-shield.cpp sci-shield-viewer.cpp sci-shield-opengl.cpp Object.cpp 
     squadron.cpp \
     bullet.cpp \
     particleobject.cpp \
-    plasmamaterial.cpp
+    plasmamaterial.cpp \
+    fighterbehavior.cpp \
+    cruiserbehavior.cpp
 RESOURCES = sci-shield.qrc
 QT += widgets
 DISTFILES +=

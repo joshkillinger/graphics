@@ -1,7 +1,6 @@
 #ifndef BEHAVIOR_H
 #define BEHAVIOR_H
 
-//#include "Object.h"
 #include "gametime.h"
 
 class Object;

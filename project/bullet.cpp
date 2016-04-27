@@ -8,7 +8,7 @@ Bullet::Bullet()
 
 void Bullet::Reset()
 {
-    speed = 10;
+    speed = 25;
     life = 10;
 }
 

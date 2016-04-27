@@ -18,6 +18,8 @@
 #include "bullet.h"
 #include "particleobject.h"
 #include "plasmamaterial.h"
+#include "fighterbehavior.h"
+#include "cruiserbehavior.h"
 
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
@@ -114,6 +116,7 @@ void SciShieldOpengl::initializeGL()
         obj->transform.SetPosition(QVector3D(1,-1,-3));
         //obj->transform.SetPosition(QVector3D(0,0,-10));
         obj->transform.SetParent(&(objects[0]->transform));
+        obj->SetBehavior(new FighterBehavior());
         objects.push_back(obj);
     }
 
@@ -162,6 +165,7 @@ void SciShieldOpengl::initializeGL()
         obj->transform.Rotate(45, QVector3D(1,0,0));
         obj->transform.SetPosition(QVector3D(-1,1,0));
         obj->transform.SetParent(&(objects[0]->transform));
+        obj->SetBehavior(new FighterBehavior());
         objects.push_back(obj);
     }
 
@@ -209,6 +213,7 @@ void SciShieldOpengl::initializeGL()
         obj->transform.Rotate(45, QVector3D(1,0,0));
         obj->transform.SetPosition(QVector3D(1,-1,3));
         obj->transform.SetParent(&(objects[0]->transform));
+        obj->SetBehavior(new FighterBehavior());
         objects.push_back(obj);
     }
 
@@ -254,6 +259,7 @@ void SciShieldOpengl::initializeGL()
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(5,5,5));
         obj->transform.SetPosition(QVector3D(-15,0,0));
+        obj->SetBehavior(new CruiserBehavior());
         objects.push_back(obj);
     }
 
@@ -282,28 +288,34 @@ void SciShieldOpengl::initializeGL()
     }
 
     cout << "plasma" << endl;
-    obj=0;
-    try
-    {
-        obj = new ParticleObject(this, 25);
-    }
-    catch (QString err)
-    {
-        Fatal("Error loading plasma\n"+err);
-    }
-    if (obj)
-    {
-        mat = new PlasmaMaterial(this, 0.3f, 0.6f, 0.3f, 32.0f);
-        mat->SetShader(":/plasma.vert",":/plasma.geom",":/plasma.frag");
-        mat->SetTexture(":/models/radial_gradient.png");
-        mat->SetTint(QVector4D(1,.4f,.4f,1));
-        obj->SetMaterial(mat);
-        obj->transform.SetPosition(QVector3D(-8,0,30));
-        //obj->transform.SetPosition(QVector3D(-1,1,0));
-        obj->transform.SetScale(QVector3D(.5,.5,.5));
-        obj->SetBehavior(new Bullet());
-        objects.push_back(obj);
-    }
+    Fire(QVector3D(-8,0,30), QVector3D(0,0,-1), QVector3D(.5f, .5f, .5f), QVector4D(1,.4f,.4f,1));
+
+
+
+//    cout << "testFighter" << endl;
+//    // fighter
+//    obj=0;
+//    try
+//    {
+//        obj = new WaveOBJ(this,"dark_fighter_6.obj",":/models/fighter/");
+//    }
+//    catch (QString err)
+//    {
+//        Fatal("Error loading object\n"+err);
+//    }
+//    if (obj)
+//    {
+//        mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
+//        mat->SetShader(":/object.vert","",":/object.frag");
+//        mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
+//        obj->SetMaterial(mat);
+//        obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
+//        //obj->transform.Rotate(45, QVector3D(1,0,0));
+//        obj->transform.SetPosition(QVector3D(0,0,0));
+//        obj->SetBehavior(new FighterBehavior());
+//        objects.push_back(obj);
+//    }
+
 
 
     Light.Direction = QVector3D(1.5, -1, -2).normalized();
@@ -486,7 +498,7 @@ float SciShieldOpengl::TraceRay(QVector3D origin, QVector3D direction, int *hitI
     return hitDistance;
 }
 
-void SciShieldOpengl::Fire(QVector3D origin, QVector3D direction)
+void SciShieldOpengl::Fire(QVector3D origin, QVector3D direction, QVector3D scale, QVector4D tint)
 {
     Object *obj = 0;
     if (particlePool.count() > 0)
@@ -499,7 +511,7 @@ void SciShieldOpengl::Fire(QVector3D origin, QVector3D direction)
     else
     {
         cout << "creating new particle object" << endl;
-        obj = new ParticleObject(this, 25);
+        obj = new ParticleObject(this, 30);
         Material *mat = new PlasmaMaterial(this, 0.3f, 0.6f, 0.3f, 32.0f);
         mat->SetShader(":/plasma.vert",":/plasma.geom",":/plasma.frag");
         mat->SetTexture(":/models/radial_gradient.png");
@@ -507,14 +519,11 @@ void SciShieldOpengl::Fire(QVector3D origin, QVector3D direction)
         obj->SetBehavior(new Bullet());
     }
 
-    QVector4D tint(rand() % 2,rand() % 2,rand() % 2,1);
-    tint *= QVector4D(.6f,.6f,.6f,1);
-    tint += QVector4D(.4f,.4f,.4f,0);
     obj->GetMaterial()->SetTint(tint);
 
     obj->transform.SetPosition(origin);
     obj->transform.SetRotation(QQuaternion::fromDirection(-direction, QVector3D(0,1,0)));
-    obj->transform.SetScale(QVector3D(.5f,.5f,.5f));
+    obj->transform.SetScale(scale);
     objects.push_back(obj);
 
 }
@@ -525,7 +534,11 @@ void SciShieldOpengl::FireFromClick(QPointF screenPoint)
     QVector3D direction = ScreenToWorldVector(screenPoint, 1) - origin;
     direction.normalize();
 
-    Fire(origin, direction);
+    QVector4D tint(rand() % 2,rand() % 2,rand() % 2,1);
+    tint *= QVector4D(.6f,.6f,.6f,1);
+    tint += QVector4D(.4f,.4f,.4f,0);
+
+    Fire(origin, direction, QVector3D(.5f, .5f, .5f), tint);
 }
 
 /******************************************************************/

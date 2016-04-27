@@ -47,7 +47,7 @@ public:
     QSize sizeHint() const {return QSize(400,400);} //  Default size of widget
 
     float TraceRay(QVector3D origin, QVector3D direction, int *hitIndex);
-    void Fire(QVector3D origin, QVector3D direction);
+    void Fire(QVector3D origin, QVector3D direction, QVector3D scale, QVector4D tint);
 
     void Fatal(QString message, QString caller = "SciShieldOpengl");            //  Error handler
 public slots:
