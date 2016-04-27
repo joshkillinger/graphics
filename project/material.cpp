@@ -9,17 +9,12 @@ Material::Material(SciShieldOpengl *context, float ambient, float diffuse, float
     this->specular = specular;
     this->shininess = shininess;
 
-    //  Texture
-    tex = 0;
-    //spec = 0;
-    //bump = 0;
-    //illum = 0;
-
     visibleStage = 0; //default value
 
     glContext = context;
 
     texture = NULL;
+    luminanceMap = NULL;
 }
 
 //
@@ -49,6 +44,14 @@ void Material::SetTexture(QString file)
     texture->setMagnificationFilter(QOpenGLTexture::Linear);
 }
 
+void Material::SetLuminanceMap(QString file)
+{
+    // Texture
+    luminanceMap = new QOpenGLTexture(QImage(file).mirrored());
+    luminanceMap->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+    luminanceMap->setMagnificationFilter(QOpenGLTexture::Linear);
+}
+
 void Material::SetTint(QVector4D color)
 {
     tint = color;
@@ -74,13 +77,27 @@ void Material::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
 
     if (texture != NULL)
     {
-        texture->bind();
+        texture->bind(0);
+    }
+    if (luminanceMap != NULL)
+    {
+        luminanceMap->bind(1);
     }
     shader.setUniformValue("Texture",0);
+    shader.setUniformValue("LuminanceMap",1);
 }
 
 void Material::PostRender()
 {
+    if (texture != NULL)
+    {
+        texture->release(0);
+    }
+    if (luminanceMap != NULL)
+    {
+        luminanceMap->release(1);
+    }
+
     shader.release();
 }
 

@@ -110,6 +110,7 @@ void SciShieldOpengl::initializeGL()
         mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
         mat->SetShader(":/object.vert","",":/object.frag");
         mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
+        mat->SetLuminanceMap(":/models/fighter/dark_fighter_6_illumination.png");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         obj->transform.Rotate(45, QVector3D(1,0,0));
@@ -160,6 +161,7 @@ void SciShieldOpengl::initializeGL()
         mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
         mat->SetShader(":/object.vert","",":/object.frag");
         mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
+        mat->SetLuminanceMap(":/models/fighter/dark_fighter_6_illumination.png");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         obj->transform.Rotate(45, QVector3D(1,0,0));
@@ -208,6 +210,7 @@ void SciShieldOpengl::initializeGL()
         mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
         mat->SetShader(":/object.vert","",":/object.frag");
         mat->SetTexture(":/models/fighter/dark_fighter_6_color.png");
+        mat->SetLuminanceMap(":/models/fighter/dark_fighter_6_illumination.png");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(0.05f,0.05f,0.05f));
         obj->transform.Rotate(45, QVector3D(1,0,0));
@@ -256,6 +259,7 @@ void SciShieldOpengl::initializeGL()
         mat = new Material(this, 0.3f, 0.6f, 0.3f, 32.0f);
         mat->SetShader(":/object.vert","",":/object.frag");
         mat->SetTexture(":/models/cruiser/cruiser.bmp");
+        mat->SetLuminanceMap(":/models/cruiser/cruiser_luminance.png");
         obj->SetMaterial(mat);
         obj->transform.SetScale(QVector3D(5,5,5));
         obj->transform.SetPosition(QVector3D(-15,0,0));

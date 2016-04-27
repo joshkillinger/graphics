@@ -14,6 +14,7 @@ uniform float Specular;
 uniform float Shininess;
 
 uniform sampler2D Texture;
+uniform sampler2D LuminanceMap;
 
 //  Input from previous shader
 in vec3 View;
@@ -59,6 +60,7 @@ void main()
 
     Fragcolor = Color + (phong() * Light.Color);
     Fragcolor = Fragcolor * texture(Texture, vs_tex_coord) * Tint;
+    Fragcolor += texture(LuminanceMap, vs_tex_coord);
     //Fragcolor = (Color + phong());
     //Fragcolor = vec4(normalize(Normal), 1);
     //Fragcolor = Color;

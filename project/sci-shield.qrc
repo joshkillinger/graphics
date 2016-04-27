@@ -22,5 +22,6 @@
         <file>plasma.geom</file>
         <file>plasma.frag</file>
         <file>models/radial_gradient.png</file>
+        <file>models/cruiser/cruiser_luminance.png</file>
     </qresource>
 </RCC>

@@ -21,12 +21,8 @@ protected:
 
     QOpenGLTexture *texture;
     //QPixmap specmap;
-    //QPixmap illummap;
+    QOpenGLTexture *luminanceMap;
     //QPixmap bumpmap;
-    GLuint tex;  //  Texture
-    //unsigned int spec;  //  Texture
-    //unsigned int illum;  //  Texture
-    //unsigned int bump;  //  Texture
 
 public:
     QOpenGLShaderProgram shader;   //  Shader
@@ -35,6 +31,7 @@ public:
     Material(SciShieldOpengl *context, float ambient, float diffuse, float specular, float shininess);
     void SetShader(QString vert, QString geom, QString frag);
     void SetTexture(QString file);
+    void SetLuminanceMap(QString file);
     void SetTint(QVector4D color);
     void SetParent(Object *p);
 
