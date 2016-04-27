@@ -114,13 +114,11 @@ void SciShieldOpengl::initializeGL()
 
     GameTime::Start();
 
-    cout << "instantiating triangle" << endl;
-
     //  Start 100 fps timer connected to updateGL
     timer.setInterval(10);
-    connect(&timer,SIGNAL(timeout()),this,SLOT(updateGL()));
+    connect(&timer,SIGNAL(timeout()),this,SLOT(update()));
     timer.start();
-    time.start();
+    //time.start();
     cout << "timers set" << endl;
 
     Object *obj;
@@ -404,12 +402,6 @@ void SciShieldOpengl::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-    //  Set view
-    glLoadIdentity();
-    glTranslated(0,0,-2*dim);
-    glRotated(ph,1,0,0);
-    glRotated(th,0,1,0);
-
     //  Create view matrix
     view.setToIdentity();
     view.translate(0,0,-2*dim);
@@ -434,15 +426,11 @@ void SciShieldOpengl::paintGL()
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
 
-
-    ShowAxes();
-
     error = glGetError();
     if (error)
     {
         cerr << "error after all rendering: " << error << endl;
     }
-
 
     //  Emit angles to display
     emit angles(QString::number(th)+","+QString::number(ph));
@@ -468,29 +456,6 @@ void SciShieldOpengl::RenderObjects(int stage)
     }
 }
 
-void SciShieldOpengl::ShowAxes()
-{
-//    //  Axes for reference
-//    glBegin(GL_LINES);
-//    glColor3f(1,0,0);
-//    glVertex3f(0,0,0);
-//    glVertex3f(4,0,0);
-//    glColor3f(0,1,0);
-//    glVertex3f(0,0,0);
-//    glVertex3f(0,4,0);
-//    glColor3f(0,0,1);
-//    glVertex3f(0,0,0);
-//    glVertex3f(0,0,4);
-//    glEnd();
-//    glDisable(GL_DEPTH_TEST);
-//    glColor3f(1,0,0);
-//    renderText(4.5,0,0,"X");
-//    glColor3f(0,1,0);
-//    renderText(0,4.5,0,"Y");
-//    glColor3f(0,0,1);
-//    renderText(0,0,4.5,"Z");
-}
-
 //
 //  Throw a fatal error and die
 //
@@ -505,16 +470,11 @@ void SciShieldOpengl::Fatal(QString message, QString caller)
 //
 void SciShieldOpengl::Projection()
 {
-    //  Set fixed pipeline transformation
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
     float zmin = dim/10;
     float zmax = 10*dim;
     float ydim = zmin*tan(fov*M_PI/360);
     float xdim = ydim*asp;
-    glFrustum(-xdim,+xdim,-ydim,+ydim,zmin,zmax);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+
     //  Set GL4 transformation
     proj.setToIdentity();
     proj.perspective(fov,asp,dim/10,10*dim);
@@ -574,22 +534,6 @@ void SciShieldOpengl::Fire(QPointF screenPoint)
     PrintQVector3D(origin, "Origin");
     PrintQVector3D(direction, "Direction");
 
-//    int hitIndex = -1;
-
-//    float hitDistance = TraceRay(origin, direction, &hitIndex);
-
-//    //if we hit something, tell it we hit it
-//    if (hitIndex != -1)
-//    {
-//        QVector3D hitPoint = origin + (hitDistance * direction);
-//        objects[hitIndex]->Hit(hitPoint);
-//        PrintQVector3D(hitPoint, "got a hit at");
-//    }
-//    else
-//    {
-//        cout << "no hit" << endl;
-//    }
-
     Object *obj = 0;
     if (particlePool.count() > 0)
     {
@@ -612,7 +556,7 @@ void SciShieldOpengl::Fire(QPointF screenPoint)
     obj->GetMaterial()->SetTint(tint);
 
     obj->transform.SetPosition(origin);
-    obj->transform.SetRotation(QQuaternion::fromDirection(direction, QVector3D(0,1,0)));
+    obj->transform.SetRotation(QQuaternion::fromDirection(-direction, QVector3D(0,1,0)));
     obj->transform.SetScale(QVector3D(.5,.5,.5));
     objects.push_back(obj);
 

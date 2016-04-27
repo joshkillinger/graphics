@@ -27,7 +27,7 @@ void Shield::Hit(QVector3D location)
 
 void Shield::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
 {
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glContext->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Enable shader
     shader.bind();
@@ -41,7 +41,10 @@ void Shield::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
     shader.setUniformValueArray("HitPoint",hitPoint,10);
     shader.setUniformValueArray("Time",hitTime,10,1);
 
-    tex = glContext->bindTexture(texture,GL_TEXTURE_2D);
+    if (texture != NULL)
+    {
+        texture->bind();
+    }
     shader.setUniformValue("Texture",0);
 }
 

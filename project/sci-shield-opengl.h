@@ -33,7 +33,7 @@ private:
     unsigned int tex;  //  Textures
 
     QTimer           timer;    //  Timer for animations
-    QElapsedTimer    time;     //  Track elapsed time
+    //QElapsedTimer    time;     //  Track elapsed time
     QPixmap   qtex;
 
 public:
@@ -71,7 +71,6 @@ private:
     void Projection();                     //  Update projection
     void UpdateObjects();
     void RenderObjects(int stage);
-    void ShowAxes();
     QVector3D ScreenToWorldVector(QPointF screenPoint, float z);
     void Fire(QPointF screenPoint);
 };

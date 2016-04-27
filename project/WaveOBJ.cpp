@@ -96,7 +96,7 @@ WaveOBJ::WaveOBJ(SciShieldOpengl *context, const char* file, const QString& path
     vertexBuffer.setUsagePattern(QGLBuffer::StaticDraw);
     vertexBuffer.allocate(sizeof(float) * vertexCount * 8);
 
-    cout << F.count() << " faces, " << vertexCount << " vertices, " << vertexBuffer.size() << " bytes." << endl;
+    //cout << F.count() << " faces, " << vertexCount << " vertices, " << vertexBuffer.size() << " bytes." << endl;
 
     //  parse faces
     //  Read Vertex/Texture/Normal triplets

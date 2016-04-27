@@ -10,7 +10,7 @@ PlasmaMaterial::PlasmaMaterial(SciShieldOpengl *context, float ambient, float di
 
 void PlasmaMaterial::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
 {
-    glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+    glContext->glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
 
     // Enable shader
     shader.bind();
@@ -23,7 +23,10 @@ void PlasmaMaterial::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
 
     shader.setUniformValue("Time",time);
 
-    tex = glContext->glBindTexture(GL_TEXTURE_2D,texture);
+    if (texture != NULL)
+    {
+        texture->bind();
+    }
     shader.setUniformValue("Texture",0);
 }
 

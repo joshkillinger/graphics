@@ -18,6 +18,8 @@ Material::Material(SciShieldOpengl *context, float ambient, float diffuse, float
     visibleStage = 0; //default value
 
     glContext = context;
+
+    texture = NULL;
 }
 
 //
@@ -42,9 +44,9 @@ void Material::SetShader(QString vert, QString geom, QString frag)
 void Material::SetTexture(QString file)
 {
     // Texture
-    texture = QOpenGLTexture(QImage(file));
-    texture.setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    texture.setMagnificationFilter(QOpenGLTexture::Linear);
+    texture = new QOpenGLTexture(QImage(file).mirrored());
+    texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+    texture->setMagnificationFilter(QOpenGLTexture::Linear);
 }
 
 void Material::SetTint(QVector4D color)
@@ -70,9 +72,10 @@ void Material::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
     shader.setUniformValue("Specular",specular);
     shader.setUniformValue("Shininess",shininess);
 
-    texture.bind();
-    //glContext->glBindTexture(GL_TEXTURE_2D,tex);
-    //glContext->glActiveTexture(GL_TEXTURE0);
+    if (texture != NULL)
+    {
+        texture->bind();
+    }
     shader.setUniformValue("Texture",0);
 }
 

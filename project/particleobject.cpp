@@ -34,12 +34,12 @@ ParticleObject::ParticleObject(SciShieldOpengl *context, int numParticles) : Obj
         cerr << "error binding vertexBuffer for particles" << endl;
     }
     vertexBuffer.setUsagePattern(QGLBuffer::StaticDraw);
-    cout << "allocating buffer space of " << sizeof(float) * numParticles * 4 << endl;
+    //cout << "allocating buffer space of " << sizeof(float) * numParticles * 4 << endl;
 
     vertexBuffer.allocate(sizeof(float) * numParticles * 4);
     vertexBuffer.write(0, data, sizeof(float) * numParticles * 4);
 
-    cout << "particle vertex buffer is size " << vertexBuffer.size() << endl;
+    //cout << "particle vertex buffer is size " << vertexBuffer.size() << endl;
 
     //  Unbind this buffer
     vertexBuffer.release();
@@ -62,7 +62,7 @@ void ParticleObject::Render()
     material->shader.setAttributeBuffer(1,GL_FLOAT,3*sizeof(float),1,sizeof(float)*4);
 
     // Draw the points
-    glDrawArrays(GL_POINTS,0,vertexCount);
+    glContext->glDrawArrays(GL_POINTS,0,vertexCount);
 
     //  Disable vertex arrays
     material->shader.disableAttributeArray(0);

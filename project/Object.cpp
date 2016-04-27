@@ -73,7 +73,7 @@ void Object::Render()
     material->shader.setAttributeBuffer(2,GL_FLOAT,6*sizeof(float),2,sizeof(float)*8);
 
     // Draw the cube
-    glDrawArrays(GL_TRIANGLES,0,vertexCount);
+    glContext->glDrawArrays(GL_TRIANGLES,0,vertexCount);
 
     //  Disable vertex arrays
     material->shader.disableAttributeArray(0);
