@@ -9,6 +9,7 @@ struct light
 //  Transformation matrices
 uniform mat4 ProjectionMatrix;
 uniform mat4 ModelViewMatrix;
+uniform mat4 ViewMatrix;
 uniform mat3 NormalMatrix;
 
 uniform light Light;
@@ -35,6 +36,7 @@ void main()
    //  Light position
    //DirToLight = vec3(Light.Position) - P;
    DirToLight = -Light.Direction;
+   DirToLight = (ViewMatrix * vec4(DirToLight,0)).xyz;
    //  Normal
    Normal = NormalMatrix * VNormal;
    //  Eye position

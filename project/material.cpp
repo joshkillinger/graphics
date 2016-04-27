@@ -64,6 +64,7 @@ void Material::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
     //  Set Modelview and Projection Matrix
     shader.setUniformValue("ProjectionMatrix",glContext->proj);
     shader.setUniformValue("ModelViewMatrix",modelview);
+    shader.setUniformValue("ViewMatrix",glContext->view);
     shader.setUniformValue("NormalMatrix",norm);
 
     shader.setUniformValue("Light.Direction",glContext->Light.Direction);
