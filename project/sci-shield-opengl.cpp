@@ -5,6 +5,7 @@
 #include <QtGui>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QApplication>
+#include <cfloat>
 #include <math.h>
 #include <iostream>
 #include "WaveOBJ.h"

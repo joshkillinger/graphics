@@ -114,7 +114,7 @@ QQuaternion rotationTo(const QVector3D &from, const QVector3D &to)
         return QQuaternion(0.0f, axis.x(), axis.y(), axis.z());
     }
 
-    d = std::sqrt(2.0f * d);
+    d = sqrt(2.0f * d);
     const QVector3D axis(QVector3D::crossProduct(v0, v1) / d);
 
     return QQuaternion(d * 0.5f, axis).normalized();
@@ -130,7 +130,7 @@ QQuaternion fromRotationMatrix(const QMatrix3x3 &rot3x3)
 
     const float trace = rot3x3(0, 0) + rot3x3(1, 1) + rot3x3(2, 2);
     if (trace > 0.00000001f) {
-        const float s = 2.0f * std::sqrt(trace + 1.0f);
+        const float s = 2.0f * sqrt(trace + 1.0f);
         scalar = 0.25f * s;
         axis[0] = (rot3x3(2, 1) - rot3x3(1, 2)) / s;
         axis[1] = (rot3x3(0, 2) - rot3x3(2, 0)) / s;
@@ -145,7 +145,7 @@ QQuaternion fromRotationMatrix(const QMatrix3x3 &rot3x3)
         int j = s_next[i];
         int k = s_next[j];
 
-        const float s = 2.0f * std::sqrt(rot3x3(i, i) - rot3x3(j, j) - rot3x3(k, k) + 1.0f);
+        const float s = 2.0f * sqrt(rot3x3(i, i) - rot3x3(j, j) - rot3x3(k, k) + 1.0f);
         axis[i] = 0.25f * s;
         scalar = (rot3x3(k, j) - rot3x3(j, k)) / s;
         axis[j] = (rot3x3(j, i) + rot3x3(i, j)) / s;
@@ -157,16 +157,10 @@ QQuaternion fromRotationMatrix(const QMatrix3x3 &rot3x3)
 
 QQuaternion fromAxes(const QVector3D &xAxis, const QVector3D &yAxis, const QVector3D &zAxis)
 {
-    QMatrix3x3 rot3x3(Qt::Uninitialized);
-    rot3x3(0, 0) = xAxis.x();
-    rot3x3(1, 0) = xAxis.y();
-    rot3x3(2, 0) = xAxis.z();
-    rot3x3(0, 1) = yAxis.x();
-    rot3x3(1, 1) = yAxis.y();
-    rot3x3(2, 1) = yAxis.z();
-    rot3x3(0, 2) = zAxis.x();
-    rot3x3(1, 2) = zAxis.y();
-    rot3x3(2, 2) = zAxis.z();
+    float data[] = {xAxis.x(),yAxis.x(),zAxis.x(),
+                    xAxis.y(),yAxis.y(),zAxis.y(),
+                    xAxis.z(),yAxis.z(),zAxis.z()};
+    QMatrix3x3 rot3x3(data);
 
     return fromRotationMatrix(rot3x3);
 }
