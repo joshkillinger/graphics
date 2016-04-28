@@ -27,6 +27,8 @@ void Shield::Hit(QVector3D location)
 
 void Shield::PreRender(QMatrix4x4 modelview, QMatrix3x3 norm)
 {
+    (void)norm;
+
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Enable shader
