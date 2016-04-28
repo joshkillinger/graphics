@@ -3,14 +3,11 @@
 //
 #include "sci-shield-opengl.h"
 #include <QtGui>
-#include <QtWidgets\QMessageBox>
-#include <QtWidgets\QApplication>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QApplication>
 #include <math.h>
 #include <iostream>
 #include "WaveOBJ.h"
-#include "cube.h"
-#include "triangle.h"
-#include "material.h"
 #include "shield.h"
 #include "gametime.h"
 #include "spherehitbox.h"
@@ -476,7 +473,8 @@ void SciShieldOpengl::Fire(QVector3D origin, QVector3D direction, QVector3D scal
     obj->GetMaterial()->SetTint(tint);
 
     obj->transform.SetPosition(origin);
-    obj->transform.SetRotation(QQuaternion::fromDirection(-direction, QVector3D(0,1,0)));
+    obj->transform.SetRotation(-direction);
+
     obj->transform.SetScale(scale);
     objects.push_back(obj);
 
@@ -503,13 +501,13 @@ void SciShieldOpengl::FireFromClick(QPointF screenPoint)
 //
 void SciShieldOpengl::mousePressEvent(QMouseEvent* e)
 {
-    if (e->button() == Qt::MouseButton::RightButton)
+    if (e->button() == Qt::RightButton)
     {
         mouse = true;
         pos = e->pos();  //  Remember mouse location
     }
 
-    if (e->button() == Qt::MouseButton::LeftButton)
+    if (e->button() == Qt::LeftButton)
     {
         FireFromClick(e->localPos());
     }
@@ -520,7 +518,7 @@ void SciShieldOpengl::mousePressEvent(QMouseEvent* e)
 //
 void SciShieldOpengl::mouseReleaseEvent(QMouseEvent* e)
 {
-    if (e->button() == Qt::MouseButton::RightButton)
+    if (e->button() == Qt::RightButton)
     {
         mouse = false;
     }

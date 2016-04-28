@@ -8,7 +8,7 @@
 class Object;
 
 #include <QtGui>
-#include <QtOpenGL\QGLWidget>
+#include <QtOpenGL/QGLWidget>
 #include <QString>
 #include <QVector>
 #include <QMatrix4x4>

@@ -2,9 +2,9 @@
 //  SciShieldViewer Widget
 //
 
-#include <QtWidgets\QComboBox>
-#include <QtWidgets\QLabel>
-#include <QtWidgets\QGridLayout>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QGridLayout>
 #include "sci-shield-viewer.h"
 #include <iostream>
 

@@ -7,7 +7,7 @@
 #include <QTextStream>
 #include <QVector>
 #include <QPixmap>
-#include <QtWidgets\QOpenGLWidget>
+#include <QGLWidget>
 #include "WaveOBJ.h"
 #include <iostream>
 

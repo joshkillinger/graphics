@@ -62,7 +62,7 @@ void ParticleObject::Render()
     material->shader.setAttributeBuffer(1,GL_FLOAT,3*sizeof(float),1,sizeof(float)*4);
 
     // Draw the points
-    glContext->glDrawArrays(GL_POINTS,0,vertexCount);
+    glDrawArrays(GL_POINTS,0,vertexCount);
 
     //  Disable vertex arrays
     material->shader.disableAttributeArray(0);

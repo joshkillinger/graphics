@@ -18,6 +18,7 @@ public:
     QQuaternion GetRotation();
     QQuaternion GetWorldRotation();
     void SetRotation(QQuaternion rot);
+    void SetRotation(QVector3D direction);
     QVector3D GetScale();
     void SetScale(QVector3D sc);
     void Translate(QVector3D offset);
