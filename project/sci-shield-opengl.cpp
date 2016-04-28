@@ -3,8 +3,8 @@
 //
 #include "sci-shield-opengl.h"
 #include <QtGui>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QApplication>
+#include <QtWidgets\QMessageBox>
+#include <QtWidgets\QApplication>
 #include <math.h>
 #include <iostream>
 #include "WaveOBJ.h"
@@ -35,7 +35,7 @@ static float frand(float rng,float off)
 //  Constructor
 //
 SciShieldOpengl::SciShieldOpengl(QWidget* parent)
-    : QOpenGLWidget(parent)
+    : QGLWidget(parent)
 {
     init  = false;
     mouse = false;

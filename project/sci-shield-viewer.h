@@ -2,8 +2,8 @@
 #define SCISHIELDV_H
 
 #include <QtGui>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QPushButton>
+#include <QtWidgets\QSlider>
+#include <QtWidgets\QPushButton>
 
 #include "sci-shield-opengl.h"
 

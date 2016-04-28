@@ -8,7 +8,7 @@
 class Object;
 
 #include <QtGui>
-#include <QtWidgets/QOpenGLWidget>
+#include <QtOpenGL\QGLWidget>
 #include <QString>
 #include <QVector>
 #include <QMatrix4x4>
@@ -19,7 +19,7 @@ struct light
     QVector4D Color;
 };
 
-class SciShieldOpengl : public QOpenGLWidget, public QOpenGLFunctions
+class SciShieldOpengl : public QGLWidget, public QOpenGLFunctions
 {
 Q_OBJECT
 private:

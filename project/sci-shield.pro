@@ -25,5 +25,5 @@ SOURCES = sci-shield.cpp sci-shield-viewer.cpp sci-shield-opengl.cpp Object.cpp 
     fighterbehavior.cpp \
     cruiserbehavior.cpp
 RESOURCES = sci-shield.qrc
-QT += widgets
+QT += widgets opengl
 DISTFILES +=
